@@ -482,7 +482,7 @@
             <h2 id="为什么要做app内存泄漏监控？"><a href="#为什么要做app内存泄漏监控？" class="headerlink" title="为什么要做app内存泄漏监控？"></a>为什么要做app内存泄漏监控？</h2><p>内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.<br><img src="/2017/03/14/内存泄漏监测/images/内存泄漏监测/useMemoryEfficiently.png" alt=""></p>
 <h2 id="监控内存泄漏的时机"><a href="#监控内存泄漏的时机" class="headerlink" title="监控内存泄漏的时机"></a>监控内存泄漏的时机</h2><ol>
 <li>UIViewController调用”dismissViewControllerAnimated:”的时候</li>
-<li>UInavigationController调用”popToRootViewControllerAnimated:””、”popToViewController:animated:”、”popToRootViewControllerAnimated:”。</li>
+<li>UInavigationController调用”popToRootViewControllerAnimated:”等pop方法</li>
 <li>UITabbbarViewController、UIPageViewController、UISplitViewController+MemoryLeak需要释放时，对应的内嵌视图控制器也需要释放。<br><img src="/2017/03/14/内存泄漏监测/images/内存泄漏监测/leakPic.png" alt=""></li>
 </ol>
 <h2 id="监控小技巧"><a href="#监控小技巧" class="headerlink" title="监控小技巧"></a>监控小技巧</h2><p>创建一个block,block持有需要释放的视图的weak指针，当监测时机到时，执行这个block，如果weak指针不为nil,则该试图已经内存泄漏了。<br><img src="/2017/03/14/内存泄漏监测/images/内存泄漏监测/weakTask.png" alt=""></p>
