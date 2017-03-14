@@ -3,15 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>内存泄漏监测 | Hexo</title>
+  <title>内存泄漏监控 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
-<meta property="og:title" content="内存泄漏监测">
+  <meta name="description" content="为什么要做app内存泄漏监控？内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.
+监控内存泄漏的时机
+UIViewController调用”dismissViewControllerAnimated:”的时候
+UInavigationController调用”popToRootViewControllerAnimated:””、”popToViewContr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存泄漏监控">
 <meta property="og:url" content="http://yoursite.com/2017/03/14/内存泄漏监测/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:updated_time" content="2017-03-14T02:19:03.000Z">
+<meta property="og:description" content="为什么要做app内存泄漏监控？内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.
+监控内存泄漏的时机
+UIViewController调用”dismissViewControllerAnimated:”的时候
+UInavigationController调用”popToRootViewControllerAnimated:””、”popToViewContr">
+<meta property="og:updated_time" content="2017-03-14T06:05:37.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="内存泄漏监测">
+<meta name="twitter:title" content="内存泄漏监控">
+<meta name="twitter:description" content="为什么要做app内存泄漏监控？内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.
+监控内存泄漏的时机
+UIViewController调用”dismissViewControllerAnimated:”的时候
+UInavigationController调用”popToRootViewControllerAnimated:””、”popToViewContr">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -51,7 +63,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Zoeken"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -74,7 +86,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      内存泄漏监测
+      内存泄漏监控
     </h1>
   
 
@@ -82,11 +94,26 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h2 id="为什么要做app内存泄漏监控？"><a href="#为什么要做app内存泄漏监控？" class="headerlink" title="为什么要做app内存泄漏监控？"></a>为什么要做app内存泄漏监控？</h2><p>内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.</p>
+<h2 id="监控内存泄漏的时机"><a href="#监控内存泄漏的时机" class="headerlink" title="监控内存泄漏的时机"></a>监控内存泄漏的时机</h2><ol>
+<li>UIViewController调用”dismissViewControllerAnimated:”的时候</li>
+<li>UInavigationController调用”popToRootViewControllerAnimated:””、”popToViewController:animated:”、”popToRootViewControllerAnimated:”。</li>
+<li>UITabbbarViewController、UIPageViewController、UISplitViewController+MemoryLeak需要释放时，对应的内嵌视图控制器也需要释放。<h2 id="监控小技巧"><a href="#监控小技巧" class="headerlink" title="监控小技巧"></a>监控小技巧</h2>创建一个block,block持有需要释放的视图的weak指针，当监测时机到时，执行这个block，如果weak指针不为nil,则该试图已经内存泄漏了。<h2 id="监控对象"><a href="#监控对象" class="headerlink" title="监控对象"></a>监控对象</h2></li>
+<li>所有需要释放的视图控制器</li>
+<li>视图控制器的View,及其每一层嵌套的Subview</li>
+</ol>
+<h2 id="视图树的记录"><a href="#视图树的记录" class="headerlink" title="视图树的记录"></a>视图树的记录</h2><p>监测到内存泄漏后，为了方便开发定位到具体泄漏的视图，我们可以泄漏的视图树记录下来。</p>
+<h2 id="泄漏后如何及时提醒"><a href="#泄漏后如何及时提醒" class="headerlink" title="泄漏后如何及时提醒"></a>泄漏后如何及时提醒</h2><p>泄漏后怎么提醒开发者比较合适呢。</p>
+<ol>
+<li>发现泄漏马上把泄漏的视图树log打印出来</li>
+<li>悬浮一个提醒款，显示当前泄漏的数量</li>
+<li>命中断言（会阻断开发，容易被喷）</li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/03/14/内存泄漏监测/" data-id="cj08wvsyd0001951e8uppzqv3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/03/14/内存泄漏监测/" data-id="cj094wkv800015i1ean6jfbzq" class="article-share-link">Delen</a>
       
       
     </footer>
@@ -97,7 +124,7 @@
   
   
     <a href="/2017/03/14/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
+      <strong class="article-nav-caption">Ouder</strong>
       <div class="article-nav-title">Hello World</div>
     </a>
   
@@ -120,7 +147,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archieven</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li></ul>
     </div>
@@ -130,12 +157,12 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Recente berichten</h3>
     <div class="widget">
       <ul>
         
           <li>
-            <a href="/2017/03/14/内存泄漏监测/">内存泄漏监测</a>
+            <a href="/2017/03/14/内存泄漏监测/">内存泄漏监控</a>
           </li>
         
           <li>
