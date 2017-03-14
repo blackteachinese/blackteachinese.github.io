@@ -17,7 +17,7 @@ UInavigationController调用”popToRootViewControllerAnimated:””、”popTo
 监控内存泄漏的时机
 UIViewController调用”dismissViewControllerAnimated:”的时候
 UInavigationController调用”popToRootViewControllerAnimated:””、”popToViewContr">
-<meta property="og:updated_time" content="2017-03-14T06:05:37.000Z">
+<meta property="og:updated_time" content="2017-03-14T06:07:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="内存泄漏监控">
 <meta name="twitter:description" content="为什么要做app内存泄漏监控？内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.
@@ -63,7 +63,7 @@ UInavigationController调用”popToRootViewControllerAnimated:””、”popTo
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Zoeken"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -98,7 +98,10 @@ UInavigationController调用”popToRootViewControllerAnimated:””、”popTo
 <h2 id="监控内存泄漏的时机"><a href="#监控内存泄漏的时机" class="headerlink" title="监控内存泄漏的时机"></a>监控内存泄漏的时机</h2><ol>
 <li>UIViewController调用”dismissViewControllerAnimated:”的时候</li>
 <li>UInavigationController调用”popToRootViewControllerAnimated:””、”popToViewController:animated:”、”popToRootViewControllerAnimated:”。</li>
-<li>UITabbbarViewController、UIPageViewController、UISplitViewController+MemoryLeak需要释放时，对应的内嵌视图控制器也需要释放。<h2 id="监控小技巧"><a href="#监控小技巧" class="headerlink" title="监控小技巧"></a>监控小技巧</h2>创建一个block,block持有需要释放的视图的weak指针，当监测时机到时，执行这个block，如果weak指针不为nil,则该试图已经内存泄漏了。<h2 id="监控对象"><a href="#监控对象" class="headerlink" title="监控对象"></a>监控对象</h2></li>
+<li>UITabbbarViewController、UIPageViewController、UISplitViewController+MemoryLeak需要释放时，对应的内嵌视图控制器也需要释放。</li>
+</ol>
+<h2 id="监控小技巧"><a href="#监控小技巧" class="headerlink" title="监控小技巧"></a>监控小技巧</h2><p>创建一个block,block持有需要释放的视图的weak指针，当监测时机到时，执行这个block，如果weak指针不为nil,则该试图已经内存泄漏了。</p>
+<h2 id="监控对象"><a href="#监控对象" class="headerlink" title="监控对象"></a>监控对象</h2><ol>
 <li>所有需要释放的视图控制器</li>
 <li>视图控制器的View,及其每一层嵌套的Subview</li>
 </ol>
@@ -113,7 +116,7 @@ UInavigationController调用”popToRootViewControllerAnimated:””、”popTo
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/03/14/内存泄漏监测/" data-id="cj094wkv800015i1ean6jfbzq" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2017/03/14/内存泄漏监测/" data-id="cj094yizs0001931e8mecucqv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -124,7 +127,7 @@ UInavigationController调用”popToRootViewControllerAnimated:””、”popTo
   
   
     <a href="/2017/03/14/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Ouder</strong>
+      <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">Hello World</div>
     </a>
   
@@ -147,7 +150,7 @@ UInavigationController调用”popToRootViewControllerAnimated:””、”popTo
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archieven</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li></ul>
     </div>
@@ -157,7 +160,7 @@ UInavigationController调用”popToRootViewControllerAnimated:””、”popTo
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recente berichten</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
