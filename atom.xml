@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Blacktea&#39;s Life</title>
+  <subtitle>A programmer who love music and football</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://blackteachinese.com/"/>
+  <updated>2017-04-04T11:04:17.000Z</updated>
+  <id>http://blackteachinese.com/</id>
+  
+  <author>
+    <name>Blacktea</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一个App左滑出现的严重Bug</title>
+    <link href="http://blackteachinese.com/2017/04/04/ios-ui-left-slip-bug/"/>
+    <id>http://blackteachinese.com/2017/04/04/ios-ui-left-slip-bug/</id>
+    <published>2017-04-04T10:30:07.000Z</published>
+    <updated>2017-04-04T11:04:17.000Z</updated>
+    
+    <content type="html"><![CDATA[<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.navigationController.interactivePopGestureRecognizer.delegate = (<span class="keyword">id</span>&lt;<span class="built_in">UIGestureRecognizerDelegate</span>&gt;)<span class="keyword">self</span>.navigationController;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;figure class=&quot;highlight objc&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://blackteachinese.com/categories/iOS/"/>
+    
+    
+      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
+    
+      <category term="左滑bug" scheme="http://blackteachinese.com/tags/%E5%B7%A6%E6%BB%91bug/"/>
+    
+      <category term="interactivePopGestureRecognizer" scheme="http://blackteachinese.com/tags/interactivePopGestureRecognizer/"/>
+    
+      <category term="左滑卡死" scheme="http://blackteachinese.com/tags/%E5%B7%A6%E6%BB%91%E5%8D%A1%E6%AD%BB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>巴菲特的投资思维如何用于日常生活</title>
+    <link href="http://blackteachinese.com/2017/04/04/financial-use-invest-sense/"/>
+    <id>http://blackteachinese.com/2017/04/04/financial-use-invest-sense/</id>
+    <published>2017-04-04T07:36:16.000Z</published>
+    <updated>2017-04-04T09:49:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="学会权衡风险与收益"><a href="#学会权衡风险与收益" class="headerlink" title="学会权衡风险与收益"></a>学会权衡风险与收益</h1><p>首先，我们做事情要有明确的目的，不同的目的要采用不同的方法。<br>大部分人在生活中很容易受别人影响。<br>看到朋友给他的孩子报了钢琴、英语、绘画等兴趣班，就想象自己的孩子会落后于别人，赶紧自己也给孩子报了相应的培训班。</p>
+<p>危机意识敏锐是人类进化的优良习惯。在原始森林里，当你看到身边的人突然加速逃跑的时候，如果你非常理智思考一下，观察一下身边的情况，你很可能就野兽吃了。于是活下来的都拥有容易受他人影响的基因。但现代生活比原始森林复杂多了，光依靠过去的本能的反应已经远远不够了。我们应该明确好自己的目标，而不是别人给孩子报英语，我们就不加思索的也报英语。</p>
+<p>那我们应该怎么做？每个孩子有着不一样的基因，各方面的能力不一样，兴趣爱好也不一样。譬如，你发现自己孩子对音乐特别敏感，听到音乐会跟着哼、身体跟着节奏舞动。那说明你的孩子对音乐、舞蹈比较敏锐，可以尝试往这个方向引导。于是这就成为你权衡给孩子哪些教育其中一个目标。即便是要给孩子报兴趣班，也要依据你积累下来的这些目标和方向。不盲目跟风。</p>
+<h1 id="切莫好高骛远。"><a href="#切莫好高骛远。" class="headerlink" title="切莫好高骛远。"></a>切莫好高骛远。</h1><p>我们在制定目标时不能好高骛远。如果你好高骛远，那么你定的目标通常会没有可执行性。</p>
+<p>比如你定下这样的目标，“我今年的理财投资回报率要达到30%”。有些人可能会觉得也并不是很难，牛市的时候几个涨停就够了。天了噜，巴菲特每年的投资回报率就12%左右。他养着一个全球最贵的投资团队，每天分析各行业趋势、各国政策的影响、企业的动态，最后收益也就平均12%。</p>
+<p>我并非说没有任何人的投资的回报能高于巴菲特，只是非常少，可能低于5%。而且即便你某一年投资回报高于巴菲特并不代表你平均每年投资回报率能高于巴菲特，也就是说你的投资策略、投资能力并不优于巴菲特，只是刚好今年的投资运气特别好。这其实又说到另外一个主题，是关于自我认知能力，大部分人的自我认知能力都很差，这个且不说。</p>
+<p>在生活中好高骛远会带来什么实际性的错误呢？就像上面的例子，如果你定的理财回报率是30%，那你就会关注到很多风险极高的投资产品。比如一些区块链的垃圾币包装的理财产品、期货产品。你也更容易被别人忽悠去买这些风险极高、甚至完全是骗局的传销型理财产品。如果你定的目标是30岁前实现财富自由，你可能就会忽视基础的积累，只去做那些看起来有可能的事情。比如买彩票、盲目创业、高风险投资。你买股票时可能会加5倍杠杆，不翻倍的投资你不会考虑。</p>
+<h1 id="权衡回报和风险"><a href="#权衡回报和风险" class="headerlink" title="权衡回报和风险"></a>权衡回报和风险</h1><p>我们需要考虑的是回报和风险的比例，而不仅仅是回报本身。<br>是的，我们常常听别人说这个回报率是10%非常高，这个回报率是12%相当赞。但却很少有人说，这个理财产品往年的实际投资回报是多少。多大的百分比是亏损、多大的百分百是0%～5%之间。大家都对风险的分析做得不够，能大概知道A产品风险较低、B产品风险高一点就已经很不错了。更别提最后通过概率权的思想计算出实际的投资回报率（而不是发行方包装的回报率）。</p>
+<p>在生活中我们同样要学会权衡回报和收益。比如：周六有个李开复的讲座要不要去听。</p>
+<ul>
+<li>先算一下要花的时间。 <ul>
+<li>路上时间+讲座时间，共6个小时</li>
+</ul>
+</li>
+<li>初步预计一下收益。<ul>
+<li>认识几个行业朋友？听到李开复对人工智能的干货？感受一下气氛，激发一下自己的热情？</li>
+</ul>
+</li>
+<li>替代方案／机会成本<ul>
+<li>陪老婆孩子</li>
+<li>看半本书</li>
+<li>打场球锻炼一下</li>
+<li>花两个小时看视频直播，省下4个小时干别的。</li>
+</ul>
+</li>
+</ul>
+<h1 id="切换有成本"><a href="#切换有成本" class="headerlink" title="切换有成本"></a>切换有成本</h1><p>最后，任何事情都有一个准入的成本，或者说切换的成本。大到换工作，小到换手机，换电脑，都是如此。到新单位前三个月乃至半年，要重新学习和适应，其实做不了太重要的事情，这就是准入成本。换一台电脑，很多旧的文件要导出来，要装新软件，这都是准入成本。考虑到准入成本，你就不应该切换工作太频繁，在一个公司待不到2年通常都是一件成本较高的事情。</p>
+<p>PS：这些思想听起来是很简单道理，大家或多或少都听过这样的说法，但平时却很难做不到。这是由于我们长久以来形成的错误的思维习惯，你不下意识去纠正，即便听过N遍也很难真正吸收。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;学会权衡风险与收益&quot;&gt;&lt;a href=&quot;#学会权衡风险与收益&quot; class=&quot;headerlink&quot; title=&quot;学会权衡风险与收益&quot;&gt;&lt;/a&gt;学会权衡风险与收益&lt;/h1&gt;&lt;p&gt;首先，我们做事情要有明确的目的，不同的目的要采用不同的方法。&lt;br&gt;大部分人在生活中
+    
+    </summary>
+    
+      <category term="思维" scheme="http://blackteachinese.com/categories/%E6%80%9D%E7%BB%B4/"/>
+    
+    
+      <category term="投资" scheme="http://blackteachinese.com/tags/%E6%8A%95%E8%B5%84/"/>
+    
+      <category term="思维" scheme="http://blackteachinese.com/tags/%E6%80%9D%E7%BB%B4/"/>
+    
+      <category term="理财" scheme="http://blackteachinese.com/tags/%E7%90%86%E8%B4%A2/"/>
+    
+      <category term="生活" scheme="http://blackteachinese.com/tags/%E7%94%9F%E6%B4%BB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>比尔盖茨的成功不靠天赋和努力</title>
+    <link href="http://blackteachinese.com/2017/03/29/Outliers/"/>
+    <id>http://blackteachinese.com/2017/03/29/Outliers/</id>
+    <published>2017-03-29T13:37:07.000Z</published>
+    <updated>2017-04-04T10:36:27.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一-优势积累比天赋更重要"><a href="#一-优势积累比天赋更重要" class="headerlink" title="一 .优势积累比天赋更重要"></a>一 .优势积累比天赋更重要</h1><h2 id="机遇比天赋更重要"><a href="#机遇比天赋更重要" class="headerlink" title="机遇比天赋更重要"></a>机遇比天赋更重要</h2><p>加拿大著名球队老虎队的队员里25个球员，有17个球员的出生日期在1～3月。为什么有么明显的倾向性？加拿大冰球选拔机制是按年龄分组，5岁一组、6岁一组。同样是1990年出生，1月份出生的小孩和12月份出生的小孩分在一组。对于小孩来说差了10几个月，身体发育就差很多，年初出生的球员就占据很大的优势。所以年初出生的小孩一开始表现就会更好，表现更好就会被筛选到特训组，得到更好的训练。得到更好的训练，表现就更好，如此不断积累优势，最后年初出生的小孩称为顶级球员的机率就大大提升。</p>
+<h2 id="知道一万小时理论也没用"><a href="#知道一万小时理论也没用" class="headerlink" title="知道一万小时理论也没用"></a>知道一万小时理论也没用</h2><p>不是每个人都有机会在合适的时机进行一万小时的训练。比如加拿大的冰球运动员，如果你小的时候进不了第一梯队，就没能进行优质的训练，很难达到一万小时。而且年龄大了再完成一万小时的训练也没有用了，因为运动员的身体条件高峰期是受年龄限制的。</p>
+<h2 id="社会环境变革比努力重要得多"><a href="#社会环境变革比努力重要得多" class="headerlink" title="社会环境变革比努力重要得多"></a>社会环境变革比努力重要得多</h2><p>70后毕业参加工作买一套房子，相当于80后工作10年。最近毕业的清华大学学生，买不起北京房子不要太多。</p>
+<h1 id="二-文化背景对成功影响很大"><a href="#二-文化背景对成功影响很大" class="headerlink" title="二.文化背景对成功影响很大"></a>二.文化背景对成功影响很大</h1><p>20世纪90年代韩国大航航空公司飞机失事率是同期美国联合航空的17倍，但究其原因竟然不是飞机设备、也不是管理问题。他们做了大量调研，听取飞机黑匣子录音，最终发现韩国文化是最根本的原因。因为韩国是一个等级分明的国家。在飞行过程中，机长做了一些错误的决策，副机长以及其他成员不敢说，没有了其他成员的有力监督，飞机失事率就变高了很多。</p>
+<h1 id="我们该怎么做"><a href="#我们该怎么做" class="headerlink" title="我们该怎么做"></a>我们该怎么做</h1><h2 id="挤入第一梯队"><a href="#挤入第一梯队" class="headerlink" title="挤入第一梯队"></a>挤入第一梯队</h2><p>学习和工作时要想办法进入“第一梯队”，这样才能获得高质量的训练，加速积累达到一万小时的训练，从了增加优势积累的机会。</p>
+<h2 id="如何获得社会变革红利"><a href="#如何获得社会变革红利" class="headerlink" title="如何获得社会变革红利"></a>如何获得社会变革红利</h2><p>花时间研究未来趋势，训练自己的预见能力，并且在未来趋势到来之前，开始一万小时的积累。比尔盖茨在大家还没用电脑前，就有了计算机编程的10万小时积累。<br>我们需要一点运气，找到风口并且在风口前已经做好了准备。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;一-优势积累比天赋更重要&quot;&gt;&lt;a href=&quot;#一-优势积累比天赋更重要&quot; class=&quot;headerlink&quot; title=&quot;一 .优势积累比天赋更重要&quot;&gt;&lt;/a&gt;一 .优势积累比天赋更重要&lt;/h1&gt;&lt;h2 id=&quot;机遇比天赋更重要&quot;&gt;&lt;a href=&quot;#机遇比
+    
+    </summary>
+    
+      <category term="思维" scheme="http://blackteachinese.com/categories/%E6%80%9D%E7%BB%B4/"/>
+    
+    
+      <category term="成功" scheme="http://blackteachinese.com/tags/%E6%88%90%E5%8A%9F/"/>
+    
+      <category term="努力" scheme="http://blackteachinese.com/tags/%E5%8A%AA%E5%8A%9B/"/>
+    
+      <category term="天赋" scheme="http://blackteachinese.com/tags/%E5%A4%A9%E8%B5%8B/"/>
+    
+      <category term="比尔盖茨" scheme="http://blackteachinese.com/tags/%E6%AF%94%E5%B0%94%E7%9B%96%E8%8C%A8/"/>
+    
+      <category term="优势积累" scheme="http://blackteachinese.com/tags/%E4%BC%98%E5%8A%BF%E7%A7%AF%E7%B4%AF/"/>
+    
+      <category term="逆袭" scheme="http://blackteachinese.com/tags/%E9%80%86%E8%A2%AD/"/>
+    
+      <category term="一万小时理论" scheme="http://blackteachinese.com/tags/%E4%B8%80%E4%B8%87%E5%B0%8F%E6%97%B6%E7%90%86%E8%AE%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>内存泄漏监控</title>
+    <link href="http://blackteachinese.com/2017/03/14/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E7%9B%91%E6%B5%8B/"/>
+    <id>http://blackteachinese.com/2017/03/14/内存泄漏监测/</id>
+    <published>2017-03-14T02:18:21.000Z</published>
+    <updated>2017-03-21T15:34:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="为什么要做app内存泄漏监控？"><a href="#为什么要做app内存泄漏监控？" class="headerlink" title="为什么要做app内存泄漏监控？"></a>为什么要做app内存泄漏监控？</h2><p>内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fduvum23wsj31870j3jwx.jpg" alt=""></p>
+<h2 id="监控内存泄漏的时机"><a href="#监控内存泄漏的时机" class="headerlink" title="监控内存泄漏的时机"></a>监控内存泄漏的时机</h2><ol>
+<li>UIViewController调用”dismissViewControllerAnimated:”的时候</li>
+<li>UInavigationController调用”popToRootViewControllerAnimated:”等pop方法</li>
+<li>UITabbbarViewController、UIPageViewController、UISplitViewController+MemoryLeak需要释放时，对应的内嵌视图控制器也需要释放。<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fduvtrj272j31080hgn00.jpg" alt=""></li>
+</ol>
+<h2 id="监控小技巧"><a href="#监控小技巧" class="headerlink" title="监控小技巧"></a>监控小技巧</h2><p>创建一个block,block持有需要释放的视图的weak指针，当监测时机到时，执行这个block，如果weak指针不为nil,则该试图已经内存泄漏了。<br><img src="https://ww4.sinaimg.cn/large/006tNc79gy1fduvux09v8j313i0ngjtw.jpg" alt=""></p>
+<h2 id="监控对象"><a href="#监控对象" class="headerlink" title="监控对象"></a>监控对象</h2><ol>
+<li>所有需要释放的视图控制器</li>
+<li>视图控制器的View,及其每一层嵌套的Subview</li>
+</ol>
+<h2 id="视图树的记录"><a href="#视图树的记录" class="headerlink" title="视图树的记录"></a>视图树的记录</h2><p>监测到内存泄漏后，为了方便开发定位到具体泄漏的视图，我们可以泄漏的视图树记录下来。</p>
+<h2 id="泄漏后如何及时提醒"><a href="#泄漏后如何及时提醒" class="headerlink" title="泄漏后如何及时提醒"></a>泄漏后如何及时提醒</h2><p>泄漏后怎么提醒开发者比较合适呢。</p>
+<ol>
+<li>发现泄漏马上把泄漏的视图树log打印出来</li>
+<li>悬浮一个提醒款，显示当前泄漏的数量</li>
+<li>命中断言（会阻断开发，容易被喷）</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;为什么要做app内存泄漏监控？&quot;&gt;&lt;a href=&quot;#为什么要做app内存泄漏监控？&quot; class=&quot;headerlink&quot; title=&quot;为什么要做app内存泄漏监控？&quot;&gt;&lt;/a&gt;为什么要做app内存泄漏监控？&lt;/h2&gt;&lt;p&gt;内存泄漏将导致app内存占用变大，成
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
