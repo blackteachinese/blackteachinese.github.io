@@ -107,15 +107,16 @@
 
 
 
-<meta name="description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Blacktea's Life">
-<meta property="og:url" content="http://blackteachinese.com/tags/投资/index.html">
+<meta name="description" content="我们在使用url生成NSURL时需要注意非法字符的问题。举个例子：123NSString *value = @&quot;http://blackteachinese.com/2017/life/红茶!@#$%^&amp;amp;*()&quot;;NSString *urlString = [NSString stringWithFormat:@&quot;blacktea://yumi?key=%@&quot;, value];NSURL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSURL编码问题">
+<meta property="og:url" content="http://blackteachinese.com/2017/04/06/ios-url-encode/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
+<meta property="og:description" content="我们在使用url生成NSURL时需要注意非法字符的问题。举个例子：123NSString *value = @&quot;http://blackteachinese.com/2017/life/红茶!@#$%^&amp;amp;*()&quot;;NSString *urlString = [NSString stringWithFormat:@&quot;blacktea://yumi?key=%@&quot;, value];NSURL">
+<meta property="og:updated_time" content="2017-04-06T14:10:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Blacktea's Life">
-<meta name="twitter:description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
+<meta name="twitter:title" content="NSURL编码问题">
+<meta name="twitter:description" content="我们在使用url生成NSURL时需要注意非法字符的问题。举个例子：123NSString *value = @&quot;http://blackteachinese.com/2017/life/红茶!@#$%^&amp;amp;*()&quot;;NSString *urlString = [NSString stringWithFormat:@&quot;blacktea://yumi?key=%@&quot;, value];NSURL">
 
 
 
@@ -143,13 +144,13 @@
 
 
 
-  <link rel="canonical" href="http://blackteachinese.com/tags/投资/"/>
+  <link rel="canonical" href="http://blackteachinese.com/2017/04/06/ios-url-encode/"/>
 
 
 
 
 
-  <title> 标签: 投资 | Blacktea's Life </title>
+  <title> NSURL编码问题 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -174,7 +175,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -288,46 +289,179 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        投资
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/04/06/ios-url-encode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                NSURL编码问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T16:33:37+08:00">
+                2017-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <p>我们在使用url生成NSURL时需要注意非法字符的问题。<br>举个例子：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *value = <span class="string">@"http://blackteachinese.com/2017/life/红茶!@#$%^&amp;*()"</span>;</div><div class="line"><span class="built_in">NSString</span> *urlString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"blacktea://yumi?key=%@"</span>, value];</div><div class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:urlString];</div></pre></td></tr></table></figure></p>
+<p>上面这个例子，当你使用url时你会发现url为nil。什么原因呢？是因为由于url支持26个英文字母、数字和少数几个特殊字符，因此，对于url中包含非标准url的字符时，就需要对其进行编码。于是你就需要使用CFURLCreateStringByAddingPercentEscapes进行URLEcodeing</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *value = <span class="string">@"http://blackteachinese.com/2017/life/红茶!@#$%^&amp;*()"</span>;</div><div class="line"><span class="built_in">NSString</span> *urlString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"blacktea://yumi?key=%@"</span>, value];</div><div class="line"> urlString =  (__bridge_transfer  <span class="built_in">NSString</span> *)<span class="built_in">CFURLCreateStringByAddingPercentEscapes</span>(kCFAllocatorDefault,</div><div class="line">                                                                                  (__bridge <span class="built_in">CFStringRef</span>)urlString,</div><div class="line">                                                                                  <span class="literal">NULL</span>,</div><div class="line">                                                                                  (__bridge <span class="built_in">CFStringRef</span>)<span class="string">@":/?&amp;=;+!@#$()',*"</span>,</div><div class="line">                                                                                  <span class="built_in">CFStringConvertNSStringEncodingToEncoding</span>(<span class="built_in">NSUTF8StringEncoding</span>));</div><div class="line">    <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:urlString];</div><div class="line"></div><div class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:urlString];</div></pre></td></tr></table></figure>
+<p>这样的话url就不空</p>
 
-      <h1 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2017/04/04/financial-use-invest-sense/" itemprop="url">
-              
-                <span itemprop="name">巴菲特的投资思维如何用于日常生活</span>
-              
-            </a>
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ww2.sinaimg.cn/large/006tNbRwgy1feav9se587j30kw0r2adr.jpg" alt="Blacktea wechat" style="width: 200px; max-width: 100%;"/>
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>记录生活于感悟，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="https://ww4.sinaimg.cn/large/006tNbRwgy1feav9e683oj30yi1e6q7b.jpg" alt="Blacktea WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="https://ww3.sinaimg.cn/large/006tNbRwgy1feav9mjqarj30p011iq6c.jpg" alt="Blacktea Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-04T15:36:16+08:00"
-              content="2017-04-04" >
-          04-04
-        </time>
-      </div>
 
-    </header>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/04/ios-ui-left-slip-bug/" rel="next" title="一个App左滑出现的严重Bug">
+                <i class="fa fa-chevron-left"></i> 一个App左滑出现的严重Bug
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -335,6 +469,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -579,6 +717,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 

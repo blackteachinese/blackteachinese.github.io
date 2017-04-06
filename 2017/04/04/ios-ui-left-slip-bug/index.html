@@ -107,16 +107,19 @@
 
 
 
-<meta name="description" content="1self.navigationController.interactivePopGestureRecognizer.delegate = (id&amp;lt;UIGestureRecognizerDelegate&amp;gt;)self.navigationController;">
+<meta name="description" content="我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。
+某一天测试妹妹跑过来跟我说，我测出一个bug，进去某一个页面后回到RootViewController，左滑会导致视图堆栈变乱。我试了一下，果真如此。我想起以前曾经遇到一个bug，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一个App左滑出现的严重Bug">
 <meta property="og:url" content="http://blackteachinese.com/2017/04/04/ios-ui-left-slip-bug/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="1self.navigationController.interactivePopGestureRecognizer.delegate = (id&amp;lt;UIGestureRecognizerDelegate&amp;gt;)self.navigationController;">
-<meta property="og:updated_time" content="2017-04-04T11:04:17.000Z">
+<meta property="og:description" content="我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。
+某一天测试妹妹跑过来跟我说，我测出一个bug，进去某一个页面后回到RootViewController，左滑会导致视图堆栈变乱。我试了一下，果真如此。我想起以前曾经遇到一个bug，">
+<meta property="og:updated_time" content="2017-04-06T16:38:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一个App左滑出现的严重Bug">
-<meta name="twitter:description" content="1self.navigationController.interactivePopGestureRecognizer.delegate = (id&amp;lt;UIGestureRecognizerDelegate&amp;gt;)self.navigationController;">
+<meta name="twitter:description" content="我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。
+某一天测试妹妹跑过来跟我说，我测出一个bug，进去某一个页面后回到RootViewController，左滑会导致视图堆栈变乱。我试了一下，果真如此。我想起以前曾经遇到一个bug，">
 
 
 
@@ -393,7 +396,16 @@
       
 
       
-        <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.navigationController.interactivePopGestureRecognizer.delegate = (<span class="keyword">id</span>&lt;<span class="built_in">UIGestureRecognizerDelegate</span>&gt;)<span class="keyword">self</span>.navigationController;</div></pre></td></tr></table></figure>
+        <p>我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。</p>
+<p>某一天测试妹妹跑过来跟我说，我测出一个bug，进去某一个页面后回到RootViewController，左滑会导致视图堆栈变乱。我试了一下，果真如此。我想起以前曾经遇到一个bug，如果是自定义UINavigationController并且设置了自定义的leftBarButtonItem，那在UINavigationController的rootViewController上滑动返回时，会出现界面卡死的情况。</p>
+<p>赶紧查了一下我们的自定义XXNavigationController,缺失设置了leftBarButtonItem。但是仔细查看了代码，我们其实是禁止了rootViewController左滑返回的事件。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)gestureRecognizerShouldBegin:(<span class="built_in">UIGestureRecognizer</span> *)gestureRecognizer &#123;</div><div class="line">    <span class="keyword">if</span> (gestureRecognizer == <span class="keyword">self</span>.interactivePopGestureRecognizer) &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.viewControllers.count &lt;= <span class="number">1</span> ||</div><div class="line">            <span class="keyword">self</span>.visibleViewController == [<span class="keyword">self</span>.viewControllers firstObject]) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>天了噜！这应该没有问题的，什么情况。经过一番仔细查看，发现只有进入某个页面，左滑才会出这个问题。到底这个做了什么？终于被我发现一行要命的代码。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.navigationController.interactivePopGestureRecognizer.delegate = <span class="literal">nil</span>;</div></pre></td></tr></table></figure>
+<p>interactivePopGestureRecognizer的代理被设置成nil了。。。。<br>怎么处理好呢？</p>
+<p>首先，创建一个类XXNavGestureRecognizerDelegate专门处理interactivePopGestureRecognizer.delegate的事件B,实现上面“gestureRecognizerShouldBegin:gestureRecognizer”方法的处理。</p>
+<p>接着，在XXTabbarController把每个NavgationController对应创建一个XXNavGestureRecognizerDelegate。<br>每次回到TabbarController任意一个子页面“viewDidAppear”的时候，把对应ChildViewController的NavgationController的interactivePopGestureRecognizer.delegate设置成对应的XXNavGestureRecognizerDelegate;</p>
+<p>这样不论哪个页面把interactivePopGestureRecognizer的代理设置成nil，都能保证回到rootViewController，interactivePopGestureRecognizer.delegate都能设置成功。</p>
 
       
     </div>
@@ -478,6 +490,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/04/06/ios-url-encode/" rel="prev" title="NSURL编码问题">
+                NSURL编码问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -539,7 +555,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
