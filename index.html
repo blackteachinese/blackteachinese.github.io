@@ -447,7 +447,7 @@
               
                 
                 <a class="post-title-link" href="/2017/04/04/ios-ui-left-slip-bug/" itemprop="url">
-                  一个App左滑出现的严重Bug
+                  iOS侧滑出现的卡死Bug
                 </a>
               
             
@@ -530,9 +530,9 @@
 <p>天了噜！这应该没有问题的，什么情况。经过一番仔细查看，发现只有进入某个页面，左滑才会出这个问题。到底这个做了什么？终于被我发现一行要命的代码。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.navigationController.interactivePopGestureRecognizer.delegate = <span class="literal">nil</span>;</div></pre></td></tr></table></figure>
 <p>interactivePopGestureRecognizer的代理被设置成nil了。。。。<br>怎么处理好呢？</p>
-<p>首先，创建一个类XXNavGestureRecognizerDelegate专门处理interactivePopGestureRecognizer.delegate的事件B,实现上面“gestureRecognizerShouldBegin:gestureRecognizer”方法的处理。</p>
-<p>接着，在XXTabbarController把每个NavgationController对应创建一个XXNavGestureRecognizerDelegate。<br>每次回到TabbarController任意一个子页面“viewDidAppear”的时候，把对应ChildViewController的NavgationController的interactivePopGestureRecognizer.delegate设置成对应的XXNavGestureRecognizerDelegate;</p>
-<p>这样不论哪个页面把interactivePopGestureRecognizer的代理设置成nil，都能保证回到rootViewController，interactivePopGestureRecognizer.delegate都能设置成功。</p>
+<p>首先，创建一个类XXNavGestureRecognizerDelegate专门处理interactivePopGestureRecognizer.delegate的事件B并实现上面“gestureRecognizerShouldBegin:gestureRecognizer”方法的处理。</p>
+<p>接着，在XXTabbarController把每个NavgationController对应创建一个XXNavGestureRecognizerDelegate。每次回到TabbarController任意一个子页面“viewDidAppear”的时候，把对应ChildViewController的NavgationController的interactivePopGestureRecognizer.delegate设置成对应的XXNavGestureRecognizerDelegate;</p>
+<p>结论，这样不论哪个页面把interactivePopGestureRecognizer的代理设置成nil，都能保证回到rootViewController，interactivePopGestureRecognizer.delegate都能设置成功。</p>
 
           
         
