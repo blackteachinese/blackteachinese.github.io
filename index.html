@@ -415,8 +415,14 @@
 </li>
 <li><p>添加完后可以看到WebServer的目录<br><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fegohsev6aj31kw0oen5p.jpg" alt=""></p>
 </li>
-<li>配置Artifact打包部署设置<br><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fekapz6ibvj31kw0zkat2.jpg" alt=""></li>
-<li>配置Tomcat服务器<br><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fego68iog8j31kw0yf138.jpg" alt=""><h3 id="开发一个Get请求接口"><a href="#开发一个Get请求接口" class="headerlink" title="开发一个Get请求接口"></a>开发一个Get请求接口</h3></li>
+<li><p>配置Artifact打包部署设置<br><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fekapz6ibvj31kw0zkat2.jpg" alt=""></p>
+</li>
+<li><p>配置Tomcat服务器<br><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fego68iog8j31kw0yf138.jpg" alt=""></p>
+</li>
+<li><p>Maven依赖配置<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fekbzxggzxj31kw0zke1q.jpg" alt=""></p>
+</li>
+</ul>
+<h3 id="开发一个Get请求接口"><a href="#开发一个Get请求接口" class="headerlink" title="开发一个Get请求接口"></a>开发一个Get请求接口</h3><ul>
 <li>创建一个formGetApi.html,做为表单承载页<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegpiusk8pj31kw0zkx0h.jpg" alt=""></li>
 <li>在Index.jsp配置跳转到formGetApi.html页面<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegplchmg6j31kw0zkx00.jpg" alt=""></li>
 <li>创建一个继承于HttpServlet的Java类GetApiTest<ul>
@@ -439,9 +445,16 @@
 <h3 id="使用mysql储存提交的表单数据"><a href="#使用mysql储存提交的表单数据" class="headerlink" title="使用mysql储存提交的表单数据"></a>使用mysql储存提交的表单数据</h3><ul>
 <li>创建一个formMysqlApi.html页面</li>
 <li>web.xml映射配置</li>
-<li>创建一个继承于HttpServlet的Java类MysqlApiTest。<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegxj3mr6gj31kw0zktxp.jpg" alt=""><h3 id="mql操作"><a href="#mql操作" class="headerlink" title="mql操作"></a>mql操作</h3><h4 id="IntelliJ添加一个Datasource"><a href="#IntelliJ添加一个Datasource" class="headerlink" title="IntelliJ添加一个Datasource"></a>IntelliJ添加一个Datasource</h4><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegwssbwsij31kw0zkb1s.jpg" alt=""><br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegx5ivyf0j31kw0zkh6b.jpg" alt=""><h4 id="mysql命令行创建一个DataBase"><a href="#mysql命令行创建一个DataBase" class="headerlink" title="mysql命令行创建一个DataBase"></a>mysql命令行创建一个DataBase</h4><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fegx6wfmamj30ew0203yp.jpg" alt=""><h4 id="IntelliJ创建一个createDB-sql文件，创建userInfo表"><a href="#IntelliJ创建一个createDB-sql文件，创建userInfo表" class="headerlink" title="IntelliJ创建一个createDB.sql文件，创建userInfo表"></a>IntelliJ创建一个createDB.sql文件，创建userInfo表</h4><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegx9n7gb7j31kw0zkqlc.jpg" alt=""><h4 id="mysql命令行设置userInfo表character为UTF8"><a href="#mysql命令行设置userInfo表character为UTF8" class="headerlink" title="mysql命令行设置userInfo表character为UTF8"></a>mysql命令行设置userInfo表character为UTF8</h4><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegxbs3pw7j30ss084abd.jpg" alt=""><h4 id="IntelliJ创建一个insertDB-sql文件，插入一条数据"><a href="#IntelliJ创建一个insertDB-sql文件，插入一条数据" class="headerlink" title="IntelliJ创建一个insertDB.sql文件，插入一条数据"></a>IntelliJ创建一个insertDB.sql文件，插入一条数据</h4><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fegxd9h002j31kw0zk1a3.jpg" alt=""><h4 id="动态加载mysql驱动"><a href="#动态加载mysql驱动" class="headerlink" title="动态加载mysql驱动"></a>动态加载mysql驱动</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</div></pre></td></tr></table></figure>
+<li>创建一个继承于HttpServlet的Java类MysqlApiTest。<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegxj3mr6gj31kw0zktxp.jpg" alt=""><h3 id="mql操作"><a href="#mql操作" class="headerlink" title="mql操作"></a>mql操作</h3></li>
+</ul>
+<h4 id="IntelliJ添加一个Datasource"><a href="#IntelliJ添加一个Datasource" class="headerlink" title="IntelliJ添加一个Datasource"></a>IntelliJ添加一个Datasource</h4><p><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegwssbwsij31kw0zkb1s.jpg" alt=""><br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegx5ivyf0j31kw0zkh6b.jpg" alt=""></p>
+<h4 id="mysql命令行创建一个DataBase"><a href="#mysql命令行创建一个DataBase" class="headerlink" title="mysql命令行创建一个DataBase"></a>mysql命令行创建一个DataBase</h4><p><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fegx6wfmamj30ew0203yp.jpg" alt=""></p>
+<h4 id="IntelliJ创建一个createDB-sql文件，创建userInfo表"><a href="#IntelliJ创建一个createDB-sql文件，创建userInfo表" class="headerlink" title="IntelliJ创建一个createDB.sql文件，创建userInfo表"></a>IntelliJ创建一个createDB.sql文件，创建userInfo表</h4><p><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegx9n7gb7j31kw0zkqlc.jpg" alt=""></p>
+<h4 id="mysql命令行设置userInfo表character为UTF8"><a href="#mysql命令行设置userInfo表character为UTF8" class="headerlink" title="mysql命令行设置userInfo表character为UTF8"></a>mysql命令行设置userInfo表character为UTF8</h4><p><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegxbs3pw7j30ss084abd.jpg" alt=""></p>
+<h4 id="IntelliJ创建一个insertDB-sql文件，插入一条数据"><a href="#IntelliJ创建一个insertDB-sql文件，插入一条数据" class="headerlink" title="IntelliJ创建一个insertDB.sql文件，插入一条数据"></a>IntelliJ创建一个insertDB.sql文件，插入一条数据</h4><p><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fegxd9h002j31kw0zk1a3.jpg" alt=""></p>
+<h4 id="动态加载mysql驱动"><a href="#动态加载mysql驱动" class="headerlink" title="动态加载mysql驱动"></a>动态加载mysql驱动</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</div></pre></td></tr></table></figure>
 <h4 id="JDBC连接MySQL"><a href="#JDBC连接MySQL" class="headerlink" title="JDBC连接MySQL"></a>JDBC连接MySQL</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conn = DriverManager.getConnection(<span class="string">"jdbc:mysql://localhost:3306/webserverDemo?user=root&amp;password=19880622"</span>);</div></pre></td></tr></table></figure>
-<h2 id="Class-forName-“com-mysql-jdbc-Driver”-失败"><a href="#Class-forName-“com-mysql-jdbc-Driver”-失败" class="headerlink" title="Class.forName(“com.mysql.jdbc.Driver”) 失败"></a>Class.forName(“com.mysql.jdbc.Driver”) 失败</h2><h2 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h2><h3 id="IntelliJ环境搭建"><a href="#IntelliJ环境搭建" class="headerlink" title="IntelliJ环境搭建"></a>IntelliJ环境搭建</h3><h3 id="mysql环境搭建"><a href="#mysql环境搭建" class="headerlink" title="mysql环境搭建"></a>mysql环境搭建</h3><h3 id="常用mysql命令"><a href="#常用mysql命令" class="headerlink" title="常用mysql命令"></a>常用mysql命令</h3></li>
+<h2 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h2><h3 id="IntelliJ环境搭建"><a href="#IntelliJ环境搭建" class="headerlink" title="IntelliJ环境搭建"></a>IntelliJ环境搭建</h3><h3 id="mysql环境搭建"><a href="#mysql环境搭建" class="headerlink" title="mysql环境搭建"></a>mysql环境搭建</h3><h3 id="常用mysql命令"><a href="#常用mysql命令" class="headerlink" title="常用mysql命令"></a>常用mysql命令</h3><ul>
 <li>连接mysql:<ul>
 <li>格式： mysql -h主机地址 -u用户名 －p用户密码</li>
 <li>example:mysql -uroot -p</li>
