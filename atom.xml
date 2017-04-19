@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blackteachinese.com/"/>
-  <updated>2017-04-12T15:52:49.000Z</updated>
+  <updated>2017-04-19T16:38:50.000Z</updated>
   <id>http://blackteachinese.com/</id>
   
   <author>
@@ -14,6 +14,91 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>webRTC源码如何编译iOS使用的Framework</title>
+    <link href="http://blackteachinese.com/2017/04/18/webrtc-compile-ios-framework/"/>
+    <id>http://blackteachinese.com/2017/04/18/webrtc-compile-ios-framework/</id>
+    <published>2017-04-18T15:21:09.000Z</published>
+    <updated>2017-04-19T16:38:50.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="webRTC简介"><a href="#webRTC简介" class="headerlink" title="webRTC简介"></a>webRTC简介</h2><h2 id="编译工具准备"><a href="#编译工具准备" class="headerlink" title="编译工具准备"></a>编译工具准备</h2><ul>
+<li>depot_tools<ul>
+<li>depot_tools是Chromium 和 Chromium OS管理代码拉取的脚本包。里面包含了gclient, gcl, git-cl, repo</li>
+</ul>
+</li>
+<li>创建一个build工作目录<ul>
+<li>/webrtc_build</li>
+</ul>
+</li>
+<li>在webrtc_build目录下，使用git下载Chromium的depot_tools工具</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git</div></pre></td></tr></table></figure>
+<ul>
+<li>添加depot_tools到你OS的环境变量</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> PATH=`<span class="built_in">pwd</span>`/depot_tools:<span class="string">"<span class="variable">$PATH</span>"</span></div></pre></td></tr></table></figure>
+<h2 id="获取源码"><a href="#获取源码" class="headerlink" title="获取源码"></a>获取源码</h2><p>在webrtc_build目录下，使用命令行拉取webRTC的源码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">fetch --nohooks webrtc_ios</div><div class="line">gclient sync</div></pre></td></tr></table></figure>
+<p>得到源码：src/…</p>
+<h2 id="开一个新的分支"><a href="#开一个新的分支" class="headerlink" title="开一个新的分支"></a>开一个新的分支</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git new-branch &lt;branch name&gt;</div></pre></td></tr></table></figure>
+<h2 id="使用GN生成Ninja工程文件"><a href="#使用GN生成Ninja工程文件" class="headerlink" title="使用GN生成Ninja工程文件"></a>使用GN生成Ninja工程文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># debug build for 64-bit iOS</span></div><div class="line">gn gen out/ios_64 --args=<span class="string">'target_os="ios" target_cpu="arm64"'</span></div><div class="line"><span class="comment"># debug build for simulator</span></div><div class="line">gn gen out/ios_sim --args=<span class="string">'target_os="ios" target_cpu="x64"'</span></div></pre></td></tr></table></figure>
+<h2 id="命令行编译Ninja工程"><a href="#命令行编译Ninja工程" class="headerlink" title="命令行编译Ninja工程"></a>命令行编译Ninja工程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ninja -C out/ios_64 AppRTCMobile</div></pre></td></tr></table></figure>
+<p>AppRTCMobile是其中一个Target,可以切换别的</p>
+<h2 id="生成Xcode工程"><a href="#生成Xcode工程" class="headerlink" title="生成Xcode工程"></a>生成Xcode工程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">gn gen out/ios --args=&apos;target_os=&quot;ios&quot; target_cpu=&quot;arm64&quot;&apos; --ide=xcode</div><div class="line">open -a Xcode.app out/ios/all.xcworkspace</div></pre></td></tr></table></figure>
+<h2 id="编译webRTC-framwork"><a href="#编译webRTC-framwork" class="headerlink" title="编译webRTC.framwork"></a>编译webRTC.framwork</h2><ul>
+<li>查看编译选项</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./src/tools-webrtc/ios/build_ios_libs.py --help</div></pre></td></tr></table></figure>
+<ul>
+<li>默认会编译出全部架构的 [‘arm64’, ‘arm’, ‘x64’, ‘x86’] 的 framework.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./src/tools-webrtc/ios/build_ios_libs.py</div></pre></td></tr></table></figure>
+<ul>
+<li>只编译ARM架构</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./src/tools-webrtc/ios/build_ios_libs.py --arch &#123;&apos;arm64&apos;,&apos;arm&apos;&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79gy1feses56wbmj31gs0j6q8t.jpg" alt=""></p>
+<ul>
+<li>xcode8.3的编译错误</li>
+</ul>
+<p>如果你的XCode版本是8.3，执行build_ios_libs.py会出现下面的错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">error: taking address of packed member &apos;time_entered&apos; of class or structure &apos;sctp_state_cookie&apos; may result in an unaligned pointer value [-Werror,-Waddress-of-packed-member]</div></pre></td></tr></table></figure>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79gy1fesetelf94j31hg0twdq7.jpg" alt=""></p>
+<p>原因是有两个文件有错需要改正：<br>third_party/usrsctp/usrsctplib/usrsctplib/netinet/sctp_input.c<br>third_party/usrsctp/usrsctplib/usrsctplib/netinet/sctp_output.c<br>具体改正点下面可以查看<br><a href="https://trac.webkit.org/changeset/211848/webkit/trunk/Source/ThirdParty/libwebrtc/Source/third_party/usrsctp/usrsctplib/usrsctplib/netinet/sctp_output.c" target="_blank" rel="external">sctp_input.c改正</a><br><a href="https://trac.webkit.org/changeset/211848/webkit/trunk/Source/ThirdParty/libwebrtc/Source/third_party/usrsctp/usrsctplib/usrsctplib/netinet/sctp_input.c" target="_blank" rel="external">sctp_output.c改正</a></p>
+<ul>
+<li><p>编译配置文件错误<br>你把编译好的WebRTC.framework放到Demo工程跃跃欲试，却可能发现编译不过。<br>日了🐶了。。。<br> “Could not build module ‘WebRTC’”<br> “‘WebRTC/RTCVideoCapturer.h’ file not found”<br><img src="http://ww3.sinaimg.cn/large/006tNc79gy1fesetv8i40j31jm0t8qhw.jpg" alt=""></p>
+<p>太可怕了。。看来编译的脚本又有问题，欲哭无泪。。。<br>一通找终于找到生成WebRTC.framework头文件的脚本。<br><img src="http://ww3.sinaimg.cn/large/006tNc79gy1fesesq52cmj30tu18mgwa.jpg" alt=""></p>
+<p>缺了下面几个头文件链接</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&quot;objc/Framework/Headers/WebRTC/RTCCameraVideoCapturer.h&quot;,</div><div class="line">&quot;objc/Framework/Headers/WebRTC/RTCNSGLVideoView.h&quot;,</div><div class="line">&quot;objc/Framework/Headers/WebRTC/RTCVideoCapturer.h&quot;,</div></pre></td></tr></table></figure>
+<p>修改BUILD.gn，再使用build_ios_libs.py编译，就可以得到完美的WebRTC.framework。</p>
+<ul>
+<li>把编译好的WebRTC.framework导入demo工程，编译demo工程,发现动态库找不到。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dyld: Library not loaded: @rpath/WebRTC.framework/WebRTC</div></pre></td></tr></table></figure>
+<p>在Embedded Binaries +WebRTC.framework即可</p>
+<p>最后附上修改后的文件BUILD.gn、sctp_input.c、sctp_output.c<br>以及编译成功后的webRTC.Framework(arm和All)</p>
+<p><a href="https://github.com/blackteachinese/WebRTCCompileFix" target="_blank" rel="external">git地址：https://github.com/blackteachinese/WebRTCCompileFix</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;webRTC简介&quot;&gt;&lt;a href=&quot;#webRTC简介&quot; class=&quot;headerlink&quot; title=&quot;webRTC简介&quot;&gt;&lt;/a&gt;webRTC简介&lt;/h2&gt;&lt;h2 id=&quot;编译工具准备&quot;&gt;&lt;a href=&quot;#编译工具准备&quot; class=&quot;headerli
+    
+    </summary>
+    
+      <category term="webrtc" scheme="http://blackteachinese.com/categories/webrtc/"/>
+    
+    
+      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
+    
+      <category term="webrtc" scheme="http://blackteachinese.com/tags/webrtc/"/>
+    
+      <category term="compile" scheme="http://blackteachinese.com/tags/compile/"/>
+    
+  </entry>
   
   <entry>
     <title>Mac上使用intelliJ开发WEbServer(Servlet)、mysql的新手教程</title>
