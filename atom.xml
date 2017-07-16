@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blackteachinese.com/"/>
-  <updated>2017-07-16T09:22:43.000Z</updated>
+  <updated>2017-07-16T09:29:01.000Z</updated>
   <id>http://blackteachinese.com/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>arm64指令新手教程</title>
+    <title>10分钟入门arm64汇编</title>
     <link href="http://blackteachinese.com/2017/07/12/arm64/"/>
     <id>http://blackteachinese.com/2017/07/12/arm64/</id>
     <published>2017-07-12T13:39:27.000Z</published>
-    <updated>2017-07-16T09:22:43.000Z</updated>
+    <updated>2017-07-16T09:29:01.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="什么是栈？"><a href="#什么是栈？" class="headerlink" title="什么是栈？"></a>什么是栈？</h2><p>堆栈严格来说应该叫做栈，栈(Stack)是限定仅在一端进行插入或删除操作的线性表。因此，对栈来说，可以进行插入或删除操作的一端端称为栈顶(top)，相应地，另一端称为栈底(bottom)。由于堆栈只允许在一端进行操作，因而按照后进先出（LIFO-Last In First Out）的原理运作。</p>
 <h2 id="会变化的栈顶"><a href="#会变化的栈顶" class="headerlink" title="会变化的栈顶"></a>会变化的栈顶</h2><p>从栈顶的定义来看，栈顶的位置是可变的。空栈时，栈顶和栈底重合；满栈时，栈顶离栈底最远。ARM为堆栈提供了硬件支持，它使用一个专门的寄存器（堆栈指针）指向堆栈的栈顶。</p>
