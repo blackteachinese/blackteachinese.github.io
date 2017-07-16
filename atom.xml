@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blackteachinese.com/"/>
-  <updated>2017-07-12T16:44:39.000Z</updated>
+  <updated>2017-07-16T09:22:43.000Z</updated>
   <id>http://blackteachinese.com/</id>
   
   <author>
@@ -20,64 +20,35 @@
     <link href="http://blackteachinese.com/2017/07/12/arm64/"/>
     <id>http://blackteachinese.com/2017/07/12/arm64/</id>
     <published>2017-07-12T13:39:27.000Z</published>
-    <updated>2017-07-12T16:44:39.000Z</updated>
+    <updated>2017-07-16T09:22:43.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="什么是栈？"><a href="#什么是栈？" class="headerlink" title="什么是栈？"></a>什么是栈？</h2><p>堆栈严格来说应该叫做栈，栈(Stack)是限定仅在一端进行插入或删除操作的线性表。因此，对栈来说，可以进行插入或删除操作的一端端称为栈顶(top)，相应地，另一端称为栈底(bottom)。由于堆栈只允许在一端进行操作，因而按照后进先出（LIFO-Last In First Out）的原理运作。</p>
 <h2 id="会变化的栈顶"><a href="#会变化的栈顶" class="headerlink" title="会变化的栈顶"></a>会变化的栈顶</h2><p>从栈顶的定义来看，栈顶的位置是可变的。空栈时，栈顶和栈底重合；满栈时，栈顶离栈底最远。ARM为堆栈提供了硬件支持，它使用一个专门的寄存器（堆栈指针）指向堆栈的栈顶。</p>
-<h2 id="两种存储器堆栈"><a href="#两种存储器堆栈" class="headerlink" title="两种存储器堆栈"></a>两种存储器堆栈</h2><p>递增堆栈：向上生长：向高地址方向生长<br>递减堆栈：向下生长：向低地址方向生长</p>
+<h2 id="两种存储器堆栈"><a href="#两种存储器堆栈" class="headerlink" title="两种存储器堆栈"></a>两种存储器堆栈</h2><p>递增堆栈：向上生长：向高地址方向生长<br>递减堆栈：向下生长：向低地址方向生长<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fhlu7dlg1cj30go0750sv.jpg" alt=""></p>
 <h2 id="ARM堆栈的生长方向"><a href="#ARM堆栈的生长方向" class="headerlink" title="ARM堆栈的生长方向"></a>ARM堆栈的生长方向</h2><p>虽然ARM处理器核对于两种生长方式的堆栈均支持，但ADS的C语言编译器仅支持一种方式，即从上往下长，并且必须是满递减堆栈。所以STMFD等指令用的最多。</p>
-<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>寄存器是用来存储CPU在计算过程中临时数据的, arm64有32个通用寄存器(这里不对浮点数/向量寄存器等做说明):<br>x0-x31, 这些寄存器可以直接在汇编代码里面使用, 也是最经常被使用到的寄存器.<br>1.sp/x31,stack pointer, 栈寄存器, 指向栈底<br>2.pc(program counter):一个无法被直接访问特殊寄存器, 用来指向当前执行的代码的地址. 部分指令隐含了对pc寄存器的操作, 比如bl指令或者adr指令.<br>3.lr寄存器/x30(link register):用来存方法调用的返回地址.<br>4.fp寄存器/x29(frame pointer):指向frame的顶部.<br>如果看到一个寄存器以w打头, 如w0那么代表着取x0的后32bit. 如果x0==0, 那么w0==0.</p>
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>寄存器是用来存储CPU在计算过程中临时数据的, arm64有32个通用寄存器(这里不对浮点数/向量寄存器等做说明):<br>x0-x31, 这些寄存器可以直接在汇编代码里面使用, 也是最经常被使用到的寄存器.</p>
+<ul>
+<li>SP寄存器, Stack Pointer, 指向栈低的指针. 它是一个隐含的寄存器, 可以在内存操作指令中通过x31寄存器来访问.</li>
+<li>PC寄存器, Program Counter, 记录当前执行的代码的地址. 它是一个隐含的寄存器, 无法被直接访问, 只能被特定的指令隐含访问.</li>
+<li>LR寄存器, Link Register, 指向返回地址, 即return时回到的地址. 它就是x30, 可以随意访问读写, 意味着程序可以随意改变方法的返回地址.</li>
+<li>FP寄存器, Frame Pointer, 指向上一次方法调用的frame的最高位地址, frame位于栈上. 它就是x29, 可以随意访问读写.</li>
+</ul>
+<p>FP是指向frame的最高位地址, frame位于栈上, 那frame是什么呢?<br>frame其实就是一个按照方法调用顺序, 从栈的高地址向低地址依次存放的一组数据, 用于存放上一次方法调用的关键信息. 数据可以参考下图:<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fhluegxwbnj30or0jv3zr.jpg" alt=""></p>
+<h2 id="寻址方式"><a href="#寻址方式" class="headerlink" title="寻址方式"></a>寻址方式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">add x0,x0,#1            ;x0 &lt;==x0+1 ,把x0的内容加1。</div><div class="line">add x0,x0,#0x30         ;x0 &lt;==x0+0x30,把x0的内容加 0x30。</div><div class="line">add x0,x1,x3            ;x0 &lt;==x1+x3, 把x1的内容加上x3的内容放入x0</div><div class="line">add x0,x1,x3,lsl #3     ;x0 &lt;==x0+x3*8 ,x3的值左移3位就是乘以8，结果与x1的值相, 放入x0.</div><div class="line">add x0,x1,[x2]          ;x0 &lt;==x1+[x2], 把x1的内容加上x2的内容作为地址取内存内容放入x0</div><div class="line">ldr x0,[x1]             ;x0 &lt;==[x1], 把x1的内容作为地址取内存内容放入x0</div><div class="line">str x0,[x1]             ;[x1] &lt;== x0, 把x0的内容放入x1的内容作为地址的内存中</div><div class="line">ldr x0,[x1,#4]          ;x0 &lt;==[x1+4], 把x1的内容加上4, 作为内存地址, 取其内容放入x0</div><div class="line">ldr x0,[x1,#4]!         ;x0 &lt;==[x1+4]、 x1&lt;==x1+4, 把x1的内容加上4, 作为内存地址, 取其内容放入x0, 然后把x1的内容加上4放入x1</div><div class="line">ldr x0,[x1],#4          ;x0 &lt;==[x1] 、x1 &lt;==x1+4, 把x1的内容作为内存地址取内存内容放入x0, 并把x1的内容加上4放入x1</div><div class="line">ldr x0,[x1,x2]          ;x0 &lt;==[x1+x2], 把x1和x2的内容相加, 作为内存地址取内存内容放入x0</div></pre></td></tr></table></figure>
 <h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h2><p>b 跳转到地址（无返回）, 不会改变LR寄存器的值<br>bl 跳转到地址（有返回）, 会改变LR寄存器的值为返回地址<br>ldr/ldur 地址对应的内容加载到寄存器<br>str/stur 寄存器内容存储到内存地址<br>ldp/stp 取/存一对数据(2个)<br>cbz/cbnz 为零跳转到地址/不为零跳转到<br>add 加法运算<br>mov 寄存器之间内容移动<br>ldp/stp 从栈取/存数据<br>adrp, 用来定位数据段中的数据用, 因为aslr会导致代码及数据的地址随机化, 用adrp来根据pc做辅助定位</p>
 <h2 id="案例解析"><a href="#案例解析" class="headerlink" title="案例解析"></a>案例解析</h2><p><code>main函数汇编解析</code></p>
-<p><code>int main(int argc, char * argv[]) {
-    @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
-    }
-}</code></p>
+<ul>
+<li>设置Debug-&gt;Debug Workflow-&gt;Always Show Disassembly</li>
+<li>打断点到callMe函数。PS：callMe调用别的方法才会被保存frame</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">void callYou() &#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">void callMe(int a, int b) &#123;</div><div class="line">    callYou();</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(int argc, char * argv[]) &#123;</div><div class="line">    int a = 4;</div><div class="line">    int b = 10;</div><div class="line">    callMe(a, b);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这段代码编译结果如下</p>
-<p><code>test`main:
-    0x10006aaac &lt;+0&gt;:   stp    x29, x30, [sp, #-16]!
-    0x10006aab0 &lt;+4&gt;:   mov    x29, sp
-    0x10006aab4 &lt;+8&gt;:   sub    sp, sp, #48               ; =48 
-    0x10006aab8 &lt;+12&gt;:  stur   wzr, [x29, #-4]
-    0x10006aabc &lt;+16&gt;:  stur   w0, [x29, #-8]
-    0x10006aac0 &lt;+20&gt;:  stur   x1, [x29, #-16]
-    0x10006aac4 &lt;+24&gt;:  bl     0x10006ab74               ; symbol stub for: objc_autoreleasePoolPush
-    0x10006aac8 &lt;+28&gt;:  adrp   x1, 2
-    0x10006aacc &lt;+32&gt;:  add    x1, x1, #3304             ; =3304 
-    0x10006aad0 &lt;+36&gt;:  adrp   x30, 2
-    0x10006aad4 &lt;+40&gt;:  add    x30, x30, #3320           ; =3320 
-    0x10006aad8 &lt;+44&gt;:  ldur   w8, [x29, #-8]
-    0x10006aadc &lt;+48&gt;:  ldur   x9, [x29, #-16]
-    0x10006aae0 &lt;+52&gt;:  ldr    x30, [x30]
-    0x10006aae4 &lt;+56&gt;:  ldr    x1, [x1]
-    0x10006aae8 &lt;+60&gt;:  str    x0, [sp, #24]
-    0x10006aaec &lt;+64&gt;:  mov    x0, x30
-    0x10006aaf0 &lt;+68&gt;:  str    w8, [sp, #20]
-    0x10006aaf4 &lt;+72&gt;:  str    x9, [sp, #8]
-    0x10006aaf8 &lt;+76&gt;:  bl     0x10006ab80               ; symbol stub for: objc_msgSend
-    0x10006aafc &lt;+80&gt;:  bl     0x10006ab5c               ; symbol stub for: NSStringFromClass
-    0x10006ab00 &lt;+84&gt;:  mov    x29, x29
-    0x10006ab04 &lt;+88&gt;:  bl     0x10006aba4               ; symbol stub for: objc_retainAutoreleasedReturnValue
-    0x10006ab08 &lt;+92&gt;:  movz   x9, #0
-    0x10006ab0c &lt;+96&gt;:  ldr    w8, [sp, #20]
-    0x10006ab10 &lt;+100&gt;: str    x0, [sp]
-    0x10006ab14 &lt;+104&gt;: mov    x0, x8
-    0x10006ab18 &lt;+108&gt;: ldr    x1, [sp, #8]
-    0x10006ab1c &lt;+112&gt;: mov    x2, x9
-    0x10006ab20 &lt;+116&gt;: ldr    x3, [sp]
-    0x10006ab24 &lt;+120&gt;: bl     0x10006abf8               ; symbol stub for: UIApplicationMain
-    0x10006ab28 &lt;+124&gt;: stur   w0, [x29, #-4]
-    0x10006ab2c &lt;+128&gt;: ldr    x1, [sp]
-    0x10006ab30 &lt;+132&gt;: mov    x0, x1
-    0x10006ab34 &lt;+136&gt;: bl     0x10006ab98               ; symbol stub for: objc_release
-    0x10006ab38 &lt;+140&gt;: ldr    x0, [sp, #24]
-    0x10006ab3c &lt;+144&gt;: bl     0x10006ab68               ; symbol stub for: objc_autoreleasePoolPop
-    0x10006ab40 &lt;+148&gt;: ldur   w0, [x29, #-4]
-    0x10006ab44 &lt;+152&gt;: mov    sp, x29
-    0x10006ab48 &lt;+156&gt;: ldp    x29, x30, [sp], #16
-    0x10006ab4c &lt;+160&gt;: ret</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">libdyld.dylib`start:</div><div class="line">    0x18aad55b4 &lt;+0&gt;: nop    </div><div class="line">    0x18aad55b8 &lt;+4&gt;: bl     0x18ab05378               ; exit</div><div class="line">    0x18aad55bc &lt;+8&gt;: brk    #0x3</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Arm64`main:</div><div class="line">    0x100026c24 &lt;+0&gt;:  sub    sp, sp, #0x30             ; =0x30 ;编译器计算到此次方法调用要48bit的栈,把栈底减48bit留出空位存临时变量</div><div class="line">    0x100026c28 &lt;+4&gt;:  stp    x29, x30, [sp, #0x20] ;将fp和lr存入栈的sp+32的地址</div><div class="line">    0x100026c2c &lt;+8&gt;:  add    x29, sp, #0x20            ; =0x20 ;sp+32后存入x29，fp此时的位置就是sp+32</div><div class="line">    0x100026c30 &lt;+12&gt;: mov    w8, #0xa ;将10存到寄存器w8</div><div class="line">    0x100026c34 &lt;+16&gt;: orr    w9, wzr, #0x4 ;将4与wzr进行或运算，存到寄存器W9</div><div class="line">    0x100026c38 &lt;+20&gt;: stur   w0, [x29, #-0x4] ;把w0(main方法的第一个参数, argc),存入x29减4的位置</div><div class="line">    0x100026c3c &lt;+24&gt;: str    x1, [sp, #0x10] ;将x1(main方法的第二个参数*argv[])，存入sp-16的位置</div><div class="line">    0x100026c40 &lt;+28&gt;: str    w9, [sp, #0xc] ;将w9的值，存入到sp+12的位置</div><div class="line">    0x100026c44 &lt;+32&gt;: str    w8, [sp, #0x8] ;将w8的值，存入到sp+8的位置</div><div class="line">    0x100026c48 &lt;+36&gt;: ldr    w0, [sp, #0xc] ;将sp+12地址对应的内容加载到寄存器w0</div><div class="line">    0x100026c4c &lt;+40&gt;: ldr    w1, [sp, #0x8] ;将sp+8地址对应的内容加载到寄存器w1</div><div class="line">    0x100026c50 &lt;+44&gt;: bl     0x100026c00               ; callMe at main.m:16 ;调用callMe方法,将w0、w1作为参数</div><div class="line">-&gt;  0x100026c54 &lt;+48&gt;: mov    w8, #0x0 ;将0存到w8</div><div class="line">    0x100026c58 &lt;+52&gt;: mov    x0, x8 ;将0存到x0</div><div class="line">    0x100026c5c &lt;+56&gt;: ldp    x29, x30, [sp, #0x20] ;从栈里把最开始保存的fp和lr还原回来</div><div class="line">    0x100026c60 &lt;+60&gt;: add    sp, sp, #0x30             ; =0x30 ;sp+48后,存到sp(跳到下一个frame的位置)</div><div class="line">    0x100026c64 &lt;+64&gt;: ret ;返回</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Arm64`callMe:</div><div class="line">    0x100026c00 &lt;+0&gt;:  sub    sp, sp, #0x20             ; =0x20 ;编译器计算到此次方法调用要用到32bit的栈，把栈底减32bit留出空位存临时变量</div><div class="line">    0x100026c04 &lt;+4&gt;:  stp    x29, x30, [sp, #0x10] ;将fp和lr寄存器存入到sp+16的位置</div><div class="line">    0x100026c08 &lt;+8&gt;:  add    x29, sp, #0x10            ; =0x10 ; 将sp+16后，存入到x29</div><div class="line">    0x100026c0c &lt;+12&gt;: stur   w0, [x29, #-0x4] ; 将w0（第一个参数）存入到x29 -4的位置</div><div class="line">    0x100026c10 &lt;+16&gt;: str    w1, [sp, #0x8] ;将w1(第二个参数) 存入到sp+8的位置</div><div class="line">-&gt;  0x100026c14 &lt;+20&gt;: bl     0x100026bfc               ; callYou at main.m:14 ; 调用callYou方法</div><div class="line">    0x100026c18 &lt;+24&gt;: ldp    x29, x30, [sp, #0x10] ;从栈里把最开始保存的fp和lr还原回来</div><div class="line">    0x100026c1c &lt;+28&gt;: add    sp, sp, #0x20             ; =0x20 ;sp+32后，存入到sp(跳到下一个frame的位置)</div><div class="line">    0x100026c20 &lt;+32&gt;: ret</div></pre></td></tr></table></figure>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fhlu8cthldj30yk04uabc.jpg" alt="从start-&gt;main-&gt;callme-&gt;callYou有3个frame"></p>
 <h2 id="sp的正负偏移"><a href="#sp的正负偏移" class="headerlink" title="sp的正负偏移"></a>sp的正负偏移</h2><p>sp存取的时候有的偏移量是正数, 有的是负数, 这有什么区别呢?<br>在stack里面, sp指针之下(负数偏移量)的数据是不保证安全的, 可能被覆盖, 而sp指针之上(正数偏移量)的数据是安全的. 放到负数偏移量一般都是临时存一下数据, 需要被整个方法用到的数据一般放到sp的正数偏移位置.</p>
+<h2 id="git地址"><a href="#git地址" class="headerlink" title="git地址"></a>git地址</h2><p><a href="https://github.com/blackteachinese/arm64Example" target="_blank" rel="external">demo传送门</a></p>
 ]]></content>
     
     <summary type="html">
@@ -321,9 +292,9 @@
       <category term="webrtc" scheme="http://blackteachinese.com/categories/webrtc/"/>
     
     
-      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
-    
       <category term="compile" scheme="http://blackteachinese.com/tags/compile/"/>
+    
+      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
     
       <category term="webrtc" scheme="http://blackteachinese.com/tags/webrtc/"/>
     
