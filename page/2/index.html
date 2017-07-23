@@ -300,7 +300,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2014/08/16/ios-url-encode/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2016/12/30/ios-ui-left-slip-bug/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -322,8 +322,8 @@
             
               
                 
-                <a class="post-title-link" href="/2014/08/16/ios-url-encode/" itemprop="url">
-                  NSURL编码问题
+                <a class="post-title-link" href="/2016/12/30/ios-ui-left-slip-bug/" itemprop="url">
+                  iOS侧滑出现的卡死Bug
                 </a>
               
             
@@ -339,8 +339,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2014-08-16T16:33:37+08:00">
-                2014-08-16
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-30T18:30:07+08:00">
+                2016-12-30
               </time>
             
 
@@ -399,10 +399,16 @@
       
         
           
-            <p>我们在使用url生成NSURL时需要注意非法字符的问题。<br>举个例子：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *value = <span class="string">@"http://blackteachinese.com/2017/life/红茶!@#$%^&amp;*()"</span>;</div><div class="line"><span class="built_in">NSString</span> *urlString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"blacktea://yumi?key=%@"</span>, value];</div><div class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:urlString];</div></pre></td></tr></table></figure></p>
-<p>上面这个例子，当你使用url时你会发现url为nil。什么原因呢？是因为由于url支持26个英文字母、数字和少数几个特殊字符，因此，对于url中包含非标准url的字符时，就需要对其进行编码。于是你就需要使用CFURLCreateStringByAddingPercentEscapes进行URLEcodeing</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">NSString</span> *value = <span class="string">@"http://blackteachinese.com/2017/life/红茶!@#$%^&amp;*()"</span>;</div><div class="line"><span class="built_in">NSString</span> *urlString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"blacktea://yumi?key=%@"</span>, value];</div><div class="line"> urlString =  (__bridge_transfer  <span class="built_in">NSString</span> *)<span class="built_in">CFURLCreateStringByAddingPercentEscapes</span>(kCFAllocatorDefault,</div><div class="line">                                                                                  (__bridge <span class="built_in">CFStringRef</span>)urlString,</div><div class="line">                                                                                  <span class="literal">NULL</span>,</div><div class="line">                                                                                  (__bridge <span class="built_in">CFStringRef</span>)<span class="string">@":/?&amp;=;+!@#$()',*"</span>,</div><div class="line">                                                                                  <span class="built_in">CFStringConvertNSStringEncodingToEncoding</span>(<span class="built_in">NSUTF8StringEncoding</span>));</div><div class="line"></div><div class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:urlString];</div></pre></td></tr></table></figure>
-<p>这样的话url就不空</p>
+            <p>我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。</p>
+<p>某一天测试妹妹跑过来跟我说，我测出一个bug，进去某一个页面后回到RootViewController，左滑会导致视图堆栈变乱。我试了一下，果真如此。我想起以前曾经遇到一个bug，如果是自定义UINavigationController并且设置了自定义的leftBarButtonItem，那在UINavigationController的rootViewController上滑动返回时，会出现界面卡死的情况。</p>
+<p>赶紧查了一下我们的自定义XXNavigationController,缺失设置了leftBarButtonItem。但是仔细查看了代码，我们其实是禁止了rootViewController左滑返回的事件。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)gestureRecognizerShouldBegin:(<span class="built_in">UIGestureRecognizer</span> *)gestureRecognizer &#123;</div><div class="line">    <span class="keyword">if</span> (gestureRecognizer == <span class="keyword">self</span>.interactivePopGestureRecognizer) &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.viewControllers.count &lt;= <span class="number">1</span> ||</div><div class="line">            <span class="keyword">self</span>.visibleViewController == [<span class="keyword">self</span>.viewControllers firstObject]) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>天了噜！这应该没有问题的，什么情况。经过一番仔细查看，发现只有进入某个页面，左滑才会出这个问题。到底这个做了什么？终于被我发现一行要命的代码。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.navigationController.interactivePopGestureRecognizer.delegate = <span class="literal">nil</span>;</div></pre></td></tr></table></figure>
+<p>interactivePopGestureRecognizer的代理被设置成nil了。。。。<br>怎么处理好呢？</p>
+<p>首先，创建一个类XXXDelegate专门处理侧滑手势的delegate事件。并实现上面“gestureRecognizerShouldBegin:gestureRecognizer”方法的处理。</p>
+<p>接着，在XXTabbarController把每个NavgationController对应创建一个XXXDelegate。每次回到TabbarController任意一个子页面“viewDidAppear”的时候，把对应ChildViewController的NavgationController的interactivePopGestureRecognizer.delegate设置成对应的XXXDelegate;</p>
+<p>结论，这样不论哪个页面把interactivePopGestureRecognizer的代理设置成nil，都能保证回到rootViewController，interactivePopGestureRecognizer.delegate都能设置成功。</p>
 
           
         
@@ -497,7 +503,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

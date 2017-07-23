@@ -118,7 +118,7 @@
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fhlu7dlg1cj30go0750sv.jpg">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fhluegxwbnj30or0jv3zr.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79gy1fhlu8cthldj30yk04uabc.jpg">
-<meta property="og:updated_time" content="2017-07-16T09:29:01.000Z">
+<meta property="og:updated_time" content="2017-07-16T09:32:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="10分钟入门arm64汇编">
 <meta name="twitter:description" content="什么是栈？堆栈严格来说应该叫做栈，栈(Stack)是限定仅在一端进行插入或删除操作的线性表。因此，对栈来说，可以进行插入或删除操作的一端端称为栈顶(top)，相应地，另一端称为栈底(bottom)。由于堆栈只允许在一端进行操作，因而按照后进先出（LIFO-Last In First Out）的原理运作。
@@ -427,6 +427,9 @@
 <p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fhlu8cthldj30yk04uabc.jpg" alt="从start-&gt;main-&gt;callme-&gt;callYou有3个frame"></p>
 <h2 id="sp的正负偏移"><a href="#sp的正负偏移" class="headerlink" title="sp的正负偏移"></a>sp的正负偏移</h2><p>sp存取的时候有的偏移量是正数, 有的是负数, 这有什么区别呢?<br>在stack里面, sp指针之下(负数偏移量)的数据是不保证安全的, 可能被覆盖, 而sp指针之上(正数偏移量)的数据是安全的. 放到负数偏移量一般都是临时存一下数据, 需要被整个方法用到的数据一般放到sp的正数偏移位置.</p>
 <h2 id="git地址"><a href="#git地址" class="headerlink" title="git地址"></a>git地址</h2><p><a href="https://github.com/blackteachinese/arm64Example" target="_blank" rel="external">demo传送门</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.element14.com/community/servlet/JiveServlet/previewBody/41836-102-1-229511/ARM.Reference_Manual.pdf" target="_blank" rel="external">ARM Reference Manual: https://www.element14.com/community/servlet/JiveServlet/previewBody/41836-102-1-229511/ARM.Reference_Manual.pdf</a></p>
+<p><a href="https://developer.apple.com/library/content/documentation/Xcode/Conceptual/iPhoneOSABIReference/Articles/ARM64FunctionCallingConventions.html" target="_blank" rel="external">ARM64 Function Calling Conventions: https://developer.apple.com/library/content/documentation/Xcode/Conceptual/iPhoneOSABIReference/Articles/ARM64FunctionCallingConventions.html</a></p>
+<p><a href="http://blog.chinaunix.net/uid-25871104-id-2938389.html" target="_blank" rel="external">FP寄存器及frame pointer介绍: http://blog.chinaunix.net/uid-25871104-id-2938389.html</a></p>
 
       
     </div>
@@ -495,8 +498,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/10/thought-to-be-lovely-man/" rel="next" title="成为值得被爱的人">
-                <i class="fa fa-chevron-left"></i> 成为值得被爱的人
+              <a href="/2017/07/12/manage_interview/" rel="next" title="如何面试一个iOS工程师">
+                <i class="fa fa-chevron-left"></i> 如何面试一个iOS工程师
               </a>
             
           </div>
@@ -586,7 +589,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -677,7 +680,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是栈？"><span class="nav-number">1.</span> <span class="nav-text">什么是栈？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#会变化的栈顶"><span class="nav-number">2.</span> <span class="nav-text">会变化的栈顶</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两种存储器堆栈"><span class="nav-number">3.</span> <span class="nav-text">两种存储器堆栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARM堆栈的生长方向"><span class="nav-number">4.</span> <span class="nav-text">ARM堆栈的生长方向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寄存器"><span class="nav-number">5.</span> <span class="nav-text">寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寻址方式"><span class="nav-number">6.</span> <span class="nav-text">寻址方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用指令"><span class="nav-number">7.</span> <span class="nav-text">常用指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例解析"><span class="nav-number">8.</span> <span class="nav-text">案例解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sp的正负偏移"><span class="nav-number">9.</span> <span class="nav-text">sp的正负偏移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git地址"><span class="nav-number">10.</span> <span class="nav-text">git地址</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是栈？"><span class="nav-number">1.</span> <span class="nav-text">什么是栈？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#会变化的栈顶"><span class="nav-number">2.</span> <span class="nav-text">会变化的栈顶</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两种存储器堆栈"><span class="nav-number">3.</span> <span class="nav-text">两种存储器堆栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARM堆栈的生长方向"><span class="nav-number">4.</span> <span class="nav-text">ARM堆栈的生长方向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寄存器"><span class="nav-number">5.</span> <span class="nav-text">寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寻址方式"><span class="nav-number">6.</span> <span class="nav-text">寻址方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用指令"><span class="nav-number">7.</span> <span class="nav-text">常用指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例解析"><span class="nav-number">8.</span> <span class="nav-text">案例解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sp的正负偏移"><span class="nav-number">9.</span> <span class="nav-text">sp的正负偏移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git地址"><span class="nav-number">10.</span> <span class="nav-text">git地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">11.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

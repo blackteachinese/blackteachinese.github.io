@@ -107,16 +107,19 @@
 
 
 
-<meta name="description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
+<meta name="description" content="webrtc是什么？webrtc(Web Real-Time Communication)是跨平台的音视频实时通话协议。使用webrtc开发一个移动端的实时音视频通讯协议功能需要具备以下几项能力，NAT穿越、SignalChannel信令通道、webRTC会话建立、音视频数据获取、音视频数据传输。
+NAT穿越技术ICE由以下几个技术和协议组成的：STUN、NAT、TURN、SDP，这些协议技术，帮">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于webrtc的实时通信介绍">
+<meta property="og:title" content="webrtc实现音视频通话">
 <meta property="og:url" content="http://blackteachinese.com/2017/05/09/webrtc-flow-introduce/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
-<meta property="og:updated_time" content="2017-05-09T07:33:52.000Z">
+<meta property="og:description" content="webrtc是什么？webrtc(Web Real-Time Communication)是跨平台的音视频实时通话协议。使用webrtc开发一个移动端的实时音视频通讯协议功能需要具备以下几项能力，NAT穿越、SignalChannel信令通道、webRTC会话建立、音视频数据获取、音视频数据传输。
+NAT穿越技术ICE由以下几个技术和协议组成的：STUN、NAT、TURN、SDP，这些协议技术，帮">
+<meta property="og:updated_time" content="2017-07-23T11:58:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="基于webrtc的实时通信介绍">
-<meta name="twitter:description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
+<meta name="twitter:title" content="webrtc实现音视频通话">
+<meta name="twitter:description" content="webrtc是什么？webrtc(Web Real-Time Communication)是跨平台的音视频实时通话协议。使用webrtc开发一个移动端的实时音视频通讯协议功能需要具备以下几项能力，NAT穿越、SignalChannel信令通道、webRTC会话建立、音视频数据获取、音视频数据传输。
+NAT穿越技术ICE由以下几个技术和协议组成的：STUN、NAT、TURN、SDP，这些协议技术，帮">
 
 
 
@@ -150,7 +153,7 @@
 
 
 
-  <title> 基于webrtc的实时通信介绍 | Blacktea's Life </title>
+  <title> webrtc实现音视频通话 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -320,7 +323,7 @@
             
             
               
-                基于webrtc的实时通信介绍
+                webrtc实现音视频通话
               
             
           </h1>
@@ -393,7 +396,42 @@
       
 
       
-        
+        <h2 id="webrtc是什么？"><a href="#webrtc是什么？" class="headerlink" title="webrtc是什么？"></a>webrtc是什么？</h2><p>webrtc(Web Real-Time Communication)是跨平台的音视频实时通话协议。<br>使用webrtc开发一个移动端的实时音视频通讯协议功能需要具备以下几项能力，NAT穿越、SignalChannel信令通道、webRTC会话建立、音视频数据获取、音视频数据传输。</p>
+<h2 id="NAT穿越技术"><a href="#NAT穿越技术" class="headerlink" title="NAT穿越技术"></a>NAT穿越技术</h2><h3 id="ICE"><a href="#ICE" class="headerlink" title="ICE"></a>ICE</h3><p>由以下几个技术和协议组成的：STUN、NAT、TURN、SDP，这些协议技术，帮助ICE共同实现了NAT/防火墙穿越。</p>
+<h3 id="STUN"><a href="#STUN" class="headerlink" title="STUN"></a>STUN</h3><h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1 概念"></a>1 概念</h4><p>STUN（Session Traversal Utilities for NAT，NAT会话传输应用程序）是一种网络协议，它允许位于NAT（或多重NAT）后的客户端找出自己的公网地址，查出自己位于哪种类型的NAT之后以及NAT为某一个本地端口所绑定的Internet端端口。</p>
+<h4 id="2-作用"><a href="#2-作用" class="headerlink" title="2 作用"></a>2 作用</h4><p>STUN服务器部署2个IP以及2个port。A客户端通过向STUN服务器不同IP发UDP包。再根据是否能收到STUN服务器的response等等来判断。1是否当前在公网2NAT的类型</p>
+<h4 id="3-NAT探测过程"><a href="#3-NAT探测过程" class="headerlink" title="3 NAT探测过程"></a>3 NAT探测过程</h4><h5 id="STEP1："><a href="#STEP1：" class="headerlink" title="STEP1："></a>STEP1：</h5><p>B向C的IP1的pot1端口发送一个UDP 包。C收到这个包后，会把它收到包的源IP和port写到UDP包中，然后把此包通过IP1和port1发还给B。这个IP和port也就是NAT的外网 IP和port，也就是说你在STEP1中就得到了NAT的外网IP。当B收到此UDP后，把此UDP中的IP和自己的IP做比较，如果是一样的，就说明自己是在公网。如果不一样，说明有NAT的存在，系统进行STEP2的操作。 </p>
+<h5 id="STEP2："><a href="#STEP2：" class="headerlink" title="STEP2："></a>STEP2：</h5><p>B向C的IP1发送一个UDP包，请求C通过另外一个IP2和PORT（不同与SETP1的IP1）向B返回一个UDP数据包。我们来分析一下，如果B收到了这个数据包，那说明什么？说明NAT来着不拒，不对数据包进行任何过滤，这也就是STUN标准中的full cone NAT。如果没收到，那么系统进行STEP3的操作。 </p>
+<h5 id="STEP3："><a href="#STEP3：" class="headerlink" title="STEP3："></a>STEP3：</h5><p>B向C的IP2的port2发送一个数据包，C收到数据包后，把它收到包的源IP和port写到UDP包中，然后通过自己的IP2和port2把此包发还给B。如果这个port和step1中的port一样，那么可以肯定这个NAT是个CONE NAT，否则是对称NAT。</p>
+<h5 id="STEP4："><a href="#STEP4：" class="headerlink" title="STEP4："></a>STEP4：</h5><p>B向C的IP2的一个端口PD发送一个数据请求包，要求C用IP2和不同于PD的port返回一个数据包给B。 </p>
+<p>我们来分析结果：如果B收到了，那也就意味着只要IP相同，即使port不同，NAT也允许UDP包通过。显然这是restrict cone NAT。如果没收到，没别的好说，port restrict NAT. </p>
+<h5 id="4-获取客户端公网地址"><a href="#4-获取客户端公网地址" class="headerlink" title="4 获取客户端公网地址"></a>4 获取客户端公网地址</h5><p>客户端A向STUN服务器发送一个UDP包1。STUN服务器接收到UDP包1后，将该UDP包的源IP和源Port写到UDP包2发送给A。A收到UDP包2后，打开一看，源IP和源Port就是自己的公网地址</p>
+<h3 id="TURN（数据中转）"><a href="#TURN（数据中转）" class="headerlink" title="TURN（数据中转）"></a>TURN（数据中转）</h3><h4 id="1-概念-1"><a href="#1-概念-1" class="headerlink" title="1 概念"></a>1 概念</h4><p>TURN（Traversal Using Relay NAT），是一种资料传输协议（data-transfer protocol）。通过中继服务器，穿透 NAT 或防火墙使两个 TCP 或 UPD 客户端建立连接。</p>
+<h4 id="2-作用-1"><a href="#2-作用-1" class="headerlink" title="2 作用"></a>2 作用</h4><p>如果使用STUN打洞失败，只能使用TURN服务器做中转数据</p>
+<h2 id="信令通道（SignalChannel）"><a href="#信令通道（SignalChannel）" class="headerlink" title="信令通道（SignalChannel）"></a>信令通道（SignalChannel）</h2><p>Signalling 来发现各个 Peer，通过 Signalling 来控制各个 Peer 之间连接的建立和断开。（通常用WebSocket/MQTT/Socket原生/XMPP）</p>
+<h2 id="webRTC协议"><a href="#webRTC协议" class="headerlink" title="webRTC协议"></a>webRTC协议</h2><h3 id="WebRTC会话建立"><a href="#WebRTC会话建立" class="headerlink" title="WebRTC会话建立"></a>WebRTC会话建立</h3><h4 id="SDP（客户端配置信息）"><a href="#SDP（客户端配置信息）" class="headerlink" title="SDP（客户端配置信息）"></a>SDP（客户端配置信息）</h4><p>会话描述协议Session Description Protocol (SDP) 是一个描述多媒体连接内容的协议，例如分辨率，格式，编码，加密算法等</p>
+<h4 id="JSEP（会话建立协议JavaScript-Session-Establishment-Protocol）"><a href="#JSEP（会话建立协议JavaScript-Session-Establishment-Protocol）" class="headerlink" title="JSEP（会话建立协议JavaScript Session Establishment Protocol）"></a>JSEP（会话建立协议JavaScript Session Establishment Protocol）</h4><p>•    呼叫方发送 offer；<br>•    被呼叫方接受这个 offer；<br>•    被呼叫方发送 answer；<br>•    呼叫方接受 answer</p>
+<h4 id="必要信息"><a href="#必要信息" class="headerlink" title="必要信息"></a>必要信息</h4><p>1    本地客户端的配置信息；<br>2    远程客户端的配置信息；<br>3    远程参与建立P2P连接的信息：主要是 IP 和端口。</p>
+<h4 id="P2P连接的过程"><a href="#P2P连接的过程" class="headerlink" title="P2P连接的过程"></a>P2P连接的过程</h4><p>1    A和B连接上服务端，建立一个TCP长连接（任意协议都可以，WebSocket/MQTT/Socket原生/XMPP），我们这里为了省事，直接采用WebSocket，这样一个信令通道就有了。</p>
+<p>2    A从ice server（STUN Server）获取ice candidate并发送给Socket服务端，并生成包含session description（SDP）的offer，发送给Socket服务端。</p>
+<p>3 Socket服务端把A的offer和ice candidate转发给B，B会保存下A这些信息。</p>
+<p>4 然后B发送包含自己session description的answer(因为它收到的是offer，所以返回的是answer，但是内容都是SDP)和ice candidate给Socket服务端</p>
+<p>5 Socket服务端把B的answer和ice candidate给A，A保存下B的这些信息。至此A与B建立起了一个P2P连接。</p>
+<h3 id="获取音视频数据"><a href="#获取音视频数据" class="headerlink" title="获取音视频数据"></a>获取音视频数据</h3><p>MediaStream：<br>媒体流，一个媒体流包含 0 个到多个的媒体数据源，媒体流里面的数据源在呈现（render）必须同步</p>
+<p>MediaStreamTrack：<br>媒体数据源，一个媒体数据源构成一个 MediaStreamTrack，比如音频数据源和视频数据源，多个相互之间有关联的媒体数据源（比如有同步关系的音频视频媒体数据源）构成一个媒体流（MediaStream）。</p>
+<h3 id="传输音频和视频数据"><a href="#传输音频和视频数据" class="headerlink" title="传输音频和视频数据"></a>传输音频和视频数据</h3><p>PeerConnection（RTCPeerConnection (C++)）：</p>
+<p>表示一个 WebRTC 通讯连接对象，它维护与这个通讯连接相关的 MediaStream，处理通讯双方信令事件，完成通讯数据的传输。</p>
+<h3 id="传输任意二进制数据"><a href="#传输任意二进制数据" class="headerlink" title="传输任意二进制数据"></a>传输任意二进制数据</h3><p>DataChannel（RTCDataChannel）</p>
+<p>数据通道，两个 WebRTC 终端的连接建立后，它们可以通过这个数据通道传输任意类型的数据。</p>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><ul>
+<li>对通话对象的安全身份认证</li>
+<li>对通话内容的加密</li>
+</ul>
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ul>
+<li>对客户端的合法性认证，对自身的保护</li>
+<li>对合法客户端的保护</li>
+</ul>
+
       
     </div>
 
@@ -520,8 +558,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.JPG"
@@ -547,7 +594,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -628,6 +675,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#webrtc是什么？"><span class="nav-number">1.</span> <span class="nav-text">webrtc是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAT穿越技术"><span class="nav-number">2.</span> <span class="nav-text">NAT穿越技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ICE"><span class="nav-number">2.1.</span> <span class="nav-text">ICE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STUN"><span class="nav-number">2.2.</span> <span class="nav-text">STUN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-概念"><span class="nav-number">2.2.1.</span> <span class="nav-text">1 概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-作用"><span class="nav-number">2.2.2.</span> <span class="nav-text">2 作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-NAT探测过程"><span class="nav-number">2.2.3.</span> <span class="nav-text">3 NAT探测过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#STEP1："><span class="nav-number">2.2.3.1.</span> <span class="nav-text">STEP1：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#STEP2："><span class="nav-number">2.2.3.2.</span> <span class="nav-text">STEP2：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#STEP3："><span class="nav-number">2.2.3.3.</span> <span class="nav-text">STEP3：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#STEP4："><span class="nav-number">2.2.3.4.</span> <span class="nav-text">STEP4：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-获取客户端公网地址"><span class="nav-number">2.2.3.5.</span> <span class="nav-text">4 获取客户端公网地址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TURN（数据中转）"><span class="nav-number">2.3.</span> <span class="nav-text">TURN（数据中转）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-概念-1"><span class="nav-number">2.3.1.</span> <span class="nav-text">1 概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-作用-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">2 作用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信令通道（SignalChannel）"><span class="nav-number">3.</span> <span class="nav-text">信令通道（SignalChannel）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webRTC协议"><span class="nav-number">4.</span> <span class="nav-text">webRTC协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WebRTC会话建立"><span class="nav-number">4.1.</span> <span class="nav-text">WebRTC会话建立</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SDP（客户端配置信息）"><span class="nav-number">4.1.1.</span> <span class="nav-text">SDP（客户端配置信息）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSEP（会话建立协议JavaScript-Session-Establishment-Protocol）"><span class="nav-number">4.1.2.</span> <span class="nav-text">JSEP（会话建立协议JavaScript Session Establishment Protocol）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#必要信息"><span class="nav-number">4.1.3.</span> <span class="nav-text">必要信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#P2P连接的过程"><span class="nav-number">4.1.4.</span> <span class="nav-text">P2P连接的过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取音视频数据"><span class="nav-number">4.2.</span> <span class="nav-text">获取音视频数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传输音频和视频数据"><span class="nav-number">4.3.</span> <span class="nav-text">传输音频和视频数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传输任意二进制数据"><span class="nav-number">4.4.</span> <span class="nav-text">传输任意二进制数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全性"><span class="nav-number">5.</span> <span class="nav-text">安全性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端"><span class="nav-number">5.1.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端"><span class="nav-number">5.2.</span> <span class="nav-text">服务端</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

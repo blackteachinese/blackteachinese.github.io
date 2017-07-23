@@ -426,6 +426,199 @@
 <p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fhlu8cthldj30yk04uabc.jpg" alt="从start-&gt;main-&gt;callme-&gt;callYou有3个frame"></p>
 <h2 id="sp的正负偏移"><a href="#sp的正负偏移" class="headerlink" title="sp的正负偏移"></a>sp的正负偏移</h2><p>sp存取的时候有的偏移量是正数, 有的是负数, 这有什么区别呢?<br>在stack里面, sp指针之下(负数偏移量)的数据是不保证安全的, 可能被覆盖, 而sp指针之上(正数偏移量)的数据是安全的. 放到负数偏移量一般都是临时存一下数据, 需要被整个方法用到的数据一般放到sp的正数偏移位置.</p>
 <h2 id="git地址"><a href="#git地址" class="headerlink" title="git地址"></a>git地址</h2><p><a href="https://github.com/blackteachinese/arm64Example" target="_blank" rel="external">demo传送门</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.element14.com/community/servlet/JiveServlet/previewBody/41836-102-1-229511/ARM.Reference_Manual.pdf" target="_blank" rel="external">ARM Reference Manual: https://www.element14.com/community/servlet/JiveServlet/previewBody/41836-102-1-229511/ARM.Reference_Manual.pdf</a></p>
+<p><a href="https://developer.apple.com/library/content/documentation/Xcode/Conceptual/iPhoneOSABIReference/Articles/ARM64FunctionCallingConventions.html" target="_blank" rel="external">ARM64 Function Calling Conventions: https://developer.apple.com/library/content/documentation/Xcode/Conceptual/iPhoneOSABIReference/Articles/ARM64FunctionCallingConventions.html</a></p>
+<p><a href="http://blog.chinaunix.net/uid-25871104-id-2938389.html" target="_blank" rel="external">FP寄存器及frame pointer介绍: http://blog.chinaunix.net/uid-25871104-id-2938389.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/12/manage_interview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/07/12/manage_interview/" itemprop="url">
+                  如何面试一个iOS工程师
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-12T21:39:27+08:00">
+                2017-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/管理/" itemprop="url" rel="index">
+                    <span itemprop="name">管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="0x1-我们的考察重点是什么？"><a href="#0x1-我们的考察重点是什么？" class="headerlink" title="0x1 我们的考察重点是什么？"></a>0x1 我们的考察重点是什么？</h1><p>对于一个客户端开发工程师我们需要考察的关键能力可以抽象为5个方面。基础能力、专项能力、架构能力、系统分析能力、价值产出能力。</p>
+<p>对于一个客户开发工程师，基础能力都有什么呢？<br>我的定义是，能够支撑这个工程师完成90%开发工作所需要具备的能力。</p>
+<p>什么是专项能力呢？<br>音视频处理、性能优化、网络通信、工程效能、疑难问题排查这些都算。<br>一个工程师是否有专线领域的积累，往往可以看出这个人是否有技术追求、是否有技术深度积累的意识。另外，一个团队也需要具备各种专项能力的人，去解决不同的难题。</p>
+<p>架构能力不是面试架构师才要考察的能力吗？<br>当然不是。处理很复杂的系统，需要架构能力。设计一个简单的模块也需要架构的能力。例如设计一个监控模块、智能图片加载模块、UI组件库。一个大公司的部门设计、组织架构如何安排相当于复杂系统的架构设计。一个项目组如何安排每一个角色的工作职责、协作方式、监督机制、激励与惩罚机制就相当于是一个小模块的架构设计。</p>
+<p>只有具备了系统分析能力，才能对系统内各功能模块进行合理的设计和安排。<br>在实际工作里，你不仅需要考虑技术层面的问题，你还需要考虑业务发展对架构的要求、有多少资源可以用，项目成本和价值产出比的情况等综合因素。而且你还需要考虑这些因素会不断的变化。系统性、综合性的分析能力这个时候就显得十分重要。<br>另外，我认为这也是人类和人工智能最大的区别。人类的大脑实际上在处理复杂问题、综合性问题的能力是远远强与现在的人工智能的。</p>
+<p>最后是价值产出能力。对于一个工程师，价值的产出有许多维度和层次，下面我介绍最常见的3种。<br>第一层，完成项目组布置的日常工作。<br>第二层，通过分析，找到目前项目组存在的问题，主动产出解决这些问题的方案，并推动这些方案的执行。<br>第三层，可以根据业务的现状和发展方，能规划出技术团队各阶段需要储备的基础建设、架构的发展、人员的培养方向，并针对这些规划制定高效、可执行的方案。</p>
+<p>不同公司在不同的阶段，对于一个客户端研发工程师的要求都是不一样的。我们需要针对项目组当前的实际需要和未来的发展趋势、着重对其中几项关键点进行考察。</p>
+<h1 id="0x2-面试的方法论"><a href="#0x2-面试的方法论" class="headerlink" title="0x2 面试的方法论"></a>0x2 面试的方法论</h1><p>面试时我们需要更真实的反馈，我们需要使用STAR（行为面试方法），多问情景问题、开发性问题，挖掘候选者实际情景处理问题的细节，来考察他的能力。<br>STAR的方法有4个关键词，situation(情景)、task（任务）、action（行动）、result（结果）。<br>根据这4个关键词逐层深入问问题。</p>
+<p>1做这个项目前有什么困难？<br>2你是怎么做的？<br>3为什么这样做？<br>4结果怎么样？<br>5再做一次，有什么地方可以改进？</p>
+<h1 id="0x3-基础能力考察"><a href="#0x3-基础能力考察" class="headerlink" title="0x3 基础能力考察"></a>0x3 基础能力考察</h1><p>c语言、oc、swift<br>开发环境、工具<br>UI<br>网络层<br>多线程<br>设计模式<br>….</p>
+<p>这些都是一个iOS开发工程师需要具备的基础能力。基础能力是首要考察点，如果这部分能力有严重的欠缺，说明候选者是不够专业的。<br>对于基础能力的考察，要尽量考察得全面。准备好各项考察点的问题，其中同一个考察点，要准备好3个层次的问题，这样可以更好地定位候选者每个知识点的掌握的深度。</p>
+<ul>
+<li>tableView的delegate、datasource各自复杂哪些事情?</li>
+<li>有什么办法让tableView变得更加流畅？</li>
+<li>如果要自己写一个tableView，介绍一下思路。有哪些关键点要注意的？</li>
+</ul>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fhtzv53jkrj31kw1hk7wh.jpg" alt="附上一个iOS技术树"></p>
+<h1 id="0x4-进阶能力考察"><a href="#0x4-进阶能力考察" class="headerlink" title="0x4 进阶能力考察"></a>0x4 进阶能力考察</h1><p>进阶能力包括前面提到的专线能力、架构能力、系统分析能力、表达能力。这部分能力的考察首先应该结合候选者过往开发的商业项目、开源项目。挖掘对方过往项目里的亮点，使用STAR方法去评估对方各项进阶能力。</p>
+<ul>
+<li>有没有别的方法？</li>
+<li>遇到什么困难，怎么解决？</li>
+<li>怎么保障性能／安全性？</li>
+<li>实际效果怎么样？怎么体现？</li>
+</ul>
+<h1 id="0x5-程序员通用技能"><a href="#0x5-程序员通用技能" class="headerlink" title="0x5 程序员通用技能"></a>0x5 程序员通用技能</h1><ul>
+<li>sql</li>
+<li>正则</li>
+<li>数据结构</li>
+<li>基础算法</li>
+<li>网络编程</li>
+<li>…</li>
+</ul>
+<p>程序员一些通用的技能也是需要考察的。通过这部分内容的考察，可以看出候选者的计算机基础水平掌握的程度。</p>
+<p>一些非科班出生的候选者，往往这部分知识会掌握得较差一些。但他们是否有意识地去补充这部分知识，是很容易问出来。</p>
+<h1 id="0x6-潜力"><a href="#0x6-潜力" class="headerlink" title="0x6 潜力"></a>0x6 潜力</h1><p>什么程序员有潜力？</p>
+<p>我的定义是，在未来可以遇见的3到5年内，进步的空间比同级别的人要大，进步的速度相对要更快。</p>
+<p>很多人可以觉得年轻就有潜力，其实未必。我们应该细化到候选人身上的一些基能力、性格、思维、习惯。下面我列举一些，有潜力的考察点。</p>
+<ul>
+<li>英语水平</li>
+<li>学习习惯</li>
+<li>工作习惯</li>
+<li>耐操性</li>
+<li>总结能力</li>
+<li>说服力</li>
+<li>表现能力</li>
+<li>管理意识</li>
+<li>共情能力</li>
+</ul>
 
           
         
@@ -636,7 +829,7 @@
               
                 
                 <a class="post-title-link" href="/2017/05/09/webrtc-flow-introduce/" itemprop="url">
-                  基于webrtc的实时通信介绍
+                  webrtc实现音视频通话
                 </a>
               
             
@@ -712,7 +905,42 @@
       
         
           
-            
+            <h2 id="webrtc是什么？"><a href="#webrtc是什么？" class="headerlink" title="webrtc是什么？"></a>webrtc是什么？</h2><p>webrtc(Web Real-Time Communication)是跨平台的音视频实时通话协议。<br>使用webrtc开发一个移动端的实时音视频通讯协议功能需要具备以下几项能力，NAT穿越、SignalChannel信令通道、webRTC会话建立、音视频数据获取、音视频数据传输。</p>
+<h2 id="NAT穿越技术"><a href="#NAT穿越技术" class="headerlink" title="NAT穿越技术"></a>NAT穿越技术</h2><h3 id="ICE"><a href="#ICE" class="headerlink" title="ICE"></a>ICE</h3><p>由以下几个技术和协议组成的：STUN、NAT、TURN、SDP，这些协议技术，帮助ICE共同实现了NAT/防火墙穿越。</p>
+<h3 id="STUN"><a href="#STUN" class="headerlink" title="STUN"></a>STUN</h3><h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1 概念"></a>1 概念</h4><p>STUN（Session Traversal Utilities for NAT，NAT会话传输应用程序）是一种网络协议，它允许位于NAT（或多重NAT）后的客户端找出自己的公网地址，查出自己位于哪种类型的NAT之后以及NAT为某一个本地端口所绑定的Internet端端口。</p>
+<h4 id="2-作用"><a href="#2-作用" class="headerlink" title="2 作用"></a>2 作用</h4><p>STUN服务器部署2个IP以及2个port。A客户端通过向STUN服务器不同IP发UDP包。再根据是否能收到STUN服务器的response等等来判断。1是否当前在公网2NAT的类型</p>
+<h4 id="3-NAT探测过程"><a href="#3-NAT探测过程" class="headerlink" title="3 NAT探测过程"></a>3 NAT探测过程</h4><h5 id="STEP1："><a href="#STEP1：" class="headerlink" title="STEP1："></a>STEP1：</h5><p>B向C的IP1的pot1端口发送一个UDP 包。C收到这个包后，会把它收到包的源IP和port写到UDP包中，然后把此包通过IP1和port1发还给B。这个IP和port也就是NAT的外网 IP和port，也就是说你在STEP1中就得到了NAT的外网IP。当B收到此UDP后，把此UDP中的IP和自己的IP做比较，如果是一样的，就说明自己是在公网。如果不一样，说明有NAT的存在，系统进行STEP2的操作。 </p>
+<h5 id="STEP2："><a href="#STEP2：" class="headerlink" title="STEP2："></a>STEP2：</h5><p>B向C的IP1发送一个UDP包，请求C通过另外一个IP2和PORT（不同与SETP1的IP1）向B返回一个UDP数据包。我们来分析一下，如果B收到了这个数据包，那说明什么？说明NAT来着不拒，不对数据包进行任何过滤，这也就是STUN标准中的full cone NAT。如果没收到，那么系统进行STEP3的操作。 </p>
+<h5 id="STEP3："><a href="#STEP3：" class="headerlink" title="STEP3："></a>STEP3：</h5><p>B向C的IP2的port2发送一个数据包，C收到数据包后，把它收到包的源IP和port写到UDP包中，然后通过自己的IP2和port2把此包发还给B。如果这个port和step1中的port一样，那么可以肯定这个NAT是个CONE NAT，否则是对称NAT。</p>
+<h5 id="STEP4："><a href="#STEP4：" class="headerlink" title="STEP4："></a>STEP4：</h5><p>B向C的IP2的一个端口PD发送一个数据请求包，要求C用IP2和不同于PD的port返回一个数据包给B。 </p>
+<p>我们来分析结果：如果B收到了，那也就意味着只要IP相同，即使port不同，NAT也允许UDP包通过。显然这是restrict cone NAT。如果没收到，没别的好说，port restrict NAT. </p>
+<h5 id="4-获取客户端公网地址"><a href="#4-获取客户端公网地址" class="headerlink" title="4 获取客户端公网地址"></a>4 获取客户端公网地址</h5><p>客户端A向STUN服务器发送一个UDP包1。STUN服务器接收到UDP包1后，将该UDP包的源IP和源Port写到UDP包2发送给A。A收到UDP包2后，打开一看，源IP和源Port就是自己的公网地址</p>
+<h3 id="TURN（数据中转）"><a href="#TURN（数据中转）" class="headerlink" title="TURN（数据中转）"></a>TURN（数据中转）</h3><h4 id="1-概念-1"><a href="#1-概念-1" class="headerlink" title="1 概念"></a>1 概念</h4><p>TURN（Traversal Using Relay NAT），是一种资料传输协议（data-transfer protocol）。通过中继服务器，穿透 NAT 或防火墙使两个 TCP 或 UPD 客户端建立连接。</p>
+<h4 id="2-作用-1"><a href="#2-作用-1" class="headerlink" title="2 作用"></a>2 作用</h4><p>如果使用STUN打洞失败，只能使用TURN服务器做中转数据</p>
+<h2 id="信令通道（SignalChannel）"><a href="#信令通道（SignalChannel）" class="headerlink" title="信令通道（SignalChannel）"></a>信令通道（SignalChannel）</h2><p>Signalling 来发现各个 Peer，通过 Signalling 来控制各个 Peer 之间连接的建立和断开。（通常用WebSocket/MQTT/Socket原生/XMPP）</p>
+<h2 id="webRTC协议"><a href="#webRTC协议" class="headerlink" title="webRTC协议"></a>webRTC协议</h2><h3 id="WebRTC会话建立"><a href="#WebRTC会话建立" class="headerlink" title="WebRTC会话建立"></a>WebRTC会话建立</h3><h4 id="SDP（客户端配置信息）"><a href="#SDP（客户端配置信息）" class="headerlink" title="SDP（客户端配置信息）"></a>SDP（客户端配置信息）</h4><p>会话描述协议Session Description Protocol (SDP) 是一个描述多媒体连接内容的协议，例如分辨率，格式，编码，加密算法等</p>
+<h4 id="JSEP（会话建立协议JavaScript-Session-Establishment-Protocol）"><a href="#JSEP（会话建立协议JavaScript-Session-Establishment-Protocol）" class="headerlink" title="JSEP（会话建立协议JavaScript Session Establishment Protocol）"></a>JSEP（会话建立协议JavaScript Session Establishment Protocol）</h4><p>•    呼叫方发送 offer；<br>•    被呼叫方接受这个 offer；<br>•    被呼叫方发送 answer；<br>•    呼叫方接受 answer</p>
+<h4 id="必要信息"><a href="#必要信息" class="headerlink" title="必要信息"></a>必要信息</h4><p>1    本地客户端的配置信息；<br>2    远程客户端的配置信息；<br>3    远程参与建立P2P连接的信息：主要是 IP 和端口。</p>
+<h4 id="P2P连接的过程"><a href="#P2P连接的过程" class="headerlink" title="P2P连接的过程"></a>P2P连接的过程</h4><p>1    A和B连接上服务端，建立一个TCP长连接（任意协议都可以，WebSocket/MQTT/Socket原生/XMPP），我们这里为了省事，直接采用WebSocket，这样一个信令通道就有了。</p>
+<p>2    A从ice server（STUN Server）获取ice candidate并发送给Socket服务端，并生成包含session description（SDP）的offer，发送给Socket服务端。</p>
+<p>3 Socket服务端把A的offer和ice candidate转发给B，B会保存下A这些信息。</p>
+<p>4 然后B发送包含自己session description的answer(因为它收到的是offer，所以返回的是answer，但是内容都是SDP)和ice candidate给Socket服务端</p>
+<p>5 Socket服务端把B的answer和ice candidate给A，A保存下B的这些信息。至此A与B建立起了一个P2P连接。</p>
+<h3 id="获取音视频数据"><a href="#获取音视频数据" class="headerlink" title="获取音视频数据"></a>获取音视频数据</h3><p>MediaStream：<br>媒体流，一个媒体流包含 0 个到多个的媒体数据源，媒体流里面的数据源在呈现（render）必须同步</p>
+<p>MediaStreamTrack：<br>媒体数据源，一个媒体数据源构成一个 MediaStreamTrack，比如音频数据源和视频数据源，多个相互之间有关联的媒体数据源（比如有同步关系的音频视频媒体数据源）构成一个媒体流（MediaStream）。</p>
+<h3 id="传输音频和视频数据"><a href="#传输音频和视频数据" class="headerlink" title="传输音频和视频数据"></a>传输音频和视频数据</h3><p>PeerConnection（RTCPeerConnection (C++)）：</p>
+<p>表示一个 WebRTC 通讯连接对象，它维护与这个通讯连接相关的 MediaStream，处理通讯双方信令事件，完成通讯数据的传输。</p>
+<h3 id="传输任意二进制数据"><a href="#传输任意二进制数据" class="headerlink" title="传输任意二进制数据"></a>传输任意二进制数据</h3><p>DataChannel（RTCDataChannel）</p>
+<p>数据通道，两个 WebRTC 终端的连接建立后，它们可以通过这个数据通道传输任意类型的数据。</p>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><ul>
+<li>对通话对象的安全身份认证</li>
+<li>对通话内容的加密</li>
+</ul>
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ul>
+<li>对客户端的合法性认证，对自身的保护</li>
+<li>对合法客户端的保护</li>
+</ul>
+
           
         
       
@@ -1615,7 +1843,7 @@
               
                 
                 <a class="post-title-link" href="/2017/03/29/success_outliers/" itemprop="url">
-                  比尔盖茨的成功不靠天赋和努力
+                  比天赋更重要是什么？
                 </a>
               
             
@@ -1891,158 +2119,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2016/12/30/ios-ui-left-slip-bug/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/12/30/ios-ui-left-slip-bug/" itemprop="url">
-                  iOS侧滑出现的卡死Bug
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-30T18:30:07+08:00">
-                2016-12-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。</p>
-<p>某一天测试妹妹跑过来跟我说，我测出一个bug，进去某一个页面后回到RootViewController，左滑会导致视图堆栈变乱。我试了一下，果真如此。我想起以前曾经遇到一个bug，如果是自定义UINavigationController并且设置了自定义的leftBarButtonItem，那在UINavigationController的rootViewController上滑动返回时，会出现界面卡死的情况。</p>
-<p>赶紧查了一下我们的自定义XXNavigationController,缺失设置了leftBarButtonItem。但是仔细查看了代码，我们其实是禁止了rootViewController左滑返回的事件。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)gestureRecognizerShouldBegin:(<span class="built_in">UIGestureRecognizer</span> *)gestureRecognizer &#123;</div><div class="line">    <span class="keyword">if</span> (gestureRecognizer == <span class="keyword">self</span>.interactivePopGestureRecognizer) &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.viewControllers.count &lt;= <span class="number">1</span> ||</div><div class="line">            <span class="keyword">self</span>.visibleViewController == [<span class="keyword">self</span>.viewControllers firstObject]) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>天了噜！这应该没有问题的，什么情况。经过一番仔细查看，发现只有进入某个页面，左滑才会出这个问题。到底这个做了什么？终于被我发现一行要命的代码。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.navigationController.interactivePopGestureRecognizer.delegate = <span class="literal">nil</span>;</div></pre></td></tr></table></figure>
-<p>interactivePopGestureRecognizer的代理被设置成nil了。。。。<br>怎么处理好呢？</p>
-<p>首先，创建一个类XXXDelegate专门处理侧滑手势的delegate事件。并实现上面“gestureRecognizerShouldBegin:gestureRecognizer”方法的处理。</p>
-<p>接着，在XXTabbarController把每个NavgationController对应创建一个XXXDelegate。每次回到TabbarController任意一个子页面“viewDidAppear”的时候，把对应ChildViewController的NavgationController的interactivePopGestureRecognizer.delegate设置成对应的XXXDelegate;</p>
-<p>结论，这样不论哪个页面把interactivePopGestureRecognizer的代理设置成nil，都能保证回到rootViewController，interactivePopGestureRecognizer.delegate都能设置成功。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2103,7 +2179,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
