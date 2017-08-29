@@ -309,6 +309,868 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/04/09/server-intelliJ-Servlet-and-mysql-mac-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/09/server-intelliJ-Servlet-and-mysql-mac-guide/" itemprop="url">
+                  Mac上使用intelliJ开发WEbServer(Servlet)、mysql的新手教程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T17:03:57+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/server/" itemprop="url" rel="index">
+                    <span itemprop="name">server</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h1><h2 id="什么是Servlet"><a href="#什么是Servlet" class="headerlink" title="什么是Servlet"></a>什么是Servlet</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Servlet是Java提供的用于开发Web服务器应用程序的一个组件，运行在服务器端，由Servlet容器所管理，用于生成动态的内容。Servlet是平台独立的Java类，编写一个Servlet，实际上就是按照Servlet规范编写一个Java类。</div></pre></td></tr></table></figure>
+<h3 id="什么是JSP"><a href="#什么是JSP" class="headerlink" title="什么是JSP"></a>什么是JSP</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JSP是Servlet的一种特殊形式，每个JSP页面就是一个Servlet实例——JSP页面由系统编译成Servlet，Servlet再负责响应用户请求。JSP其实也是Servlet的一种简化，使用JSP时，其实还是使用Servlet，因为Web应用中的每个JSP页面都会由Servlet容器生成对应的Servlet。对于Tomcat而言，JSP页面生成的Servlet放在work路径对应的Web应用下。</div></pre></td></tr></table></figure>
+<h2 id="IntelliJ开发WebServer"><a href="#IntelliJ开发WebServer" class="headerlink" title="IntelliJ开发WebServer"></a>IntelliJ开发WebServer</h2><h3 id="Demo源码github地址"><a href="#Demo源码github地址" class="headerlink" title="Demo源码github地址"></a>Demo源码github地址</h3><p><a href="https://github.com/blackteachinese/servletDemo" target="_blank" rel="external">https://github.com/blackteachinese/servletDemo</a></p>
+<h3 id="搭建Webserver工程环境"><a href="#搭建Webserver工程环境" class="headerlink" title="搭建Webserver工程环境"></a>搭建Webserver工程环境</h3><ul>
+<li>创建一个Maven Demo工程</li>
+</ul>
+<p><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fegnm20xl9j31k614g7ht.jpg" alt=""></p>
+<ul>
+<li>项目名称右键，选择”Add Framework Support”</li>
+</ul>
+<p><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegol1jdxwj31kw0oggwi.jpg" alt=""></p>
+<ul>
+<li><p>添加Web Application<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegns27f26j315w0wodla.jpg" alt=""></p>
+</li>
+<li><p>添加完后可以看到WebServer的目录<br><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fegohsev6aj31kw0oen5p.jpg" alt=""></p>
+</li>
+<li><p>配置Artifact打包部署设置<br><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fekapz6ibvj31kw0zkat2.jpg" alt=""></p>
+</li>
+<li><p>配置Tomcat服务器<br><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fego68iog8j31kw0yf138.jpg" alt=""></p>
+</li>
+<li><p>Maven依赖配置<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fekbzxggzxj31kw0zke1q.jpg" alt=""></p>
+</li>
+</ul>
+<h3 id="开发一个Get请求接口"><a href="#开发一个Get请求接口" class="headerlink" title="开发一个Get请求接口"></a>开发一个Get请求接口</h3><ul>
+<li>创建一个formGetApi.html,做为表单承载页<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegpiusk8pj31kw0zkx0h.jpg" alt=""></li>
+<li>在Index.jsp配置跳转到formGetApi.html页面<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegplchmg6j31kw0zkx00.jpg" alt=""></li>
+<li>创建一个继承于HttpServlet的Java类GetApiTest<ul>
+<li>你会发现HttpServlet找不到。不用急，选中“HttpServlet”按“option”+”enter”,点击添加Maven依赖,导入HttpServlet的依赖即可。<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegpzl7dutj31kw0zk4ig.jpg" alt=""><br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegq0dby9jj31kw0zk4qp.jpg" alt=""></li>
+</ul>
+</li>
+<li>重载HttpServlet的“service”方法。通过“getParameter”和“getParameterValues”获取表单的字段，并将获取到的结果输出回浏览器。<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegq84bcd0j31kw0zktwj.jpg" alt=""></li>
+<li><p>web.xml里配置api的映射</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span>?&gt;</div><div class="line">&lt;web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"</div><div class="line">         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"</div><div class="line">         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"</div><div class="line">         version="3.1"&gt;</div><div class="line">    &lt;servlet&gt;</div><div class="line">        &lt;servlet-name&gt;GetApiServlet&lt;/servlet-name&gt;</div><div class="line">        &lt;servlet-class&gt;GetApiTest&lt;/servlet-class&gt;</div><div class="line">    &lt;/servlet&gt;</div><div class="line">    &lt;servlet-mapping&gt;</div><div class="line">        &lt;servlet-name&gt;GetApiServlet&lt;/servlet-name&gt;</div><div class="line">        &lt;url-pattern&gt;/getApi&lt;/url-pattern&gt;</div><div class="line">    &lt;/servlet-mapping&gt;</div><div class="line">&lt;/web-app&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动Tomcat<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegqhun83wj31kw0zk1h9.jpg" alt=""></p>
+<h3 id="开发一个Post请求接口"><a href="#开发一个Post请求接口" class="headerlink" title="开发一个Post请求接口"></a>开发一个Post请求接口</h3></li>
+<li>创建一个formPostApi.html。唯一的不同是对”method”的设置。<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegreb6o2aj31kw0zktus.jpg" alt=""></li>
+<li>创建一个继承于HttpServlet的Java类PostApiTest。<ul>
+<li>post请求需要先对request、response对象设置CharacterEncoding<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span>  <span class="title">service</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        <span class="comment">// right to read chinese</span></div><div class="line">        req.setCharacterEncoding(<span class="string">"utf-8"</span>);</div><div class="line">        <span class="comment">// right to output chinese</span></div><div class="line">        resp.setContentType(<span class="string">"text/html;charset=utf-8"</span>);</div><div class="line">        PrintWriter out = resp.getWriter();</div><div class="line">        <span class="comment">// get name value</span></div><div class="line">        String name = req.getParameter(<span class="string">"name"</span>);</div><div class="line">        out.println(<span class="string">"&lt;h1&gt;Hello,"</span>+name+<span class="string">"&lt;/h1&gt;"</span>);</div><div class="line">        <span class="comment">// get info value</span></div><div class="line">        String[] infos = req.getParameterValues(<span class="string">"info"</span>);</div><div class="line">        <span class="keyword">if</span> (infos != <span class="keyword">null</span>) &#123;</div><div class="line">            out.print(<span class="string">"&lt;h1&gt;info :&lt;/h1&gt;"</span>);</div><div class="line">            <span class="keyword">for</span> (String contact :infos) &#123;</div><div class="line">                out.print(<span class="string">"&lt;h1&gt;"</span>+contact+<span class="string">"&lt;/h1&gt;"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fegs5i2yuej31kw0zktw1.jpg" alt=""></li>
+</ul>
+</li>
+</ul>
+<h3 id="使用mysql储存提交的表单数据"><a href="#使用mysql储存提交的表单数据" class="headerlink" title="使用mysql储存提交的表单数据"></a>使用mysql储存提交的表单数据</h3><ul>
+<li>创建一个formMysqlApi.html页面</li>
+<li>web.xml映射配置</li>
+<li>创建一个继承于HttpServlet的Java类MysqlApiTest。<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegxj3mr6gj31kw0zktxp.jpg" alt=""><h3 id="mql操作"><a href="#mql操作" class="headerlink" title="mql操作"></a>mql操作</h3></li>
+</ul>
+<h4 id="IntelliJ添加一个Datasource"><a href="#IntelliJ添加一个Datasource" class="headerlink" title="IntelliJ添加一个Datasource"></a>IntelliJ添加一个Datasource</h4><p><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegwssbwsij31kw0zkb1s.jpg" alt=""><br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegx5ivyf0j31kw0zkh6b.jpg" alt=""></p>
+<h4 id="mysql命令行创建一个DataBase"><a href="#mysql命令行创建一个DataBase" class="headerlink" title="mysql命令行创建一个DataBase"></a>mysql命令行创建一个DataBase</h4><p><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fegx6wfmamj30ew0203yp.jpg" alt=""></p>
+<h4 id="IntelliJ创建一个createDB-sql文件，创建userInfo表"><a href="#IntelliJ创建一个createDB-sql文件，创建userInfo表" class="headerlink" title="IntelliJ创建一个createDB.sql文件，创建userInfo表"></a>IntelliJ创建一个createDB.sql文件，创建userInfo表</h4><p><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegx9n7gb7j31kw0zkqlc.jpg" alt=""></p>
+<h4 id="mysql命令行设置userInfo表character为UTF8"><a href="#mysql命令行设置userInfo表character为UTF8" class="headerlink" title="mysql命令行设置userInfo表character为UTF8"></a>mysql命令行设置userInfo表character为UTF8</h4><p><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegxbs3pw7j30ss084abd.jpg" alt=""></p>
+<h4 id="IntelliJ创建一个insertDB-sql文件，插入一条数据"><a href="#IntelliJ创建一个insertDB-sql文件，插入一条数据" class="headerlink" title="IntelliJ创建一个insertDB.sql文件，插入一条数据"></a>IntelliJ创建一个insertDB.sql文件，插入一条数据</h4><p><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fegxd9h002j31kw0zk1a3.jpg" alt=""></p>
+<h4 id="动态加载mysql驱动"><a href="#动态加载mysql驱动" class="headerlink" title="动态加载mysql驱动"></a>动态加载mysql驱动</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</div></pre></td></tr></table></figure>
+<h4 id="JDBC连接MySQL"><a href="#JDBC连接MySQL" class="headerlink" title="JDBC连接MySQL"></a>JDBC连接MySQL</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conn = DriverManager.getConnection(<span class="string">"jdbc:mysql://localhost:3306/webserverDemo?user=root&amp;password=19880622"</span>);</div></pre></td></tr></table></figure>
+<h2 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h2><h3 id="IntelliJ环境搭建"><a href="#IntelliJ环境搭建" class="headerlink" title="IntelliJ环境搭建"></a>IntelliJ环境搭建</h3><h3 id="mysql环境搭建"><a href="#mysql环境搭建" class="headerlink" title="mysql环境搭建"></a>mysql环境搭建</h3><h3 id="常用mysql命令"><a href="#常用mysql命令" class="headerlink" title="常用mysql命令"></a>常用mysql命令</h3><ul>
+<li>连接mysql:<ul>
+<li>格式： mysql -h主机地址 -u用户名 －p用户密码</li>
+<li>example:mysql -uroot -p</li>
+</ul>
+</li>
+<li>退出MYSQL命令<ul>
+<li>格式：exit （回车）</li>
+</ul>
+</li>
+<li>创建数据库<ul>
+<li>命令：create databas &lt;数据库名&gt;;</li>
+</ul>
+</li>
+<li>显示数据库<ul>
+<li>命令：show databases;</li>
+</ul>
+</li>
+<li>连接数据库<ul>
+<li>命令： use &lt;数据库名&gt;</li>
+</ul>
+</li>
+<li>创建数据库表<ul>
+<li>命令：create table &lt;表名&gt; ( &lt;字段名1&gt; &lt;类型1&gt; [,..&lt;字段名n&gt; &lt;类型n&gt;]);</li>
+</ul>
+</li>
+<li>删除表<ul>
+<li>命令：drop table &lt;表名&gt;</li>
+</ul>
+</li>
+<li>插入表数据 <ul>
+<li>命令：insert into &lt;表名&gt; [( &lt;字段名1&gt;[,..&lt;字段名n &gt; ])] values ( 值1 )[, ( 值n )]</li>
+</ul>
+</li>
+<li>查看表中所有数据<ul>
+<li>命令： select &lt;字段1，字段2，…&gt; from &lt; 表名 &gt; where &lt; 表达式 &gt;</li>
+<li>example:select * from MyClass;</li>
+</ul>
+</li>
+</ul>
+<h3 id="MySQL的JDBC-URL格式"><a href="#MySQL的JDBC-URL格式" class="headerlink" title="MySQL的JDBC URL格式"></a>MySQL的JDBC URL格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jdbc:mysql//[hostname][:port]/[dbname][?param1=value1][&amp;param2=value2]….</div></pre></td></tr></table></figure>
+<p>Example：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jdbc:mysql://localhost:3306/sample_db?user=root&amp;password=your_password</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/04/04/financial-use-invest-sense/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/04/financial-use-invest-sense/" itemprop="url">
+                  巴菲特的投资思维如何用于日常生活
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-04T15:36:16+08:00">
+                2017-04-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/思维/" itemprop="url" rel="index">
+                    <span itemprop="name">思维</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="学会权衡风险与收益"><a href="#学会权衡风险与收益" class="headerlink" title="学会权衡风险与收益"></a>学会权衡风险与收益</h1><p>首先，我们做事情要有明确的目的，不同的目的要采用不同的方法。<br>大部分人在生活中很容易受别人影响。<br>看到朋友给他的孩子报了钢琴、英语、绘画等兴趣班，就想象自己的孩子会落后于别人，赶紧自己也给孩子报了相应的培训班。</p>
+<p>危机意识敏锐是人类进化的优良习惯。在原始森林里，当你看到身边的人突然加速逃跑的时候，如果你非常理智思考一下，观察一下身边的情况，你很可能就野兽吃了。于是活下来的都拥有容易受他人影响的基因。但现代生活比原始森林复杂多了，光依靠过去的本能的反应已经远远不够了。我们应该明确好自己的目标，而不是别人给孩子报英语，我们就不加思索的也报英语。</p>
+<p>那我们应该怎么做？每个孩子有着不一样的基因，各方面的能力不一样，兴趣爱好也不一样。譬如，你发现自己孩子对音乐特别敏感，听到音乐会跟着哼、身体跟着节奏舞动。那说明你的孩子对音乐、舞蹈比较敏锐，可以尝试往这个方向引导。于是这就成为你权衡给孩子哪些教育其中一个目标。即便是要给孩子报兴趣班，也要依据你积累下来的这些目标和方向。不盲目跟风。</p>
+<h1 id="切莫好高骛远。"><a href="#切莫好高骛远。" class="headerlink" title="切莫好高骛远。"></a>切莫好高骛远。</h1><p>我们在制定目标时不能好高骛远。如果你好高骛远，那么你定的目标通常会没有可执行性。</p>
+<p>比如你定下这样的目标，“我今年的理财投资回报率要达到30%”。有些人可能会觉得也并不是很难，牛市的时候几个涨停就够了。天了噜，巴菲特每年的投资回报率就12%左右。他养着一个全球最贵的投资团队，每天分析各行业趋势、各国政策的影响、企业的动态，最后收益也就平均12%。</p>
+<p>我并非说没有任何人的投资的回报能高于巴菲特，只是非常少，可能低于5%。而且即便你某一年投资回报高于巴菲特并不代表你平均每年投资回报率能高于巴菲特，也就是说你的投资策略、投资能力并不优于巴菲特，只是刚好今年的投资运气特别好。这其实又说到另外一个主题，是关于自我认知能力，大部分人的自我认知能力都很差，这个且不说。</p>
+<p>在生活中好高骛远会带来什么实际性的错误呢？就像上面的例子，如果你定的理财回报率是30%，那你就会关注到很多风险极高的投资产品。比如一些区块链的垃圾币包装的理财产品、期货产品。你也更容易被别人忽悠去买这些风险极高、甚至完全是骗局的传销型理财产品。如果你定的目标是30岁前实现财富自由，你可能就会忽视基础的积累，只去做那些看起来有可能的事情。比如买彩票、盲目创业、高风险投资。你买股票时可能会加5倍杠杆，不翻倍的投资你不会考虑。</p>
+<h1 id="权衡回报和风险"><a href="#权衡回报和风险" class="headerlink" title="权衡回报和风险"></a>权衡回报和风险</h1><p>我们需要考虑的是回报和风险的比例，而不仅仅是回报本身。<br>是的，我们常常听别人说这个回报率是10%非常高，这个回报率是12%相当赞。但却很少有人说，这个理财产品往年的实际投资回报是多少。多大的百分比是亏损、多大的百分百是0%～5%之间。大家都对风险的分析做得不够，能大概知道A产品风险较低、B产品风险高一点就已经很不错了。更别提最后通过概率权的思想计算出实际的投资回报率（而不是发行方包装的回报率）。</p>
+<p>在生活中我们同样要学会权衡回报和收益。比如：周六有个李开复的讲座要不要去听。</p>
+<ul>
+<li>先算一下要花的时间。 <ul>
+<li>路上时间+讲座时间，共6个小时</li>
+</ul>
+</li>
+<li>初步预计一下收益。<ul>
+<li>认识几个行业朋友？听到李开复对人工智能的干货？感受一下气氛，激发一下自己的热情？</li>
+</ul>
+</li>
+<li>替代方案／机会成本<ul>
+<li>陪老婆孩子</li>
+<li>看半本书</li>
+<li>打场球锻炼一下</li>
+<li>花两个小时看视频直播，省下4个小时干别的。</li>
+</ul>
+</li>
+</ul>
+<h1 id="切换有成本"><a href="#切换有成本" class="headerlink" title="切换有成本"></a>切换有成本</h1><p>最后，任何事情都有一个准入的成本，或者说切换的成本。大到换工作，小到换手机，换电脑，都是如此。到新单位前三个月乃至半年，要重新学习和适应，其实做不了太重要的事情，这就是准入成本。换一台电脑，很多旧的文件要导出来，要装新软件，这都是准入成本。考虑到准入成本，你就不应该切换工作太频繁，在一个公司待不到2年通常都是一件成本较高的事情。</p>
+<p>PS：这些思想听起来是很简单道理，大家或多或少都听过这样的说法，但平时却很难做不到。这是由于我们长久以来形成的错误的思维习惯，你不下意识去纠正，即便听过N遍也很难真正吸收。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/03/29/success_outliers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/29/success_outliers/" itemprop="url">
+                  比天赋更重要是什么？
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T21:37:07+08:00">
+                2017-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/思维/" itemprop="url" rel="index">
+                    <span itemprop="name">思维</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一-优势积累比天赋更重要"><a href="#一-优势积累比天赋更重要" class="headerlink" title="一 .优势积累比天赋更重要"></a>一 .优势积累比天赋更重要</h1><h2 id="机遇比天赋更重要"><a href="#机遇比天赋更重要" class="headerlink" title="机遇比天赋更重要"></a>机遇比天赋更重要</h2><p>加拿大著名球队老虎队的队员里25个球员，有17个球员的出生日期在1～3月。为什么有么明显的倾向性？加拿大冰球选拔机制是按年龄分组，5岁一组、6岁一组。同样是1990年出生，1月份出生的小孩和12月份出生的小孩分在一组。对于小孩来说差了10几个月，身体发育就差很多，年初出生的球员就占据很大的优势。所以年初出生的小孩一开始表现就会更好，表现更好就会被筛选到特训组，得到更好的训练。得到更好的训练，表现就更好，如此不断积累优势，最后年初出生的小孩称为顶级球员的机率就大大提升。</p>
+<h2 id="知道一万小时理论也没用"><a href="#知道一万小时理论也没用" class="headerlink" title="知道一万小时理论也没用"></a>知道一万小时理论也没用</h2><p>不是每个人都有机会在合适的时机进行一万小时的训练。比如加拿大的冰球运动员，如果你小的时候进不了第一梯队，就没能进行优质的训练，很难达到一万小时。而且年龄大了再完成一万小时的训练也没有用了，因为运动员的身体条件高峰期是受年龄限制的。</p>
+<h2 id="社会环境变革比努力重要得多"><a href="#社会环境变革比努力重要得多" class="headerlink" title="社会环境变革比努力重要得多"></a>社会环境变革比努力重要得多</h2><p>70后毕业参加工作买一套房子，相当于80后工作10年。最近毕业的清华大学学生，买不起北京房子不要太多。</p>
+<h1 id="二-文化背景对成功影响很大"><a href="#二-文化背景对成功影响很大" class="headerlink" title="二.文化背景对成功影响很大"></a>二.文化背景对成功影响很大</h1><p>20世纪90年代韩国大航航空公司飞机失事率是同期美国联合航空的17倍，但究其原因竟然不是飞机设备、也不是管理问题。他们做了大量调研，听取飞机黑匣子录音，最终发现韩国文化是最根本的原因。因为韩国是一个等级分明的国家。在飞行过程中，机长做了一些错误的决策，副机长以及其他成员不敢说，没有了其他成员的有力监督，飞机失事率就变高了很多。</p>
+<h1 id="我们该怎么做"><a href="#我们该怎么做" class="headerlink" title="我们该怎么做"></a>我们该怎么做</h1><h2 id="挤入第一梯队"><a href="#挤入第一梯队" class="headerlink" title="挤入第一梯队"></a>挤入第一梯队</h2><p>学习和工作时要想办法进入“第一梯队”，这样才能获得高质量的训练，加速积累达到一万小时的训练，从了增加优势积累的机会。</p>
+<h2 id="如何获得社会变革红利"><a href="#如何获得社会变革红利" class="headerlink" title="如何获得社会变革红利"></a>如何获得社会变革红利</h2><p>花时间研究未来趋势，训练自己的预见能力，并且在未来趋势到来之前，开始一万小时的积累。比尔盖茨在大家还没用电脑前，就有了计算机编程的10万小时积累。<br>我们需要一点运气，找到风口并且在风口前已经做好了准备。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/03/14/ios_memoryLeak_tool/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/14/ios_memoryLeak_tool/" itemprop="url">
+                  内存泄漏监控
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-14T10:18:21+08:00">
+                2017-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="为什么要做app内存泄漏监控？"><a href="#为什么要做app内存泄漏监控？" class="headerlink" title="为什么要做app内存泄漏监控？"></a>为什么要做app内存泄漏监控？</h2><p>内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fduvum23wsj31870j3jwx.jpg" alt=""></p>
+<h2 id="监控内存泄漏的时机"><a href="#监控内存泄漏的时机" class="headerlink" title="监控内存泄漏的时机"></a>监控内存泄漏的时机</h2><ol>
+<li>UIViewController调用”dismissViewControllerAnimated:”的时候</li>
+<li>UInavigationController调用”popToRootViewControllerAnimated:”等pop方法</li>
+<li>UITabbbarViewController、UIPageViewController、UISplitViewController+MemoryLeak需要释放时，对应的内嵌视图控制器也需要释放。<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fduvtrj272j31080hgn00.jpg" alt=""></li>
+</ol>
+<h2 id="监控小技巧"><a href="#监控小技巧" class="headerlink" title="监控小技巧"></a>监控小技巧</h2><p>创建一个block,block持有需要释放的视图的weak指针，当监测时机到时，执行这个block，如果weak指针不为nil,则该试图已经内存泄漏了。<br><img src="https://ww4.sinaimg.cn/large/006tNc79gy1fduvux09v8j313i0ngjtw.jpg" alt=""></p>
+<h2 id="监控对象"><a href="#监控对象" class="headerlink" title="监控对象"></a>监控对象</h2><ol>
+<li>所有需要释放的视图控制器</li>
+<li>视图控制器的View,及其每一层嵌套的Subview</li>
+</ol>
+<h2 id="视图树的记录"><a href="#视图树的记录" class="headerlink" title="视图树的记录"></a>视图树的记录</h2><p>监测到内存泄漏后，为了方便开发定位到具体泄漏的视图，我们可以泄漏的视图树记录下来。</p>
+<h2 id="泄漏后如何及时提醒"><a href="#泄漏后如何及时提醒" class="headerlink" title="泄漏后如何及时提醒"></a>泄漏后如何及时提醒</h2><p>泄漏后怎么提醒开发者比较合适呢。</p>
+<ol>
+<li>发现泄漏马上把泄漏的视图树log打印出来</li>
+<li>悬浮一个提醒款，显示当前泄漏的数量</li>
+<li>命中断言（会阻断开发，容易被喷）</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/01/15/other-craftsman/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/01/15/other-craftsman/" itemprop="url">
+                  匠人精神的重要性
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-15T15:43:51+08:00">
+                2017-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/default/" itemprop="url" rel="index">
+                    <span itemprop="name">default</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近常听到“匠人精神”这个词。难道资本寒冬的来临，让大家突然醒悟，光靠包装、概念就轻松能拿到融资创业的时机已经过去了？</p>
+<p>什么是匠人精神？</p>
+<p>  第一次听说这个词汇，我脑海里浮现的是一个打铁匠的老师傅。一个勤勤恳恳、认真、古板的手艺人。这应该是很少的一部分人吧。直到最近看了晓松奇谈关于“探寻匠人精神”的节目，才对匠人精神有了新的体会。<br>  一位炸了50多年天妇罗的“早乙女哲哉”说了一句话：”我觉得日本这几十年好像没有什么变化“。要知道这几十年日本可是经历过七八十年代经济腾飞、到1990经济泡沫后的一蹶不振。难道他对外界的感知能力这么弱吗？这有一定关系，但除此之外还和早乙女哲哉对生活和工作的专注有关系。他是一个专注于做好一件事的人，这几十年一直致力于炸天妇罗，不受经济环境的变动，不受身旁人们的价值观的影响，不去关心最近股票的走势，房价是不是又涨了、谁家做了什么生意又发财了、什么行业现在在风口。这放在当今的中国，就是一个稳重、古板的手艺人，不懂得变通，不懂人情世故、不懂理财的人。这绝不是国内老百姓们希望成为的人。<br>  这是一种专注的精神，专注得来还很有安全感，让你安心去专注，不受外界影响。这确实很不容易，这是我一直比较缺乏的精神，也是我们缺乏的精神。我从小到大是一个懒散、随便的人。做很多事情都不追求细致、完美，一直不知道自己喜欢什么，很难专注认定一件事去做坚持一直做。<br>  除了专注精神，我还能体会到一种叫“精进”的精神。“幸村”开了一家小的料理店，从默默无名到米其林1星，再到米其林3星，竟然菜单一直没有换过。那这么多年，这家店难道一直不思进取、没有进步吗？在我北京各种有名的餐厅，几个月就得换菜单，而客户也很乐于去品尝新菜。而幸村说到：“多年来我们没有改变菜单，不是说我们就没有去创新、没有去思考和尝试如何变得更好，而是我们一直在研究我们原有的料理如何做得更好，我们一直在改进我们的菜品”。我认为这就是一种“精进”的精神，我们不满足于好，还可以不断继续做得更好，而不一定非得做各种新的事情，去证明自己什么都好。<br>  专注、精进的精神看似和创新精神有矛盾，其实不然。最近一直很流行的”1万小时“理论告诉我们，专注在一个领域里足够长的时机，人人都能成为专家。如果我们能在同一个领域里，积极去思考也能相处很多有创意的想法，当然我们不能所有新想法都去尝试。我们可以在这些新想法里，选择自己最认可的一个想法，坚持一段时间（比如1个月）去做，如果达到预期，我们再坚持更长的时间”精进“地去做。切忌同时多点开发，一件事情没做到阶段性的时间，看到别的事情有机会就换了。<br>  是的，创新对于世界的发展异常重要，但对于我们个人而言，在自己有限的时间里，做好选择并专注地去做，不断得精进自己的专项技能更重要。想一想，人人都有自己所专注和精进的领域做深、做细，这个社会便有很多不同领域的事业在专注、精进地发展。也许很多人会说，不可能，你必须什么技能都懂，你才能把事业做大。这有一定的道理，补助性的技能我们也需要投入一定时间去学习，比如制作PPT能力、外语能力、基本的社交能力、协作能力等等。但得主次分明，不能搞不清楚自己的专项领域。要相信现在的分工越来越细、只要各种专项的技能能够合理协作，都能干成足够大的事业。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2016/12/30/ios-ui-left-slip-bug/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -501,7 +1363,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -512,7 +1374,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -523,7 +1385,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
