@@ -89,7 +89,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -107,46 +107,21 @@
 
 
 
-<meta name="description" content="Graphviz
-title: 使用graphvizcategories:
-
-tags:
-date: 2017-07-12 21:39:27
-
-
-
-文档
-官方文档
-Graphviz官网">
+<meta name="description" content="为什么我们需要性能基线？差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
+波动性随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Blacktea's Life">
-<meta property="og:url" content="http://blackteachinese.com/2017/07/25/chart_ graphviz/index.html">
+<meta property="og:title" content="如何系统建设App的性能基线和流程">
+<meta property="og:url" content="http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="Graphviz
-title: 使用graphvizcategories:
-
-tags:
-date: 2017-07-12 21:39:27
-
-
-
-文档
-官方文档
-Graphviz官网">
-<meta property="og:updated_time" content="2017-07-25T07:29:42.000Z">
+<meta property="og:description" content="为什么我们需要性能基线？差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
+波动性随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg">
+<meta property="og:updated_time" content="2017-08-31T10:39:21.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Blacktea's Life">
-<meta name="twitter:description" content="Graphviz
-title: 使用graphvizcategories:
-
-tags:
-date: 2017-07-12 21:39:27
-
-
-
-文档
-官方文档
-Graphviz官网">
+<meta name="twitter:title" content="如何系统建设App的性能基线和流程">
+<meta name="twitter:description" content="为什么我们需要性能基线？差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
+波动性随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数">
+<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg">
 
 
 
@@ -174,13 +149,13 @@ Graphviz官网">
 
 
 
-  <link rel="canonical" href="http://blackteachinese.com/2017/07/25/chart_ graphviz/"/>
+  <link rel="canonical" href="http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/"/>
 
 
 
 
 
-  <title>  | Blacktea's Life </title>
+  <title> 如何系统建设App的性能基线和流程 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -338,7 +313,7 @@ Graphviz官网">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/25/chart_ graphviz/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -359,7 +334,7 @@ Graphviz官网">
             
             
               
-                
+                如何系统建设App的性能基线和流程
               
             
           </h1>
@@ -374,8 +349,8 @@ Graphviz官网">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-25T13:43:54+08:00">
-                2017-07-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T21:39:27+08:00">
+                2017-08-30
               </time>
             
 
@@ -384,6 +359,28 @@ Graphviz官网">
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -410,18 +407,28 @@ Graphviz官网">
       
 
       
-        <h1 id="Graphviz"><a href="#Graphviz" class="headerlink" title="Graphviz"></a>Graphviz</h1><hr>
-<p>title: 使用graphviz<br>categories:</p>
-<ul>
-<li><p>tags:</p>
-<p>date: 2017-07-12 21:39:27</p>
-</li>
-</ul>
-<hr>
-<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><ul>
-<li><a href="http://www.graphviz.org/pdf/dotguide.pdf" target="_blank" rel="external">官方文档</a></li>
-<li><a href="http://www.graphviz.org/Documentation.php" target="_blank" rel="external">Graphviz官网</a></li>
-</ul>
+        <h1 id="为什么我们需要性能基线？"><a href="#为什么我们需要性能基线？" class="headerlink" title="为什么我们需要性能基线？"></a>为什么我们需要性能基线？</h1><p>差异性<br>在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。</p>
+<p>波动性<br>随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数据做为参考线，则可以对存量页面的性能进行自动化分析。</p>
+<h1 id="3个目标"><a href="#3个目标" class="headerlink" title="3个目标"></a>3个目标</h1><p>流程化<br>建立完整、合理的基线产出流程。</p>
+<p>工具统一化<br>建立统一的性能分析方法论、分析工具。</p>
+<p>标准化<br>建立标准化的基线算法，通过该算法计算出各页面的基线标准</p>
+<h1 id="怎样获得合理的性能基线？"><a href="#怎样获得合理的性能基线？" class="headerlink" title="怎样获得合理的性能基线？"></a>怎样获得合理的性能基线？</h1><h2 id="两个特性"><a href="#两个特性" class="headerlink" title="两个特性"></a>两个特性</h2><p>不一致性</p>
+<p>一个页面的性能指标怎么定主要受2个因素的影响，一个是UI元素的复杂度，一个是接口数据的复杂度。UI布局越复杂，页面渲染就会越慢。数据获取越复杂，页面就需要等待越长的时间进行渲染。因此我们不能一视同仁，所有页面都设置同样的基线。</p>
+<p>合理波动性</p>
+<p>鲜肉页面进入市场后，随着版本迭代，性能数据一定会有所波动。在一定范围内波动，我们认为是合理波动。</p>
+<h2 id="3条准线"><a href="#3条准线" class="headerlink" title="3条准线"></a>3条准线</h2><p>性能红线</p>
+<p>性能指标只要差到一定的程度，用户就会感受到明显的不顺畅、慢、卡。这时候，无论页面多复杂、接口多慢，都不是理由（再有价值的产品，如果体验太差对用户来说就是垃圾）。因此，我们需要设立一个性能红线，无论如何不能超过红线。</p>
+<p>页面综合性能指数</p>
+<p>正如证券市场的道琼斯指数一样，取所有页面性能数据的平均值作为页面综合性能指数。</p>
+<p>性能基线</p>
+<p>鲜肉页面通过过滤流水线后，我们就将通过后页面的线上平均数据做为该页面的性能基线。</p>
+<h2 id="2条流水线"><a href="#2条流水线" class="headerlink" title="2条流水线"></a>2条流水线</h2><p>鲜肉过滤流水线</p>
+<p>新开发的页面（鲜肉页面），由于复杂度不一致，我们不能准确判断开发出来的页面性能是否合理。但我们可以根据两天基准线做为参考值来估算页面性能是否合理。第一条是红线，高压线不能越。第二条是页面综合性能指数，如果低于这条线则合格，如果高于这条线则进入鉴别池。进入鉴别池的页面，将使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
+<p>熟肉自动流水线</p>
+<p>鲜肉页面经过过滤后，性能基本可以得到保障。但我们还需要保证，随着版本迭代这些页面性不能超过合理波动的范围。每期的版本迭代前，我们通过自动化测试拿到线下性能数据，然后与该页面的性能基线进行自动对比，计算迭代后的数据是否超过了基线的合理波动范围。若超过了，则进入鉴别池，使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
+<h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg" alt=""></p>
+<h1 id="如何落地？"><a href="#如何落地？" class="headerlink" title="如何落地？"></a>如何落地？</h1><p>基线的流程和方法的建设，需要开发和测试人员一起协作完成。<br>开发人员负责：数据埋点、问题优化分析、积累沉淀<br>测试人员负责：测试件、数据平台建设、测试流程建设</p>
+<p>落地是重点也是难点。我认为有2个要点。<br>1进行方案评审和宣导，获取团队人员的反馈，并进行改善，形成团队内的统一认知。<br>2合理安排落地节奏。</p>
 
       
     </div>
@@ -475,6 +482,12 @@ Graphviz官网">
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
 
       
         
@@ -484,8 +497,8 @@ Graphviz官网">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/12/manage_interview/" rel="next" title="如何面试一个iOS工程师">
-                <i class="fa fa-chevron-left"></i> 如何面试一个iOS工程师
+              <a href="/2017/08/16/Invite_Job_aliabbamd/" rel="next" title="阿里巴巴国际无线技术部 - 在这里遇见最好的自己">
+                <i class="fa fa-chevron-left"></i> 阿里巴巴国际无线技术部 - 在这里遇见最好的自己
               </a>
             
           </div>
@@ -493,10 +506,6 @@ Graphviz官网">
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/14/ios-widget/" rel="prev" title="TodayExtension入坑指南">
-                TodayExtension入坑指南 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -670,7 +679,7 @@ Graphviz官网">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Graphviz"><span class="nav-number">1.</span> <span class="nav-text">Graphviz</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文档"><span class="nav-number">1.1.</span> <span class="nav-text">文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么我们需要性能基线？"><span class="nav-number">1.</span> <span class="nav-text">为什么我们需要性能基线？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3个目标"><span class="nav-number">2.</span> <span class="nav-text">3个目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#怎样获得合理的性能基线？"><span class="nav-number">3.</span> <span class="nav-text">怎样获得合理的性能基线？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#两个特性"><span class="nav-number">3.1.</span> <span class="nav-text">两个特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3条准线"><span class="nav-number">3.2.</span> <span class="nav-text">3条准线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2条流水线"><span class="nav-number">3.3.</span> <span class="nav-text">2条流水线</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整体流程图"><span class="nav-number">4.</span> <span class="nav-text">整体流程图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何落地？"><span class="nav-number">5.</span> <span class="nav-text">如何落地？</span></a></li></ol></div>
             
 
           </div>
