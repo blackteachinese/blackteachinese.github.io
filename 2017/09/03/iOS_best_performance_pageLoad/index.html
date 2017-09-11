@@ -111,15 +111,15 @@
 UIViewControllerUIViewController生命周期的回调函数（主线程），要避免耗时计算。下面是检查清单：
 1234567initinitWithNibName:bundleviewWillAppearviewDidAppearviewDidLoadviewWillDisappearv">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS开发性能最佳实践系列之——页面加载的性能检查清单">
+<meta property="og:title" content="iOS开发性能最佳实践系列之——页面加载快的性能检查清单">
 <meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
 <meta property="og:description" content="如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。
 UIViewControllerUIViewController生命周期的回调函数（主线程），要避免耗时计算。下面是检查清单：
 1234567initinitWithNibName:bundleviewWillAppearviewDidAppearviewDidLoadviewWillDisappearv">
-<meta property="og:updated_time" content="2017-09-10T16:31:03.000Z">
+<meta property="og:updated_time" content="2017-09-11T13:51:28.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS开发性能最佳实践系列之——页面加载的性能检查清单">
+<meta name="twitter:title" content="iOS开发性能最佳实践系列之——页面加载快的性能检查清单">
 <meta name="twitter:description" content="如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。
 UIViewControllerUIViewController生命周期的回调函数（主线程），要避免耗时计算。下面是检查清单：
 1234567initinitWithNibName:bundleviewWillAppearviewDidAppearviewDidLoadviewWillDisappearv">
@@ -156,7 +156,7 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
 
 
 
-  <title> iOS开发性能最佳实践系列之——页面加载的性能检查清单 | Blacktea's Life </title>
+  <title> iOS开发性能最佳实践系列之——页面加载快的性能检查清单 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -335,7 +335,7 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
             
             
               
-                iOS开发性能最佳实践系列之——页面加载的性能检查清单
+                iOS开发性能最佳实践系列之——页面加载快的性能检查清单
               
             
           </h1>
@@ -425,24 +425,8 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
 </ul>
 </li>
 </ul>
-<p><strong>特别复杂的Cell,计算高度耗时较长，需要进行缓存</strong></p>
-<ul>
-<li>建议使用”UITableView+FDTemplateLayoutCell“。</li>
-</ul>
 <h2 id="UICollectionView"><a href="#UICollectionView" class="headerlink" title="UICollectionView"></a>UICollectionView</h2><p><strong>UICollectionView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">collectionView:cellForItemAtIndexPath</div><div class="line">collectionView:layout:sizeForItemAtIndexPath</div><div class="line">collectionView:didSelectItemAtIndexPath</div></pre></td></tr></table></figure>
-<h2 id="Cell"><a href="#Cell" class="headerlink" title="Cell"></a>Cell</h2><p><strong>使用Cell的复用机制</strong></p>
-<p>此处不需要解释</p>
-<p><strong>复用Cell内的子视图</strong></p>
-<p>有些开发者确实是使用了cell的复用机制，但是每次复用时由于子视图有一些差异，会把Cell里子视图释放掉，再重新初始化需要的子视图。这种做法是非常消耗CPU的，子视图也要尽量复用。</p>
-<p><strong>使用隐藏而不是移除</strong></p>
-<p>移除一个子视图也是需要开销的。如果有一些子视图不需要显示，将其隐藏而不是移除。</p>
-<p><strong>到后台线程销毁视图</strong></p>
-<p>有大量视图需要销毁时，放到后台线程，减少主线程的计算量。</p>
-<p><strong>图片解码</strong></p>
-<p>加载图片时，图片的解码需要消耗CPU的资源，而这部分是可以放到子线程处理的。（SDWebImage默认是在子线程解码的，除非你关了）</p>
-<p><strong>图片绘制</strong></p>
-<p>CoreGraphic是线程安全的，使用CoreGraphic绘制图片可以在子线程做，绘制完再回主线程加载到要呈现的控件里</p>
 
       
     </div>
@@ -511,8 +495,8 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/03/thought_structure_thinking/" rel="next" title="结构化思考——完美应对电梯30秒的思考模型">
-                <i class="fa fa-chevron-left"></i> 结构化思考——完美应对电梯30秒的思考模型
+              <a href="/2017/09/03/iOS_business_developer_value/" rel="next" title="业务开发人员的价值是什么？">
+                <i class="fa fa-chevron-left"></i> 业务开发人员的价值是什么？
               </a>
             
           </div>
@@ -521,8 +505,8 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/09/03/iOS_est_performance_rounded_and_shadow/" rel="prev" title="iOS开发性能最佳实践系列之——圆角和阴影">
-                iOS开发性能最佳实践系列之——圆角和阴影 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/09/03/iOS_best_performance_collection_enumeration/" rel="prev" title="iOS开发性能最佳实践系列之——集合遍历">
+                iOS开发性能最佳实践系列之——集合遍历 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -595,7 +579,7 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -697,7 +681,7 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UIViewController"><span class="nav-number">1.</span> <span class="nav-text">UIViewController</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UITableView"><span class="nav-number">2.</span> <span class="nav-text">UITableView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UICollectionView"><span class="nav-number">3.</span> <span class="nav-text">UICollectionView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cell"><span class="nav-number">4.</span> <span class="nav-text">Cell</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UIViewController"><span class="nav-number">1.</span> <span class="nav-text">UIViewController</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UITableView"><span class="nav-number">2.</span> <span class="nav-text">UITableView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UICollectionView"><span class="nav-number">3.</span> <span class="nav-text">UICollectionView</span></a></li></ol></div>
             
 
           </div>

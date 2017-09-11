@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blackteachinese.com/"/>
-  <updated>2017-09-06T03:39:11.000Z</updated>
+  <updated>2017-09-11T13:07:39.000Z</updated>
   <id>http://blackteachinese.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blackteachinese.com/2017/09/03/iOS_best_performance_collection_enumeration/"/>
     <id>http://blackteachinese.com/2017/09/03/iOS_best_performance_collection_enumeration/</id>
     <published>2017-09-03T13:39:27.000Z</published>
-    <updated>2017-09-06T03:39:11.000Z</updated>
+    <updated>2017-09-11T13:07:39.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h2><p>场景条件</p>
 <ul>
@@ -29,8 +29,7 @@
 </ul>
 <p>使用建议：</p>
 <ul>
-<li>for..in （NSFastEnumeration）<br>~~* enumerateObjectsUsingBlock</li>
-<li>经典for循环~~</li>
+<li>for..in （NSFastEnumeration）<br><del>* enumerateObjectsUsingBlock</del><br><del>* 经典for循环</del></li>
 </ul>
 <p>推荐原因：<br>在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for in.</p>
 <h2 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h2><p>场景条件</p>
@@ -38,10 +37,7 @@
 <li>需要按顺序</li>
 <li>同时需要key和value</li>
 </ul>
-<p>按顺序优先考虑下列方法</p>
-<ul>
-<li>enumerateKeysAndObjectsUsingBlock<br><del>* 经典for循环</del></li>
-</ul>
+<p>按顺序优先考虑下列方法<br><del>* enumerateKeysAndObjectsUsingBlock</del><br><del>* 经典for循环</del></p>
 <p>推荐原因：<br>在集合元素”100“量级和“1000000”量级时，enumerateKeysAndObjectsUsingBlock的效率都比“经典for循环”要高，而且不会出现“off-by-one errors”错误。建议需要key、vlaue时使用enumerateKeysAndObjectsUsingBlock</p>
 <h2 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h2><p>场景条件</p>
 <ul>
@@ -50,7 +46,7 @@
 </ul>
 <p>按顺序优先考虑下列方法</p>
 <ul>
-<li>enumerateObjectsWithOptions （NSEnumerationConcurrent）<br>~~* dispatch_apply(Concurrent)<br>~~</li>
+<li>enumerateObjectsWithOptions （NSEnumerationConcurrent）<br><del>* dispatch_apply(Concurrent)</del></li>
 </ul>
 <p>推荐原因：<br>enumerateObjectsWithOptions和dispatch_apply(Concurrent)各种场景的效率都差不多，但是enumerateObjectsWithOptions可读性更强，特性也更多。建议使用enumerateObjectsWithOptions。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[array enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) &#123;</div><div class="line">    [sark doSomethingSlow];</div><div class="line">&#125;];</div></pre></td></tr></table></figure></p>
 <h2 id="场景四"><a href="#场景四" class="headerlink" title="场景四"></a>场景四</h2><p>场景条件</p>
@@ -91,6 +87,48 @@
   </entry>
   
   <entry>
+    <title>iOS开发性能最佳实践系列之——页面加载快的性能检查清单</title>
+    <link href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/"/>
+    <id>http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/</id>
+    <published>2017-09-03T13:39:27.000Z</published>
+    <updated>2017-09-11T13:51:28.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。</p>
+<h2 id="UIViewController"><a href="#UIViewController" class="headerlink" title="UIViewController"></a>UIViewController</h2><p><strong>UIViewController生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">init</div><div class="line">initWithNibName:bundle</div><div class="line">viewWillAppear</div><div class="line">viewDidAppear</div><div class="line">viewDidLoad</div><div class="line">viewWillDisappear</div><div class="line">viewDidDisappear</div></pre></td></tr></table></figure>
+<h2 id="UITableView"><a href="#UITableView" class="headerlink" title="UITableView"></a>UITableView</h2><p><strong>UITableView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tableView:cellForRowAtIndexPath</div><div class="line">tableView:heightForRowAtIndexPath</div><div class="line">tableView:didSelectRowAtIndexPath</div></pre></td></tr></table></figure>
+<p><strong>减少tableview高度计算次数</strong></p>
+<ul>
+<li>有多种Cell或高度是动态的<ul>
+<li>设置estimatedRowHeight(设置后会开启self—sizing，自动计算高度)</li>
+</ul>
+</li>
+<li>只有一种Cell并且高度固定<ul>
+<li>设置rowHeight</li>
+<li>不要重载”tableView:heightForRowAtIndexPath”</li>
+</ul>
+</li>
+</ul>
+<h2 id="UICollectionView"><a href="#UICollectionView" class="headerlink" title="UICollectionView"></a>UICollectionView</h2><p><strong>UICollectionView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">collectionView:cellForItemAtIndexPath</div><div class="line">collectionView:layout:sizeForItemAtIndexPath</div><div class="line">collectionView:didSelectItemAtIndexPath</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。&lt;/p&gt;
+&lt;h2 id=&quot;UIViewController&quot;&gt;&lt;a href=&quot;#UIViewController&quot; class=&quot;headerlink&quot; title=&quot;UIView
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://blackteachinese.com/categories/iOS/"/>
+    
+    
+      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>业务开发人员的价值是什么？</title>
     <link href="http://blackteachinese.com/2017/09/03/iOS_business_developer_value/"/>
     <id>http://blackteachinese.com/2017/09/03/iOS_business_developer_value/</id>
@@ -115,70 +153,17 @@
   </entry>
   
   <entry>
-    <title>iOS开发性能最佳实践系列之——圆角和阴影</title>
-    <link href="http://blackteachinese.com/2017/09/03/iOS_est_performance_rounded_and_shadow/"/>
-    <id>http://blackteachinese.com/2017/09/03/iOS_est_performance_rounded_and_shadow/</id>
+    <title>iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单</title>
+    <link href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/"/>
+    <id>http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/</id>
     <published>2017-09-03T13:39:27.000Z</published>
-    <updated>2017-09-10T13:53:32.000Z</updated>
+    <updated>2017-09-11T13:58:06.000Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="图片使用阴影的正确姿势"><a href="#图片使用阴影的正确姿势" class="headerlink" title="图片使用阴影的正确姿势"></a>图片使用阴影的正确姿势</h2><p>错误示范：会导致离屏渲染</p>
-<p>~~imageView.layer.shadowOpacity = 0.5;<br>~~</p>
-<p>正确做法：通过shadowPath，告诉CoreAnimation你要渲染的形状，减少离屏渲染</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">imageView.layer.shadowOpacity = 0.5;</div><div class="line">imageView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:imageView.bounds] CGPath];</div></pre></td></tr></table></figure>
-<h2 id="对图片做圆角处理的正确姿势"><a href="#对图片做圆角处理的正确姿势" class="headerlink" title="对图片做圆角处理的正确姿势"></a>对图片做圆角处理的正确姿势</h2><p>错误示范：<br>给imageView加cornerRadius后用masksToBounds切。因为加masksToBounds后，会触发离屏幕渲染，如果一个Cell里有多个这样的图片，滑动的时候GPU压力会很大，从而导致严重的掉帧。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">UIImage *image = [UIImage imageNamed:@&quot;IMG_6083&quot;];</div><div class="line">imageView.image = image;</div><div class="line">imageView.layer.cornerRadius = CGRectGetWidth(imageView.frame)/ 4.0;</div><div class="line">imageView.layer.masksToBounds = YES;</div></pre></td></tr></table></figure>
-<p>正确做法：<br>通过Core Graphics创建一块位图画布（bitmap graphics context），将图片画到画布，再画Path将图片剪切</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">+ (id)createRoundedRectImage:(UIImage *)image size:(CGSize)size radius:(int)radius &#123;</div><div class="line">    size = CGSizeMake(size.width * image.scale, size.height * image.scale);</div><div class="line">    radius = radius * image.scale;</div><div class="line">    UIImage *img = image;</div><div class="line">    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();</div><div class="line">    CGContextRef context = CGBitmapContextCreate(NULL, size.width, size.height, CGImageGetBitsPerComponent(image.CGImage), 4 * size.width, CGImageGetColorSpace(image.CGImage), kCGImageAlphaPremultipliedFirst);</div><div class="line">    CGRect rect = CGRectMake(0, 0, size.width, size.height);</div><div class="line">    CGContextBeginPath(context);</div><div class="line">    addRoundedRectToPath(context, rect, radius, radius);</div><div class="line">    CGContextClosePath(context);</div><div class="line">    CGContextClip(context);</div><div class="line">    CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), img.CGImage);</div><div class="line">    CGImageRef imageMasked = CGBitmapContextCreateImage(context);</div><div class="line">    img = [UIImage imageWithCGImage:imageMasked];</div><div class="line">    CGContextRelease(context);</div><div class="line">    CGColorSpaceRelease(colorSpace);</div><div class="line">    CGImageRelease(imageMasked);</div><div class="line">    return img;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="给UIButton或UILabel等非图片视图做圆角处理"><a href="#给UIButton或UILabel等非图片视图做圆角处理" class="headerlink" title="给UIButton或UILabel等非图片视图做圆角处理"></a>给UIButton或UILabel等非图片视图做圆角处理</h2><p>视图里如果不需要呈现图片，可以直接画一个带圆角的背景图片，做为子视图。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> UIImage *image = [UIImage rounedCornerImage:20 borderWidth:0.5 backgroundColor:[UIColor purpleColor] borderColor:[UIColor clearColor] size:CGSizeMake(CGRectGetWidth(view.frame), CGRectGetHeight(view.frame))];</div><div class="line">UIImageView *imageView = [[UIImageView alloc] initWithImage:image];</div><div class="line">[button insertSubview:imageView atIndex:0];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">+ (UIImage *)rounedCornerImage:(CGFloat)radius</div><div class="line">                   borderWidth:(CGFloat)borderWidth</div><div class="line">               backgroundColor:(UIColor *)backgroundColor</div><div class="line">                   borderColor:(UIColor *)borderColor</div><div class="line">                          size:(CGSize)size&#123;</div><div class="line">    CGSize sizeToFit = CGSizeMake(floor(size.width), floor(size.height));</div><div class="line">    CGFloat halfBorderWidth = (CGFloat)borderWidth / 2.0;</div><div class="line">    UIGraphicsBeginImageContextWithOptions(sizeToFit, false, [[UIScreen mainScreen] scale]);</div><div class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</div><div class="line">    CGContextSetLineWidth(context, borderWidth);</div><div class="line">    CGContextSetStrokeColorWithColor(context, borderColor.CGColor);</div><div class="line">    CGContextSetFillColorWithColor(context, backgroundColor.CGColor);</div><div class="line">    </div><div class="line">    CGFloat width = sizeToFit.width, height = sizeToFit.height;</div><div class="line">    CGContextMoveToPoint(context, width - halfBorderWidth, radius + halfBorderWidth);  // 开始坐标右边开始</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, height - halfBorderWidth, width - radius - halfBorderWidth, height - halfBorderWidth, radius);  // 右下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, height - halfBorderWidth, halfBorderWidth, height - radius - halfBorderWidth, radius); // 左下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, halfBorderWidth, width - halfBorderWidth, halfBorderWidth, radius); // 左上角</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, halfBorderWidth, width - halfBorderWidth, radius + halfBorderWidth, radius); // 右上角</div><div class="line">       CGContextDrawPath(UIGraphicsGetCurrentContext(), kCGPathFillStroke);</div><div class="line">    UIImage *output = UIGraphicsGetImageFromCurrentImageContext();</div><div class="line">    UIGraphicsEndImageContext();</div><div class="line">    return output;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;图片使用阴影的正确姿势&quot;&gt;&lt;a href=&quot;#图片使用阴影的正确姿势&quot; class=&quot;headerlink&quot; title=&quot;图片使用阴影的正确姿势&quot;&gt;&lt;/a&gt;图片使用阴影的正确姿势&lt;/h2&gt;&lt;p&gt;错误示范：会导致离屏渲染&lt;/p&gt;
-&lt;p&gt;~~imageView.la
-    
-    </summary>
-    
-      <category term="iOS" scheme="http://blackteachinese.com/categories/iOS/"/>
-    
-    
-      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>iOS开发性能最佳实践系列之——页面加载的性能检查清单</title>
-    <link href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/"/>
-    <id>http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/</id>
-    <published>2017-09-03T13:39:27.000Z</published>
-    <updated>2017-09-10T16:31:03.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。</p>
-<h2 id="UIViewController"><a href="#UIViewController" class="headerlink" title="UIViewController"></a>UIViewController</h2><p><strong>UIViewController生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">init</div><div class="line">initWithNibName:bundle</div><div class="line">viewWillAppear</div><div class="line">viewDidAppear</div><div class="line">viewDidLoad</div><div class="line">viewWillDisappear</div><div class="line">viewDidDisappear</div></pre></td></tr></table></figure>
-<h2 id="UITableView"><a href="#UITableView" class="headerlink" title="UITableView"></a>UITableView</h2><p><strong>UITableView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tableView:cellForRowAtIndexPath</div><div class="line">tableView:heightForRowAtIndexPath</div><div class="line">tableView:didSelectRowAtIndexPath</div></pre></td></tr></table></figure>
-<p><strong>减少tableview高度计算次数</strong></p>
-<ul>
-<li>有多种Cell或高度是动态的<ul>
-<li>设置estimatedRowHeight(设置后会开启self—sizing，自动计算高度)</li>
-</ul>
-</li>
-<li>只有一种Cell并且高度固定<ul>
-<li>设置rowHeight</li>
-<li>不要重载”tableView:heightForRowAtIndexPath”</li>
-</ul>
-</li>
-</ul>
-<p><strong>特别复杂的Cell,计算高度耗时较长，需要进行缓存</strong></p>
-<ul>
-<li>建议使用”UITableView+FDTemplateLayoutCell“。</li>
-</ul>
-<h2 id="UICollectionView"><a href="#UICollectionView" class="headerlink" title="UICollectionView"></a>UICollectionView</h2><p><strong>UICollectionView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">collectionView:cellForItemAtIndexPath</div><div class="line">collectionView:layout:sizeForItemAtIndexPath</div><div class="line">collectionView:didSelectItemAtIndexPath</div></pre></td></tr></table></figure>
-<h2 id="Cell"><a href="#Cell" class="headerlink" title="Cell"></a>Cell</h2><p><strong>使用Cell的复用机制</strong></p>
+    <content type="html"><![CDATA[<p><strong>避免滑动时加工数据</strong></p>
+<p>网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。</p>
+<p><strong>计算高度耗时较长时，将高度进行缓存</strong></p>
+<p>建议使用”UITableView+FDTemplateLayoutCell“。</p>
+<p><strong>使用Cell的复用机制</strong></p>
 <p>此处不需要解释</p>
 <p><strong>复用Cell内的子视图</strong></p>
 <p>有些开发者确实是使用了cell的复用机制，但是每次复用时由于子视图有一些差异，会把Cell里子视图释放掉，再重新初始化需要的子视图。这种做法是非常消耗CPU的，子视图也要尽量复用。</p>
@@ -186,16 +171,21 @@
 <p>移除一个子视图也是需要开销的。如果有一些子视图不需要显示，将其隐藏而不是移除。</p>
 <p><strong>到后台线程销毁视图</strong></p>
 <p>有大量视图需要销毁时，放到后台线程，减少主线程的计算量。</p>
-<p><strong>图片解码</strong></p>
+<p><strong>到后台线程图片解码</strong></p>
 <p>加载图片时，图片的解码需要消耗CPU的资源，而这部分是可以放到子线程处理的。（SDWebImage默认是在子线程解码的，除非你关了）</p>
-<p><strong>图片绘制</strong></p>
+<p><strong>到后台线程图片绘制</strong></p>
 <p>CoreGraphic是线程安全的，使用CoreGraphic绘制图片可以在子线程做，绘制完再回主线程加载到要呈现的控件里</p>
+<p><strong>减少透明视图的混合</strong></p>
+<p>设置视图的opaque属性为True,减少视图的混合消耗GPU资源</p>
+<p><strong>手动计算布局，并缓存</strong></p>
+<p>特别复杂的Cell，Autolayout的布局消耗大量CPU资源。可以根据数据源手动计算frame并进行缓存，从而避免每次都重新计算布局。</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。&lt;/p&gt;
-&lt;h2 id=&quot;UIViewController&quot;&gt;&lt;a href=&quot;#UIViewController&quot; class=&quot;headerlink&quot; title=&quot;UIView
+      &lt;p&gt;&lt;strong&gt;避免滑动时加工数据&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。&lt;/p&gt;
+&lt;p
     
     </summary>
     
@@ -244,6 +234,40 @@
     
     
       <category term="thought" scheme="http://blackteachinese.com/tags/thought/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势</title>
+    <link href="http://blackteachinese.com/2017/09/03/iOS_best_performance_rounded_and_shadow/"/>
+    <id>http://blackteachinese.com/2017/09/03/iOS_best_performance_rounded_and_shadow/</id>
+    <published>2017-09-03T13:39:27.000Z</published>
+    <updated>2017-09-11T13:52:22.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="图片使用阴影的正确姿势"><a href="#图片使用阴影的正确姿势" class="headerlink" title="图片使用阴影的正确姿势"></a>图片使用阴影的正确姿势</h2><p>错误示范：会导致离屏渲染</p>
+<p><del>imageView.layer.shadowOpacity = 0.5;</del></p>
+<p>正确做法：通过shadowPath，告诉CoreAnimation你要渲染的形状，减少离屏渲染</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">imageView.layer.shadowOpacity = 0.5;</div><div class="line">imageView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:imageView.bounds] CGPath];</div></pre></td></tr></table></figure>
+<h2 id="对图片做圆角处理的正确姿势"><a href="#对图片做圆角处理的正确姿势" class="headerlink" title="对图片做圆角处理的正确姿势"></a>对图片做圆角处理的正确姿势</h2><p>错误示范：<br>给imageView加cornerRadius后用masksToBounds切。因为加masksToBounds后，会触发离屏幕渲染，如果一个Cell里有多个这样的图片，滑动的时候GPU压力会很大，从而导致严重的掉帧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">UIImage *image = [UIImage imageNamed:@&quot;IMG_6083&quot;];</div><div class="line">imageView.image = image;</div><div class="line">imageView.layer.cornerRadius = CGRectGetWidth(imageView.frame)/ 4.0;</div><div class="line">imageView.layer.masksToBounds = YES;</div></pre></td></tr></table></figure>
+<p>正确做法：<br>通过Core Graphics创建一块位图画布（bitmap graphics context），将图片画到画布，再画Path将图片剪切</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">+ (id)createRoundedRectImage:(UIImage *)image size:(CGSize)size radius:(int)radius &#123;</div><div class="line">    size = CGSizeMake(size.width * image.scale, size.height * image.scale);</div><div class="line">    radius = radius * image.scale;</div><div class="line">    UIImage *img = image;</div><div class="line">    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();</div><div class="line">    CGContextRef context = CGBitmapContextCreate(NULL, size.width, size.height, CGImageGetBitsPerComponent(image.CGImage), 4 * size.width, CGImageGetColorSpace(image.CGImage), kCGImageAlphaPremultipliedFirst);</div><div class="line">    CGRect rect = CGRectMake(0, 0, size.width, size.height);</div><div class="line">    CGContextBeginPath(context);</div><div class="line">    addRoundedRectToPath(context, rect, radius, radius);</div><div class="line">    CGContextClosePath(context);</div><div class="line">    CGContextClip(context);</div><div class="line">    CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), img.CGImage);</div><div class="line">    CGImageRef imageMasked = CGBitmapContextCreateImage(context);</div><div class="line">    img = [UIImage imageWithCGImage:imageMasked];</div><div class="line">    CGContextRelease(context);</div><div class="line">    CGColorSpaceRelease(colorSpace);</div><div class="line">    CGImageRelease(imageMasked);</div><div class="line">    return img;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="给UIButton或UILabel等非图片视图做圆角处理"><a href="#给UIButton或UILabel等非图片视图做圆角处理" class="headerlink" title="给UIButton或UILabel等非图片视图做圆角处理"></a>给UIButton或UILabel等非图片视图做圆角处理</h2><p>视图里如果不需要呈现图片，可以直接在后台线程画一个带圆角的背景图片，做为子视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> UIImage *image = [UIImage rounedCornerImage:20 borderWidth:0.5 backgroundColor:[UIColor purpleColor] borderColor:[UIColor clearColor] size:CGSizeMake(CGRectGetWidth(view.frame), CGRectGetHeight(view.frame))];</div><div class="line">UIImageView *imageView = [[UIImageView alloc] initWithImage:image];</div><div class="line">[button insertSubview:imageView atIndex:0];</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">+ (UIImage *)rounedCornerImage:(CGFloat)radius</div><div class="line">                   borderWidth:(CGFloat)borderWidth</div><div class="line">               backgroundColor:(UIColor *)backgroundColor</div><div class="line">                   borderColor:(UIColor *)borderColor</div><div class="line">                          size:(CGSize)size&#123;</div><div class="line">    CGSize sizeToFit = CGSizeMake(floor(size.width), floor(size.height));</div><div class="line">    CGFloat halfBorderWidth = (CGFloat)borderWidth / 2.0;</div><div class="line">    UIGraphicsBeginImageContextWithOptions(sizeToFit, false, [[UIScreen mainScreen] scale]);</div><div class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</div><div class="line">    CGContextSetLineWidth(context, borderWidth);</div><div class="line">    CGContextSetStrokeColorWithColor(context, borderColor.CGColor);</div><div class="line">    CGContextSetFillColorWithColor(context, backgroundColor.CGColor);</div><div class="line">    </div><div class="line">    CGFloat width = sizeToFit.width, height = sizeToFit.height;</div><div class="line">    CGContextMoveToPoint(context, width - halfBorderWidth, radius + halfBorderWidth);  // 开始坐标右边开始</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, height - halfBorderWidth, width - radius - halfBorderWidth, height - halfBorderWidth, radius);  // 右下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, height - halfBorderWidth, halfBorderWidth, height - radius - halfBorderWidth, radius); // 左下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, halfBorderWidth, width - halfBorderWidth, halfBorderWidth, radius); // 左上角</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, halfBorderWidth, width - halfBorderWidth, radius + halfBorderWidth, radius); // 右上角</div><div class="line">       CGContextDrawPath(UIGraphicsGetCurrentContext(), kCGPathFillStroke);</div><div class="line">    UIImage *output = UIGraphicsGetImageFromCurrentImageContext();</div><div class="line">    UIGraphicsEndImageContext();</div><div class="line">    return output;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;图片使用阴影的正确姿势&quot;&gt;&lt;a href=&quot;#图片使用阴影的正确姿势&quot; class=&quot;headerlink&quot; title=&quot;图片使用阴影的正确姿势&quot;&gt;&lt;/a&gt;图片使用阴影的正确姿势&lt;/h2&gt;&lt;p&gt;错误示范：会导致离屏渲染&lt;/p&gt;
+&lt;p&gt;&lt;del&gt;imageView
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://blackteachinese.com/categories/iOS/"/>
+    
+    
+      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
     
   </entry>
   
@@ -776,9 +800,9 @@
       <category term="webrtc" scheme="http://blackteachinese.com/categories/webrtc/"/>
     
     
-      <category term="compile" scheme="http://blackteachinese.com/tags/compile/"/>
-    
       <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
+    
+      <category term="compile" scheme="http://blackteachinese.com/tags/compile/"/>
     
       <category term="webrtc" scheme="http://blackteachinese.com/tags/webrtc/"/>
     
@@ -1075,45 +1099,6 @@
     
     
       <category term="default" scheme="http://blackteachinese.com/tags/default/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>iOS侧滑出现的卡死Bug</title>
-    <link href="http://blackteachinese.com/2016/12/30/ios-ui-left-slip-bug/"/>
-    <id>http://blackteachinese.com/2016/12/30/ios-ui-left-slip-bug/</id>
-    <published>2016-12-30T10:30:07.000Z</published>
-    <updated>2017-04-09T08:59:13.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。</p>
-<p>某一天测试妹妹跑过来跟我说，我测出一个bug，进去某一个页面后回到RootViewController，左滑会导致视图堆栈变乱。我试了一下，果真如此。我想起以前曾经遇到一个bug，如果是自定义UINavigationController并且设置了自定义的leftBarButtonItem，那在UINavigationController的rootViewController上滑动返回时，会出现界面卡死的情况。</p>
-<p>赶紧查了一下我们的自定义XXNavigationController,缺失设置了leftBarButtonItem。但是仔细查看了代码，我们其实是禁止了rootViewController左滑返回的事件。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)gestureRecognizerShouldBegin:(<span class="built_in">UIGestureRecognizer</span> *)gestureRecognizer &#123;</div><div class="line">    <span class="keyword">if</span> (gestureRecognizer == <span class="keyword">self</span>.interactivePopGestureRecognizer) &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.viewControllers.count &lt;= <span class="number">1</span> ||</div><div class="line">            <span class="keyword">self</span>.visibleViewController == [<span class="keyword">self</span>.viewControllers firstObject]) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>天了噜！这应该没有问题的，什么情况。经过一番仔细查看，发现只有进入某个页面，左滑才会出这个问题。到底这个做了什么？终于被我发现一行要命的代码。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.navigationController.interactivePopGestureRecognizer.delegate = <span class="literal">nil</span>;</div></pre></td></tr></table></figure>
-<p>interactivePopGestureRecognizer的代理被设置成nil了。。。。<br>怎么处理好呢？</p>
-<p>首先，创建一个类XXXDelegate专门处理侧滑手势的delegate事件。并实现上面“gestureRecognizerShouldBegin:gestureRecognizer”方法的处理。</p>
-<p>接着，在XXTabbarController把每个NavgationController对应创建一个XXXDelegate。每次回到TabbarController任意一个子页面“viewDidAppear”的时候，把对应ChildViewController的NavgationController的interactivePopGestureRecognizer.delegate设置成对应的XXXDelegate;</p>
-<p>结论，这样不论哪个页面把interactivePopGestureRecognizer的代理设置成nil，都能保证回到rootViewController，interactivePopGestureRecognizer.delegate都能设置成功。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。&lt;/p&gt;
-&lt;p&gt;某一天测试妹妹跑过来跟我说，我测出一个b
-    
-    </summary>
-    
-      <category term="iOS" scheme="http://blackteachinese.com/categories/iOS/"/>
-    
-    
-      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
-    
-      <category term="左滑bug" scheme="http://blackteachinese.com/tags/%E5%B7%A6%E6%BB%91bug/"/>
-    
-      <category term="interactivePopGestureRecognizer" scheme="http://blackteachinese.com/tags/interactivePopGestureRecognizer/"/>
-    
-      <category term="左滑卡死" scheme="http://blackteachinese.com/tags/%E5%B7%A6%E6%BB%91%E5%8D%A1%E6%AD%BB/"/>
     
   </entry>
   

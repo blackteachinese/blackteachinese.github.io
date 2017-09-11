@@ -89,7 +89,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -107,15 +107,37 @@
 
 
 
-<meta name="description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Blacktea's Life">
-<meta property="og:url" content="http://blackteachinese.com/categories/iOS/index.html">
+<meta name="description" content="避免滑动时加工数据
+网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。
+计算高度耗时较长时，将高度进行缓存
+建议使用”UITableView+FDTemplateLayoutCell“。
+使用Cell的复用机制
+此处不需要解释
+复用Cell内的子视图
+有些开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单">
+<meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
+<meta property="og:description" content="避免滑动时加工数据
+网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。
+计算高度耗时较长时，将高度进行缓存
+建议使用”UITableView+FDTemplateLayoutCell“。
+使用Cell的复用机制
+此处不需要解释
+复用Cell内的子视图
+有些开">
+<meta property="og:updated_time" content="2017-09-11T13:58:06.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Blacktea's Life">
-<meta name="twitter:description" content="iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生">
+<meta name="twitter:title" content="iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单">
+<meta name="twitter:description" content="避免滑动时加工数据
+网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。
+计算高度耗时较长时，将高度进行缓存
+建议使用”UITableView+FDTemplateLayoutCell“。
+使用Cell的复用机制
+此处不需要解释
+复用Cell内的子视图
+有些开">
 
 
 
@@ -143,13 +165,13 @@
 
 
 
-  <link rel="canonical" href="http://blackteachinese.com/categories/iOS/"/>
+  <link rel="canonical" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/"/>
 
 
 
 
 
-  <title> 分类: iOS | Blacktea's Life </title>
+  <title> iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -183,7 +205,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -297,243 +319,227 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        iOS
-        <small>分类</small>
-      </h2>
-    </div>
-
+  <div id="posts" class="posts-expand">
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/09/03/iOS_best_performance_collection_enumeration/" itemprop="url">
-              
-                <span itemprop="name">iOS开发性能最佳实践系列之——集合遍历</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-09-03T21:39:27+08:00"
-              content="2017-09-03" >
-          09-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/09/03/iOS_best_performance_pageLoad/" itemprop="url">
-              
-                <span itemprop="name">iOS开发性能最佳实践系列之——页面加载快的性能检查清单</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-09-03T21:39:27+08:00"
-              content="2017-09-03" >
-          09-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/09/03/iOS_business_developer_value/" itemprop="url">
-              
-                <span itemprop="name">业务开发人员的价值是什么？</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-09-03T21:39:27+08:00"
-              content="2017-09-03" >
-          09-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/09/03/iOS_best_performance_pageSlide/" itemprop="url">
-              
-                <span itemprop="name">iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-09-03T21:39:27+08:00"
-              content="2017-09-03" >
-          09-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/09/03/iOS_best_performance_rounded_and_shadow/" itemprop="url">
-              
-                <span itemprop="name">iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-09-03T21:39:27+08:00"
-              content="2017-09-03" >
-          09-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/08/30/ios_app_base_performance_stratege/" itemprop="url">
-              
-                <span itemprop="name">如何建设App的页面性能基线</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-08-30T21:39:27+08:00"
-              content="2017-08-30" >
-          08-30
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/03/14/ios_memoryLeak_tool/" itemprop="url">
-              
-                <span itemprop="name">内存泄漏监控</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-03-14T10:18:21+08:00"
-              content="2017-03-14" >
-          03-14
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/12/30/ios-ui-left-slip-bug/" itemprop="url">
-              
-                <span itemprop="name">iOS侧滑出现的卡死Bug</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-12-30T18:30:07+08:00"
-              content="2016-12-30" >
-          12-30
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-  </section>
 
   
 
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
+                2017-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>避免滑动时加工数据</strong></p>
+<p>网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。</p>
+<p><strong>计算高度耗时较长时，将高度进行缓存</strong></p>
+<p>建议使用”UITableView+FDTemplateLayoutCell“。</p>
+<p><strong>使用Cell的复用机制</strong></p>
+<p>此处不需要解释</p>
+<p><strong>复用Cell内的子视图</strong></p>
+<p>有些开发者确实是使用了cell的复用机制，但是每次复用时由于子视图有一些差异，会把Cell里子视图释放掉，再重新初始化需要的子视图。这种做法是非常消耗CPU的，子视图也要尽量复用。</p>
+<p><strong>使用隐藏而不是移除</strong></p>
+<p>移除一个子视图也是需要开销的。如果有一些子视图不需要显示，将其隐藏而不是移除。</p>
+<p><strong>到后台线程销毁视图</strong></p>
+<p>有大量视图需要销毁时，放到后台线程，减少主线程的计算量。</p>
+<p><strong>到后台线程图片解码</strong></p>
+<p>加载图片时，图片的解码需要消耗CPU的资源，而这部分是可以放到子线程处理的。（SDWebImage默认是在子线程解码的，除非你关了）</p>
+<p><strong>到后台线程图片绘制</strong></p>
+<p>CoreGraphic是线程安全的，使用CoreGraphic绘制图片可以在子线程做，绘制完再回主线程加载到要呈现的控件里</p>
+<p><strong>减少透明视图的混合</strong></p>
+<p>设置视图的opaque属性为True,减少视图的混合消耗GPU资源</p>
+<p><strong>手动计算布局，并缓存</strong></p>
+<p>特别复杂的Cell，Autolayout的布局消耗大量CPU资源。可以根据数据源手动计算frame并进行缓存，从而避免每次都重新计算布局。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ww2.sinaimg.cn/large/006tNbRwgy1feav9se587j30kw0r2adr.jpg" alt="Blacktea wechat" style="width: 200px; max-width: 100%;"/>
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>记录生活于感悟，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="https://ww4.sinaimg.cn/large/006tNbRwgy1feav9e683oj30yi1e6q7b.jpg" alt="Blacktea WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="https://ww3.sinaimg.cn/large/006tNbRwgy1feav9mjqarj30p011iq6c.jpg" alt="Blacktea Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/03/thought_structure_thinking/" rel="next" title="结构化思考——完美应对电梯30秒的思考模型">
+                <i class="fa fa-chevron-left"></i> 结构化思考——完美应对电梯30秒的思考模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/03/iOS_business_developer_value/" rel="prev" title="业务开发人员的价值是什么？">
+                业务开发人员的价值是什么？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -541,6 +547,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -785,6 +795,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 

@@ -114,10 +114,9 @@
 
 使用建议：
 
-for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
-经典for循环~~
+for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
 
-推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用f">
+推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS开发性能最佳实践系列之——集合遍历">
 <meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_best_performance_collection_enumeration/index.html">
@@ -129,11 +128,10 @@ for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
 
 使用建议：
 
-for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
-经典for循环~~
+for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
 
-推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用f">
-<meta property="og:updated_time" content="2017-09-06T03:39:11.000Z">
+推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for">
+<meta property="og:updated_time" content="2017-09-11T13:07:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发性能最佳实践系列之——集合遍历">
 <meta name="twitter:description" content="场景一场景条件
@@ -143,10 +141,9 @@ for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
 
 使用建议：
 
-for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
-经典for循环~~
+for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
 
-推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用f">
+推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for">
 
 
 
@@ -439,8 +436,7 @@ for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
 </ul>
 <p>使用建议：</p>
 <ul>
-<li>for..in （NSFastEnumeration）<br>~~* enumerateObjectsUsingBlock</li>
-<li>经典for循环~~</li>
+<li>for..in （NSFastEnumeration）<br><del>* enumerateObjectsUsingBlock</del><br><del>* 经典for循环</del></li>
 </ul>
 <p>推荐原因：<br>在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for in.</p>
 <h2 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h2><p>场景条件</p>
@@ -448,10 +444,7 @@ for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
 <li>需要按顺序</li>
 <li>同时需要key和value</li>
 </ul>
-<p>按顺序优先考虑下列方法</p>
-<ul>
-<li>enumerateKeysAndObjectsUsingBlock<br><del>* 经典for循环</del></li>
-</ul>
+<p>按顺序优先考虑下列方法<br><del>* enumerateKeysAndObjectsUsingBlock</del><br><del>* 经典for循环</del></p>
 <p>推荐原因：<br>在集合元素”100“量级和“1000000”量级时，enumerateKeysAndObjectsUsingBlock的效率都比“经典for循环”要高，而且不会出现“off-by-one errors”错误。建议需要key、vlaue时使用enumerateKeysAndObjectsUsingBlock</p>
 <h2 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h2><p>场景条件</p>
 <ul>
@@ -460,7 +453,7 @@ for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
 </ul>
 <p>按顺序优先考虑下列方法</p>
 <ul>
-<li>enumerateObjectsWithOptions （NSEnumerationConcurrent）<br>~~* dispatch_apply(Concurrent)<br>~~</li>
+<li>enumerateObjectsWithOptions （NSEnumerationConcurrent）<br><del>* dispatch_apply(Concurrent)</del></li>
 </ul>
 <p>推荐原因：<br>enumerateObjectsWithOptions和dispatch_apply(Concurrent)各种场景的效率都差不多，但是enumerateObjectsWithOptions可读性更强，特性也更多。建议使用enumerateObjectsWithOptions。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[array enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) &#123;</div><div class="line">    [sark doSomethingSlow];</div><div class="line">&#125;];</div></pre></td></tr></table></figure></p>
 <h2 id="场景四"><a href="#场景四" class="headerlink" title="场景四"></a>场景四</h2><p>场景条件</p>
@@ -547,8 +540,8 @@ for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/03/iOS_business_developer_value/" rel="next" title="业务开发人员的价值是什么？">
-                <i class="fa fa-chevron-left"></i> 业务开发人员的价值是什么？
+              <a href="/2017/09/03/iOS_best_performance_pageLoad/" rel="next" title="iOS开发性能最佳实践系列之——页面加载快的性能检查清单">
+                <i class="fa fa-chevron-left"></i> iOS开发性能最佳实践系列之——页面加载快的性能检查清单
               </a>
             
           </div>
@@ -627,7 +620,7 @@ for..in （NSFastEnumeration）~~* enumerateObjectsUsingBlock
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

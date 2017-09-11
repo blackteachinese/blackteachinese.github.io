@@ -309,6 +309,178 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/12/arm64/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/07/12/arm64/" itemprop="url">
+                  10分钟入门arm64汇编
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-12T21:39:27+08:00">
+                2017-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/default/" itemprop="url" rel="index">
+                    <span itemprop="name">default</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="什么是栈？"><a href="#什么是栈？" class="headerlink" title="什么是栈？"></a>什么是栈？</h2><p>堆栈严格来说应该叫做栈，栈(Stack)是限定仅在一端进行插入或删除操作的线性表。因此，对栈来说，可以进行插入或删除操作的一端端称为栈顶(top)，相应地，另一端称为栈底(bottom)。由于堆栈只允许在一端进行操作，因而按照后进先出（LIFO-Last In First Out）的原理运作。</p>
+<h2 id="会变化的栈顶"><a href="#会变化的栈顶" class="headerlink" title="会变化的栈顶"></a>会变化的栈顶</h2><p>从栈顶的定义来看，栈顶的位置是可变的。空栈时，栈顶和栈底重合；满栈时，栈顶离栈底最远。ARM为堆栈提供了硬件支持，它使用一个专门的寄存器（堆栈指针）指向堆栈的栈顶。</p>
+<h2 id="两种存储器堆栈"><a href="#两种存储器堆栈" class="headerlink" title="两种存储器堆栈"></a>两种存储器堆栈</h2><p>递增堆栈：向上生长：向高地址方向生长<br>递减堆栈：向下生长：向低地址方向生长<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fhlu7dlg1cj30go0750sv.jpg" alt=""></p>
+<h2 id="ARM堆栈的生长方向"><a href="#ARM堆栈的生长方向" class="headerlink" title="ARM堆栈的生长方向"></a>ARM堆栈的生长方向</h2><p>虽然ARM处理器核对于两种生长方式的堆栈均支持，但ADS的C语言编译器仅支持一种方式，即从上往下长，并且必须是满递减堆栈。所以STMFD等指令用的最多。</p>
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>寄存器是用来存储CPU在计算过程中临时数据的, arm64有32个通用寄存器(这里不对浮点数/向量寄存器等做说明):<br>x0-x31, 这些寄存器可以直接在汇编代码里面使用, 也是最经常被使用到的寄存器.</p>
+<ul>
+<li>SP寄存器, Stack Pointer, 指向栈低的指针. 它是一个隐含的寄存器, 可以在内存操作指令中通过x31寄存器来访问.</li>
+<li>PC寄存器, Program Counter, 记录当前执行的代码的地址. 它是一个隐含的寄存器, 无法被直接访问, 只能被特定的指令隐含访问.</li>
+<li>LR寄存器, Link Register, 指向返回地址, 即return时回到的地址. 它就是x30, 可以随意访问读写, 意味着程序可以随意改变方法的返回地址.</li>
+<li>FP寄存器, Frame Pointer, 指向上一次方法调用的frame的最高位地址, frame位于栈上. 它就是x29, 可以随意访问读写.</li>
+</ul>
+<p>FP是指向frame的最高位地址, frame位于栈上, 那frame是什么呢?<br>frame其实就是一个按照方法调用顺序, 从栈的高地址向低地址依次存放的一组数据, 用于存放上一次方法调用的关键信息. 数据可以参考下图:<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fhluegxwbnj30or0jv3zr.jpg" alt=""></p>
+<h2 id="寻址方式"><a href="#寻址方式" class="headerlink" title="寻址方式"></a>寻址方式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">add x0,x0,#1            ;x0 &lt;==x0+1 ,把x0的内容加1。</div><div class="line">add x0,x0,#0x30         ;x0 &lt;==x0+0x30,把x0的内容加 0x30。</div><div class="line">add x0,x1,x3            ;x0 &lt;==x1+x3, 把x1的内容加上x3的内容放入x0</div><div class="line">add x0,x1,x3,lsl #3     ;x0 &lt;==x0+x3*8 ,x3的值左移3位就是乘以8，结果与x1的值相, 放入x0.</div><div class="line">add x0,x1,[x2]          ;x0 &lt;==x1+[x2], 把x1的内容加上x2的内容作为地址取内存内容放入x0</div><div class="line">ldr x0,[x1]             ;x0 &lt;==[x1], 把x1的内容作为地址取内存内容放入x0</div><div class="line">str x0,[x1]             ;[x1] &lt;== x0, 把x0的内容放入x1的内容作为地址的内存中</div><div class="line">ldr x0,[x1,#4]          ;x0 &lt;==[x1+4], 把x1的内容加上4, 作为内存地址, 取其内容放入x0</div><div class="line">ldr x0,[x1,#4]!         ;x0 &lt;==[x1+4]、 x1&lt;==x1+4, 把x1的内容加上4, 作为内存地址, 取其内容放入x0, 然后把x1的内容加上4放入x1</div><div class="line">ldr x0,[x1],#4          ;x0 &lt;==[x1] 、x1 &lt;==x1+4, 把x1的内容作为内存地址取内存内容放入x0, 并把x1的内容加上4放入x1</div><div class="line">ldr x0,[x1,x2]          ;x0 &lt;==[x1+x2], 把x1和x2的内容相加, 作为内存地址取内存内容放入x0</div></pre></td></tr></table></figure>
+<h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h2><p>b 跳转到地址（无返回）, 不会改变LR寄存器的值<br>bl 跳转到地址（有返回）, 会改变LR寄存器的值为返回地址<br>ldr/ldur 地址对应的内容加载到寄存器<br>str/stur 寄存器内容存储到内存地址<br>ldp/stp 取/存一对数据(2个)<br>cbz/cbnz 为零跳转到地址/不为零跳转到<br>add 加法运算<br>mov 寄存器之间内容移动<br>ldp/stp 从栈取/存数据<br>adrp, 用来定位数据段中的数据用, 因为aslr会导致代码及数据的地址随机化, 用adrp来根据pc做辅助定位</p>
+<h2 id="案例解析"><a href="#案例解析" class="headerlink" title="案例解析"></a>案例解析</h2><p><code>main函数汇编解析</code></p>
+<ul>
+<li>设置Debug-&gt;Debug Workflow-&gt;Always Show Disassembly</li>
+<li>打断点到callMe函数。PS：callMe调用别的方法才会被保存frame</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">void callYou() &#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">void callMe(int a, int b) &#123;</div><div class="line">    callYou();</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(int argc, char * argv[]) &#123;</div><div class="line">    int a = 4;</div><div class="line">    int b = 10;</div><div class="line">    callMe(a, b);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这段代码编译结果如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">libdyld.dylib`start:</div><div class="line">    0x18aad55b4 &lt;+0&gt;: nop    </div><div class="line">    0x18aad55b8 &lt;+4&gt;: bl     0x18ab05378               ; exit</div><div class="line">    0x18aad55bc &lt;+8&gt;: brk    #0x3</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Arm64`main:</div><div class="line">    0x100026c24 &lt;+0&gt;:  sub    sp, sp, #0x30             ; =0x30 ;编译器计算到此次方法调用要48bit的栈,把栈底减48bit留出空位存临时变量</div><div class="line">    0x100026c28 &lt;+4&gt;:  stp    x29, x30, [sp, #0x20] ;将fp和lr存入栈的sp+32的地址</div><div class="line">    0x100026c2c &lt;+8&gt;:  add    x29, sp, #0x20            ; =0x20 ;sp+32后存入x29，fp此时的位置就是sp+32</div><div class="line">    0x100026c30 &lt;+12&gt;: mov    w8, #0xa ;将10存到寄存器w8</div><div class="line">    0x100026c34 &lt;+16&gt;: orr    w9, wzr, #0x4 ;将4与wzr进行或运算，存到寄存器W9</div><div class="line">    0x100026c38 &lt;+20&gt;: stur   w0, [x29, #-0x4] ;把w0(main方法的第一个参数, argc),存入x29减4的位置</div><div class="line">    0x100026c3c &lt;+24&gt;: str    x1, [sp, #0x10] ;将x1(main方法的第二个参数*argv[])，存入sp-16的位置</div><div class="line">    0x100026c40 &lt;+28&gt;: str    w9, [sp, #0xc] ;将w9的值，存入到sp+12的位置</div><div class="line">    0x100026c44 &lt;+32&gt;: str    w8, [sp, #0x8] ;将w8的值，存入到sp+8的位置</div><div class="line">    0x100026c48 &lt;+36&gt;: ldr    w0, [sp, #0xc] ;将sp+12地址对应的内容加载到寄存器w0</div><div class="line">    0x100026c4c &lt;+40&gt;: ldr    w1, [sp, #0x8] ;将sp+8地址对应的内容加载到寄存器w1</div><div class="line">    0x100026c50 &lt;+44&gt;: bl     0x100026c00               ; callMe at main.m:16 ;调用callMe方法,将w0、w1作为参数</div><div class="line">-&gt;  0x100026c54 &lt;+48&gt;: mov    w8, #0x0 ;将0存到w8</div><div class="line">    0x100026c58 &lt;+52&gt;: mov    x0, x8 ;将0存到x0</div><div class="line">    0x100026c5c &lt;+56&gt;: ldp    x29, x30, [sp, #0x20] ;从栈里把最开始保存的fp和lr还原回来</div><div class="line">    0x100026c60 &lt;+60&gt;: add    sp, sp, #0x30             ; =0x30 ;sp+48后,存到sp(跳到下一个frame的位置)</div><div class="line">    0x100026c64 &lt;+64&gt;: ret ;返回</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Arm64`callMe:</div><div class="line">    0x100026c00 &lt;+0&gt;:  sub    sp, sp, #0x20             ; =0x20 ;编译器计算到此次方法调用要用到32bit的栈，把栈底减32bit留出空位存临时变量</div><div class="line">    0x100026c04 &lt;+4&gt;:  stp    x29, x30, [sp, #0x10] ;将fp和lr寄存器存入到sp+16的位置</div><div class="line">    0x100026c08 &lt;+8&gt;:  add    x29, sp, #0x10            ; =0x10 ; 将sp+16后，存入到x29</div><div class="line">    0x100026c0c &lt;+12&gt;: stur   w0, [x29, #-0x4] ; 将w0（第一个参数）存入到x29 -4的位置</div><div class="line">    0x100026c10 &lt;+16&gt;: str    w1, [sp, #0x8] ;将w1(第二个参数) 存入到sp+8的位置</div><div class="line">-&gt;  0x100026c14 &lt;+20&gt;: bl     0x100026bfc               ; callYou at main.m:14 ; 调用callYou方法</div><div class="line">    0x100026c18 &lt;+24&gt;: ldp    x29, x30, [sp, #0x10] ;从栈里把最开始保存的fp和lr还原回来</div><div class="line">    0x100026c1c &lt;+28&gt;: add    sp, sp, #0x20             ; =0x20 ;sp+32后，存入到sp(跳到下一个frame的位置)</div><div class="line">    0x100026c20 &lt;+32&gt;: ret</div></pre></td></tr></table></figure>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fhlu8cthldj30yk04uabc.jpg" alt="从start-&gt;main-&gt;callme-&gt;callYou有3个frame"></p>
+<h2 id="sp的正负偏移"><a href="#sp的正负偏移" class="headerlink" title="sp的正负偏移"></a>sp的正负偏移</h2><p>sp存取的时候有的偏移量是正数, 有的是负数, 这有什么区别呢?<br>在stack里面, sp指针之下(负数偏移量)的数据是不保证安全的, 可能被覆盖, 而sp指针之上(正数偏移量)的数据是安全的. 放到负数偏移量一般都是临时存一下数据, 需要被整个方法用到的数据一般放到sp的正数偏移位置.</p>
+<h2 id="git地址"><a href="#git地址" class="headerlink" title="git地址"></a>git地址</h2><p><a href="https://github.com/blackteachinese/arm64Example" target="_blank" rel="external">demo传送门</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.element14.com/community/servlet/JiveServlet/previewBody/41836-102-1-229511/ARM.Reference_Manual.pdf" target="_blank" rel="external">ARM Reference Manual: https://www.element14.com/community/servlet/JiveServlet/previewBody/41836-102-1-229511/ARM.Reference_Manual.pdf</a></p>
+<p><a href="https://developer.apple.com/library/content/documentation/Xcode/Conceptual/iPhoneOSABIReference/Articles/ARM64FunctionCallingConventions.html" target="_blank" rel="external">ARM64 Function Calling Conventions: https://developer.apple.com/library/content/documentation/Xcode/Conceptual/iPhoneOSABIReference/Articles/ARM64FunctionCallingConventions.html</a></p>
+<p><a href="http://blog.chinaunix.net/uid-25871104-id-2938389.html" target="_blank" rel="external">FP寄存器及frame pointer介绍: http://blog.chinaunix.net/uid-25871104-id-2938389.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/10/thought-to-be-lovely-man/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1911,158 +2083,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2016/12/30/ios-ui-left-slip-bug/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/12/30/ios-ui-left-slip-bug/" itemprop="url">
-                  iOS侧滑出现的卡死Bug
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-30T18:30:07+08:00">
-                2016-12-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们都知道iOS7以后，系统UINavigationController自带侧滑返回上一级。它是通过navigationController中的interactivePopGestureRecognizer属性来控制。</p>
-<p>某一天测试妹妹跑过来跟我说，我测出一个bug，进去某一个页面后回到RootViewController，左滑会导致视图堆栈变乱。我试了一下，果真如此。我想起以前曾经遇到一个bug，如果是自定义UINavigationController并且设置了自定义的leftBarButtonItem，那在UINavigationController的rootViewController上滑动返回时，会出现界面卡死的情况。</p>
-<p>赶紧查了一下我们的自定义XXNavigationController,缺失设置了leftBarButtonItem。但是仔细查看了代码，我们其实是禁止了rootViewController左滑返回的事件。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">BOOL</span>)gestureRecognizerShouldBegin:(<span class="built_in">UIGestureRecognizer</span> *)gestureRecognizer &#123;</div><div class="line">    <span class="keyword">if</span> (gestureRecognizer == <span class="keyword">self</span>.interactivePopGestureRecognizer) &#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.viewControllers.count &lt;= <span class="number">1</span> ||</div><div class="line">            <span class="keyword">self</span>.visibleViewController == [<span class="keyword">self</span>.viewControllers firstObject]) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">NO</span>;</div><div class="line">        &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>天了噜！这应该没有问题的，什么情况。经过一番仔细查看，发现只有进入某个页面，左滑才会出这个问题。到底这个做了什么？终于被我发现一行要命的代码。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">self</span>.navigationController.interactivePopGestureRecognizer.delegate = <span class="literal">nil</span>;</div></pre></td></tr></table></figure>
-<p>interactivePopGestureRecognizer的代理被设置成nil了。。。。<br>怎么处理好呢？</p>
-<p>首先，创建一个类XXXDelegate专门处理侧滑手势的delegate事件。并实现上面“gestureRecognizerShouldBegin:gestureRecognizer”方法的处理。</p>
-<p>接着，在XXTabbarController把每个NavgationController对应创建一个XXXDelegate。每次回到TabbarController任意一个子页面“viewDidAppear”的时候，把对应ChildViewController的NavgationController的interactivePopGestureRecognizer.delegate设置成对应的XXXDelegate;</p>
-<p>结论，这样不论哪个页面把interactivePopGestureRecognizer的代理设置成nil，都能保证回到rootViewController，interactivePopGestureRecognizer.delegate都能设置成功。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2112,7 +2132,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
