@@ -309,6 +309,829 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_collection_enumeration/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/03/iOS_best_performance_collection_enumeration/" itemprop="url">
+                  iOS开发性能最佳实践系列之——集合遍历
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
+                2017-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h2><p>场景条件</p>
+<ul>
+<li>需要按顺序</li>
+<li>同步执行</li>
+</ul>
+<p>使用建议：</p>
+<ul>
+<li>for..in （NSFastEnumeration）<br>~~* enumerateObjectsUsingBlock</li>
+<li>经典for循环~~</li>
+</ul>
+<p>推荐原因：<br>在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for in.</p>
+<h2 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h2><p>场景条件</p>
+<ul>
+<li>需要按顺序</li>
+<li>同时需要key和value</li>
+</ul>
+<p>按顺序优先考虑下列方法</p>
+<ul>
+<li>enumerateKeysAndObjectsUsingBlock<br><del>* 经典for循环</del></li>
+</ul>
+<p>推荐原因：<br>在集合元素”100“量级和“1000000”量级时，enumerateKeysAndObjectsUsingBlock的效率都比“经典for循环”要高，而且不会出现“off-by-one errors”错误。建议需要key、vlaue时使用enumerateKeysAndObjectsUsingBlock</p>
+<h2 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h2><p>场景条件</p>
+<ul>
+<li>处理比较耗时</li>
+<li>不需要按顺序</li>
+</ul>
+<p>按顺序优先考虑下列方法</p>
+<ul>
+<li>enumerateObjectsWithOptions （NSEnumerationConcurrent）<br>~~* dispatch_apply(Concurrent)<br>~~</li>
+</ul>
+<p>推荐原因：<br>enumerateObjectsWithOptions和dispatch_apply(Concurrent)各种场景的效率都差不多，但是enumerateObjectsWithOptions可读性更强，特性也更多。建议使用enumerateObjectsWithOptions。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[array enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) &#123;</div><div class="line">    [sark doSomethingSlow];</div><div class="line">&#125;];</div></pre></td></tr></table></figure></p>
+<h2 id="场景四"><a href="#场景四" class="headerlink" title="场景四"></a>场景四</h2><p>场景条件</p>
+<ul>
+<li>倒序遍历</li>
+</ul>
+<p>按顺序优先考虑下列方法</p>
+<ul>
+<li>enumerateObjectsWithOptions:NSEnumerationReverse</li>
+<li>reverseObjectEnumerator</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSArray *strings = @[@&quot;1&quot;, @&quot;2&quot;, @&quot;3&quot;];</div><div class="line">for (NSString *string in [strings reverseObjectEnumerator]) &#123;</div><div class="line">    NSLog(@&quot;%@&quot;, string);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) &#123;</div><div class="line">    [sark doSomething];</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>推荐原因：<br>enumerateObjectsWithOptions和reverseObjectEnumerator在各量级的效率表现相似，两个方法均可使用</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="http://blog.sunnyxx.com/2014/04/30/ios_iterator/" target="_blank" rel="external">iOS遍历方法实验数据</a></li>
+<li><a href="http://nshipster.com/enumerators/" target="_blank" rel="external"></a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_business_developer_value/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/03/iOS_business_developer_value/" itemprop="url">
+                  业务开发人员的价值是什么？
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
+                2017-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>产品经理的核心价值是</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_est_performance_rounded_and_shadow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/03/iOS_est_performance_rounded_and_shadow/" itemprop="url">
+                  iOS开发性能最佳实践系列之——圆角和阴影
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
+                2017-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="图片使用阴影的正确姿势"><a href="#图片使用阴影的正确姿势" class="headerlink" title="图片使用阴影的正确姿势"></a>图片使用阴影的正确姿势</h2><p>错误示范：会导致离屏渲染</p>
+<p>~~imageView.layer.shadowOpacity = 0.5;<br>~~</p>
+<p>正确做法：通过shadowPath，告诉CoreAnimation你要渲染的形状，减少离屏渲染</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">imageView.layer.shadowOpacity = 0.5;</div><div class="line">imageView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:imageView.bounds] CGPath];</div></pre></td></tr></table></figure>
+<h2 id="对图片做圆角处理的正确姿势"><a href="#对图片做圆角处理的正确姿势" class="headerlink" title="对图片做圆角处理的正确姿势"></a>对图片做圆角处理的正确姿势</h2><p>错误示范：<br>给imageView加cornerRadius后用masksToBounds切。因为加masksToBounds后，会触发离屏幕渲染，如果一个Cell里有多个这样的图片，滑动的时候GPU压力会很大，从而导致严重的掉帧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">UIImage *image = [UIImage imageNamed:@&quot;IMG_6083&quot;];</div><div class="line">imageView.image = image;</div><div class="line">imageView.layer.cornerRadius = CGRectGetWidth(imageView.frame)/ 4.0;</div><div class="line">imageView.layer.masksToBounds = YES;</div></pre></td></tr></table></figure>
+<p>正确做法：<br>通过Core Graphics创建一块位图画布（bitmap graphics context），将图片画到画布，再画Path将图片剪切</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">+ (id)createRoundedRectImage:(UIImage *)image size:(CGSize)size radius:(int)radius &#123;</div><div class="line">    size = CGSizeMake(size.width * image.scale, size.height * image.scale);</div><div class="line">    radius = radius * image.scale;</div><div class="line">    UIImage *img = image;</div><div class="line">    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();</div><div class="line">    CGContextRef context = CGBitmapContextCreate(NULL, size.width, size.height, CGImageGetBitsPerComponent(image.CGImage), 4 * size.width, CGImageGetColorSpace(image.CGImage), kCGImageAlphaPremultipliedFirst);</div><div class="line">    CGRect rect = CGRectMake(0, 0, size.width, size.height);</div><div class="line">    CGContextBeginPath(context);</div><div class="line">    addRoundedRectToPath(context, rect, radius, radius);</div><div class="line">    CGContextClosePath(context);</div><div class="line">    CGContextClip(context);</div><div class="line">    CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), img.CGImage);</div><div class="line">    CGImageRef imageMasked = CGBitmapContextCreateImage(context);</div><div class="line">    img = [UIImage imageWithCGImage:imageMasked];</div><div class="line">    CGContextRelease(context);</div><div class="line">    CGColorSpaceRelease(colorSpace);</div><div class="line">    CGImageRelease(imageMasked);</div><div class="line">    return img;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="给UIButton或UILabel等非图片视图做圆角处理"><a href="#给UIButton或UILabel等非图片视图做圆角处理" class="headerlink" title="给UIButton或UILabel等非图片视图做圆角处理"></a>给UIButton或UILabel等非图片视图做圆角处理</h2><p>视图里如果不需要呈现图片，可以直接画一个带圆角的背景图片，做为子视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> UIImage *image = [UIImage rounedCornerImage:20 borderWidth:0.5 backgroundColor:[UIColor purpleColor] borderColor:[UIColor clearColor] size:CGSizeMake(CGRectGetWidth(view.frame), CGRectGetHeight(view.frame))];</div><div class="line">UIImageView *imageView = [[UIImageView alloc] initWithImage:image];</div><div class="line">[button insertSubview:imageView atIndex:0];</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">+ (UIImage *)rounedCornerImage:(CGFloat)radius</div><div class="line">                   borderWidth:(CGFloat)borderWidth</div><div class="line">               backgroundColor:(UIColor *)backgroundColor</div><div class="line">                   borderColor:(UIColor *)borderColor</div><div class="line">                          size:(CGSize)size&#123;</div><div class="line">    CGSize sizeToFit = CGSizeMake(floor(size.width), floor(size.height));</div><div class="line">    CGFloat halfBorderWidth = (CGFloat)borderWidth / 2.0;</div><div class="line">    UIGraphicsBeginImageContextWithOptions(sizeToFit, false, [[UIScreen mainScreen] scale]);</div><div class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</div><div class="line">    CGContextSetLineWidth(context, borderWidth);</div><div class="line">    CGContextSetStrokeColorWithColor(context, borderColor.CGColor);</div><div class="line">    CGContextSetFillColorWithColor(context, backgroundColor.CGColor);</div><div class="line">    </div><div class="line">    CGFloat width = sizeToFit.width, height = sizeToFit.height;</div><div class="line">    CGContextMoveToPoint(context, width - halfBorderWidth, radius + halfBorderWidth);  // 开始坐标右边开始</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, height - halfBorderWidth, width - radius - halfBorderWidth, height - halfBorderWidth, radius);  // 右下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, height - halfBorderWidth, halfBorderWidth, height - radius - halfBorderWidth, radius); // 左下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, halfBorderWidth, width - halfBorderWidth, halfBorderWidth, radius); // 左上角</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, halfBorderWidth, width - halfBorderWidth, radius + halfBorderWidth, radius); // 右上角</div><div class="line">       CGContextDrawPath(UIGraphicsGetCurrentContext(), kCGPathFillStroke);</div><div class="line">    UIImage *output = UIGraphicsGetImageFromCurrentImageContext();</div><div class="line">    UIGraphicsEndImageContext();</div><div class="line">    return output;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/03/iOS_best_performance_pageLoad/" itemprop="url">
+                  iOS开发性能最佳实践系列之——页面加载的性能检查清单
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
+                2017-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。</p>
+<h2 id="UIViewController"><a href="#UIViewController" class="headerlink" title="UIViewController"></a>UIViewController</h2><p><strong>UIViewController生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">init</div><div class="line">initWithNibName:bundle</div><div class="line">viewWillAppear</div><div class="line">viewDidAppear</div><div class="line">viewDidLoad</div><div class="line">viewWillDisappear</div><div class="line">viewDidDisappear</div></pre></td></tr></table></figure>
+<h2 id="UITableView"><a href="#UITableView" class="headerlink" title="UITableView"></a>UITableView</h2><p><strong>UITableView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tableView:cellForRowAtIndexPath</div><div class="line">tableView:heightForRowAtIndexPath</div><div class="line">tableView:didSelectRowAtIndexPath</div></pre></td></tr></table></figure>
+<p><strong>减少tableview高度计算次数</strong></p>
+<ul>
+<li>有多种Cell或高度是动态的<ul>
+<li>设置estimatedRowHeight(设置后会开启self—sizing，自动计算高度)</li>
+</ul>
+</li>
+<li>只有一种Cell并且高度固定<ul>
+<li>设置rowHeight</li>
+<li>不要重载”tableView:heightForRowAtIndexPath”</li>
+</ul>
+</li>
+</ul>
+<p><strong>特别复杂的Cell,计算高度耗时较长，需要进行缓存</strong></p>
+<ul>
+<li>建议使用”UITableView+FDTemplateLayoutCell“。</li>
+</ul>
+<h2 id="UICollectionView"><a href="#UICollectionView" class="headerlink" title="UICollectionView"></a>UICollectionView</h2><p><strong>UICollectionView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">collectionView:cellForItemAtIndexPath</div><div class="line">collectionView:layout:sizeForItemAtIndexPath</div><div class="line">collectionView:didSelectItemAtIndexPath</div></pre></td></tr></table></figure>
+<h2 id="Cell"><a href="#Cell" class="headerlink" title="Cell"></a>Cell</h2><p><strong>使用Cell的复用机制</strong></p>
+<p>此处不需要解释</p>
+<p><strong>复用Cell内的子视图</strong></p>
+<p>有些开发者确实是使用了cell的复用机制，但是每次复用时由于子视图有一些差异，会把Cell里子视图释放掉，再重新初始化需要的子视图。这种做法是非常消耗CPU的，子视图也要尽量复用。</p>
+<p><strong>使用隐藏而不是移除</strong></p>
+<p>移除一个子视图也是需要开销的。如果有一些子视图不需要显示，将其隐藏而不是移除。</p>
+<p><strong>到后台线程销毁视图</strong></p>
+<p>有大量视图需要销毁时，放到后台线程，减少主线程的计算量。</p>
+<p><strong>图片解码</strong></p>
+<p>加载图片时，图片的解码需要消耗CPU的资源，而这部分是可以放到子线程处理的。（SDWebImage默认是在子线程解码的，除非你关了）</p>
+<p><strong>图片绘制</strong></p>
+<p>CoreGraphic是线程安全的，使用CoreGraphic绘制图片可以在子线程做，绘制完再回主线程加载到要呈现的控件里</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/thought_structure_thinking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/03/thought_structure_thinking/" itemprop="url">
+                  结构化思考——完美应对电梯30秒的思考模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
+                2017-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/thought/" itemprop="url" rel="index">
+                    <span itemprop="name">thought</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="为什么你的想法总是不能很好地表达？"><a href="#为什么你的想法总是不能很好地表达？" class="headerlink" title="为什么你的想法总是不能很好地表达？"></a>为什么你的想法总是不能很好地表达？</h1><p>如果你的工作内容是技术型的（程序员），你很可能对自己日常工作中的语言表达不太满意。你可能专业知识很丰满，对事情的看法也很独到，但就是讲不好。</p>
+<p>你也许还不觉得这是个很大的问题，因为大家会给某种职业贴标签：“XXX就是不善于表达”。这样的说法你听多了，可能会真的接受这种观点，但事实并不是如此。</p>
+<p>讲得不好主要有三个因素影响，思考能力、语言能力、心态。<br>思考能力决定你的表达内容的质量，思路是否清晰、重点是否突出、观点是否独到。<br>语言能力决定你的表达的内容形式是否丰富、有没有文采，有没有类比、举例帮组听众理解更深刻等。<br>心态决定你能不能正常发挥自己的水平。</p>
+<p>也许你已经可以看出来，思考能力决定你表达的核心内容。因为在日常工作中，工作中的交流是趋于理性的，大家更看重的是你的思路和观点。</p>
+<h1 id="为什么是结构力思考？"><a href="#为什么是结构力思考？" class="headerlink" title="为什么是结构力思考？"></a>为什么是结构力思考？</h1><p>在工作中我们遇到各种问题时，大脑会习惯性依据经验来思考。这样思考的结果，观点通常是散状的，类似现在微信文章的清单体。散状的观点，重点不突出，各个观点间没有清晰的逻辑联系。这样不能形成严密的逻辑关系，不利于让听众了解你表达的重点，观点之间有可能相互重复、甚至冲突。而在工作中，我们讨论解决方案时，最终是需要团队协作去执行的。这需要方案重点突出、逻辑严密，既能够统一思想又具有指导意义。</p>
+<p>因此，我们需要结构化思考的意识。</p>
+<h1 id="4个策略助你进行结构化思考"><a href="#4个策略助你进行结构化思考" class="headerlink" title="4个策略助你进行结构化思考"></a>4个策略助你进行结构化思考</h1><h2 id="结论先行"><a href="#结论先行" class="headerlink" title="结论先行"></a>结论先行</h2><p>将结论（核心观点／内容）作为树形结构的父节点。</p>
+<h2 id="以下呼上"><a href="#以下呼上" class="headerlink" title="以下呼上"></a>以下呼上</h2><p>树形结构里，子节点要呼应／支持父节点的内容。</p>
+<h2 id="合理归类"><a href="#合理归类" class="headerlink" title="合理归类"></a>合理归类</h2><p>通过合理地归纳分类，让一个复杂地问题逐步细化，成为可理解、可执行的观点／指南。</p>
+<h2 id="逻辑递进"><a href="#逻辑递进" class="headerlink" title="逻辑递进"></a>逻辑递进</h2><p>如果能形成时间、重要程度、结构顺序，这几种逻辑顺序，能让人更容易理解和记忆。</p>
+<p>先看一个清单体：“如何帮孩子缓解入园焦虑、快速融入幼儿园生活”。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1. 最开始上幼儿园时，大部分孩子会感到压力和不适应。作为家长，不要觉得孩子小题大做，而要认真对待。</div><div class="line">2. 提前在家帮孩子调整作息，尽量跟幼儿园保持一致。比如早晨7:30起床吃早饭、中午12点左右午睡。同步作息时间，能让孩子快速适应幼儿园的节奏。</div><div class="line">3. 不要在平时借幼儿园抱怨孩子。“还不会自己吃饭，上了幼儿园怎么办”……这只会增加孩子对它的恐惧。</div><div class="line">4. 提前带孩子熟悉幼儿园环境。试着坐坐小椅子，上个卫生间，在校园里散散步。熟悉了环境，孩子会更有安全感。</div><div class="line">5. 尽快让孩子和老师熟悉起来——和孩子一起与老师聊聊天、当孩子的面夸夸老师，都会增加他对老师的信任。如果有机会提前让孩子和老师接触，那就更好了。</div><div class="line">6. 让孩子挑选一件熟悉的物件陪他上学，比如一块手绢、一辆玩具车或一块午睡毯。一件熟悉的物品，能缓解孩子对陌生环境的不适。</div><div class="line">7. 不要用欺骗的方式把孩子骗到幼儿园，更不要偷偷溜走，鼓励孩子主动跟你说“再见”。</div><div class="line">8. 跟孩子约定时间时，要说他能理解的话。不要说“妈妈5点来接你”，孩子没有“5点”的概念，应该说“你在幼儿园乖乖吃完晚餐，妈妈就来接你”。且一定要说话算数，否则会失去孩子的信任。</div><div class="line">9. 让孩子练习表达自己的感受，鼓励他说出需求。不妨引导他多说说学校的事情。习惯于表达需求后，孩子更敢于向老师求助。</div><div class="line">10. 分离焦虑，很大程度上是父母的焦虑。你的情绪会传染给孩子，一定要控制好。孩子哭闹时，不要跟他一起难过；一旦约定分别，就安心上班，不要在边上偷看，被孩子看到反而会激起他刚平复的心情。</div><div class="line">11. 孩子哭诉时，告诉他幼儿园的好是没用的，要用“共情”的方式沟通——“宝宝，妈妈也想念你”。向孩子表达你和他有同样的感受，这样孩子才会觉得你和他是一个“阵营”的。</div><div class="line">12. 不要觉得孩子在幼儿园受了委屈，就在家里加倍补偿。那反而会让孩子觉得“家里这么舒服，还是不要去幼儿园了”。</div><div class="line">13. 最后，从入园第一天，你的态度就要一以贯之，不要昨天去了，今天孩子哭得厉害就不去了。相信幼儿园和老师，他们比你有经验。</div></pre></td></tr></table></figure>
+<p>下面看看，如果使用结构化进行思考会怎么样。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fj6g5b0w07j31ee0us19w.jpg" alt=""></p>
+<h2 id="合理选择结构化思考的表达层次"><a href="#合理选择结构化思考的表达层次" class="headerlink" title="合理选择结构化思考的表达层次"></a>合理选择结构化思考的表达层次</h2><p>在工作中我们以下有几种场景会发表观点：</p>
+<p>临时汇报（电梯30秒）<br>只有一句话时间，就说第一层。</p>
+<p>会议发言（1分钟）<br>说到第二层。</p>
+<p>工作总结（3到5分钟）<br>讲到第三层。</p>
+<p>主题分享／培训 （30分钟）<br>抓住一个故事／案例展开来，深入浅出地阐述</p>
+<p>根据不同场景和时间限制，合理地把握表达的层次和深度，无论是电梯30秒、会议发表观点、主题分享、培训、还是述职答辩都能应对自如。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -332,7 +1155,7 @@
               
                 
                 <a class="post-title-link" href="/2017/08/30/ios_app_base_performance_stratege/" itemprop="url">
-                  如何系统建设App的性能基线和流程
+                  如何建设App的页面性能基线
                 </a>
               
             
@@ -408,28 +1231,196 @@
       
         
           
-            <h1 id="为什么我们需要性能基线？"><a href="#为什么我们需要性能基线？" class="headerlink" title="为什么我们需要性能基线？"></a>为什么我们需要性能基线？</h1><p>差异性<br>在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。</p>
-<p>波动性<br>随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数据做为参考线，则可以对存量页面的性能进行自动化分析。</p>
-<h1 id="3个目标"><a href="#3个目标" class="headerlink" title="3个目标"></a>3个目标</h1><p>流程化<br>建立完整、合理的基线产出流程。</p>
-<p>工具统一化<br>建立统一的性能分析方法论、分析工具。</p>
-<p>标准化<br>建立标准化的基线算法，通过该算法计算出各页面的基线标准</p>
-<h1 id="怎样获得合理的性能基线？"><a href="#怎样获得合理的性能基线？" class="headerlink" title="怎样获得合理的性能基线？"></a>怎样获得合理的性能基线？</h1><h2 id="两个特性"><a href="#两个特性" class="headerlink" title="两个特性"></a>两个特性</h2><p>不一致性</p>
+            <h1 id="为什么我们需要页面性能基线？"><a href="#为什么我们需要页面性能基线？" class="headerlink" title="为什么我们需要页面性能基线？"></a>为什么我们需要页面性能基线？</h1><p>开发人员的差异性<br>在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。</p>
+<p>业务迭代的变化<br>随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数据做为参考线，则可以对存量页面的性能进行自动化分析。</p>
+<h2 id="页面性能的两个特性"><a href="#页面性能的两个特性" class="headerlink" title="页面性能的两个特性"></a>页面性能的两个特性</h2><p>不一致性</p>
 <p>一个页面的性能指标怎么定主要受2个因素的影响，一个是UI元素的复杂度，一个是接口数据的复杂度。UI布局越复杂，页面渲染就会越慢。数据获取越复杂，页面就需要等待越长的时间进行渲染。因此我们不能一视同仁，所有页面都设置同样的基线。</p>
 <p>合理波动性</p>
-<p>鲜肉页面进入市场后，随着版本迭代，性能数据一定会有所波动。在一定范围内波动，我们认为是合理波动。</p>
-<h2 id="3条准线"><a href="#3条准线" class="headerlink" title="3条准线"></a>3条准线</h2><p>性能红线</p>
+<p>鲜肉页面（新开发的页面）进入市场后，随着版本迭代，性能数据一定会有所波动。在一定范围内波动，我们认为是合理波动。</p>
+<h1 id="基线建设的3个目标"><a href="#基线建设的3个目标" class="headerlink" title="基线建设的3个目标"></a>基线建设的3个目标</h1><p>流程化<br>建立完整、合理的基线产出流程。</p>
+<p>工具统一化<br>建立统一的性能分析方法论、分析工具。</p>
+<p>标准化<br>建立标准化的基线算法，通过该算法计算出各页面的基线标准</p>
+<h2 id="3条性能基准线"><a href="#3条性能基准线" class="headerlink" title="3条性能基准线"></a>3条性能基准线</h2><p>性能红线</p>
 <p>性能指标只要差到一定的程度，用户就会感受到明显的不顺畅、慢、卡。这时候，无论页面多复杂、接口多慢，都不是理由（再有价值的产品，如果体验太差对用户来说就是垃圾）。因此，我们需要设立一个性能红线，无论如何不能超过红线。</p>
-<p>页面综合性能指数</p>
-<p>正如证券市场的道琼斯指数一样，取所有页面性能数据的平均值作为页面综合性能指数。</p>
-<p>性能基线</p>
+<p>App综合性能指数</p>
+<p>正如证券市场的道琼斯指数一样，取App所有页面性能数据的平均值作为页面综合性能指数。鲜肉页面没有历史版本的数据，没有参考的标准。由于页面复杂度存在不一致性，不能随便找找一个页面来做参考，这个时候取App综合性能指数做参考是最合适的。</p>
+<p>页面性能基线（3个历史版本数据的均值）</p>
 <p>鲜肉页面通过过滤流水线后，我们就将通过后页面的线上平均数据做为该页面的性能基线。</p>
 <h2 id="2条流水线"><a href="#2条流水线" class="headerlink" title="2条流水线"></a>2条流水线</h2><p>鲜肉过滤流水线</p>
-<p>新开发的页面（鲜肉页面），由于复杂度不一致，我们不能准确判断开发出来的页面性能是否合理。但我们可以根据两天基准线做为参考值来估算页面性能是否合理。第一条是红线，高压线不能越。第二条是页面综合性能指数，如果低于这条线则合格，如果高于这条线则进入鉴别池。进入鉴别池的页面，将使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
+<p>新开发的页面（鲜肉页面），由于复杂度不一致，我们不能准确判断开发出来的页面性能是否合理。但我们可以根据两条基准线做为参考值来估算页面性能是否合理。第一条是红线，高压线不能越。第二条是“APP综合性能指数”，如果低于这条线则合格，如果高于这条线则进入鉴别池。进入鉴别池的页面，将使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
 <p>熟肉自动流水线</p>
 <p>鲜肉页面经过过滤后，性能基本可以得到保障。但我们还需要保证，随着版本迭代这些页面性不能超过合理波动的范围。每期的版本迭代前，我们通过自动化测试拿到线下性能数据，然后与该页面的性能基线进行自动对比，计算迭代后的数据是否超过了基线的合理波动范围。若超过了，则进入鉴别池，使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
+<p>两条流水线都可以建立自动化过滤系统，根据基准线进行自动化数据分析，解放测试同学的同时，保证全面地覆盖。</p>
+<h2 id="落地设计"><a href="#落地设计" class="headerlink" title="落地设计"></a>落地设计</h2><p>根据实际的项目流程，可以分为线上实时监控和线下自动化数据分析。</p>
+<h2 id="线上实时监控"><a href="#线上实时监控" class="headerlink" title="线上实时监控"></a>线上实时监控</h2><p>线上建立可视化的性能数据图表，方便进行实时监控和分析。<br>图片显示如下几条线</p>
+<ul>
+<li>波动线（页面性能基线+合理波动值）</li>
+<li>性能红线</li>
+<li>当前版本均值</li>
+</ul>
+<h2 id="线下自动化数据分析"><a href="#线下自动化数据分析" class="headerlink" title="线下自动化数据分析"></a>线下自动化数据分析</h2><p>线下建立自动化过滤系统，根据基准线进行自动化数据分析。</p>
+<p>鲜肉页面过滤条件：<br>测试数据 &gt; APP综合指数（剔除一定范围0-500，2000+）<br>熟肉页面过滤条件：<br>测试数据 &gt; 页面基线值（页面性能基线+合理波动值）</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fjeywnme3lj319w0saq5d.jpg" alt=""></p>
 <h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg" alt=""></p>
-<h1 id="如何落地？"><a href="#如何落地？" class="headerlink" title="如何落地？"></a>如何落地？</h1><p>基线的流程和方法的建设，需要开发和测试人员一起协作完成。<br>开发人员负责：数据埋点、问题优化分析、积累沉淀<br>测试人员负责：测试件、数据平台建设、测试流程建设</p>
-<p>落地是重点也是难点。我认为有2个要点。<br>1进行方案评审和宣导，获取团队人员的反馈，并进行改善，形成团队内的统一认知。<br>2合理安排落地节奏。</p>
+<h1 id="整体落地"><a href="#整体落地" class="headerlink" title="整体落地"></a>整体落地</h1><p>基线的流程和方法的建设，需要开发和测试人员一起协作完成。<br>开发人员负责：数据埋点、问题优化分析、积累沉淀<br>测试人员负责：测试件、数据平台建设、测试流程建设</p>
+<p>落地是重点也是难点。其中有2个要点。<br>1进行方案评审和宣导，获取团队人员的反馈，并进行改善，形成团队内的统一认知。<br>2合理安排落地节奏。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/16/history-make-believe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/16/history-make-believe/" itemprop="url">
+                  《未来简史》————虚构比真实更重要
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T22:33:49+08:00">
+                2017-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/history/" itemprop="url" rel="index">
+                    <span itemprop="name">history</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>赫拉利提出了一个了解历史的理由。了解历史可以让我们了解历史给我带上的枷锁，让我们不再被历史的枷锁困住。</p>
+<p>美国中产阶级们喜欢在自己家的小别墅前养一片绿油油、整齐的草坪。他们还会买除草机等各种设备，并且定期去修剪、浇灌、维护这块草坪。事实上这很浪费时间，也没有太多实际的价值，但为什么他们还要维持这样的习惯呢？</p>
+<p>在中世纪欧洲，维护这样的草坪是很费人力、物力的，那个时候没有先进的设备，只有贵族家才能养得起，这是尊贵的表现。现在只要愿意花时间，中产阶级们都能养得起。那么这恰恰就失去了养殖草坪的尊贵性。就好像LV、Gucci等奢侈品如果大家都买得起，就失去了显示身份的价值。而了解了这段历史，我们可以知道自己为什么会有维护草坪这种自己都无法解释的习惯。不用再为这段偶然产生的历史习惯，而买单。</p>
+<p>人和自然是我们常常思考的问题。人真的是第一可宝贵的吗？</p>
+<p>回顾历史，在采集狩猎时代，人类相信万物有灵，相信泛灵论。人类每天需要猜测动物的想法、避免被动物偷袭、还要想办法捕获动物。采集狩猎时代人类只是大自然食物链上普通的一环，没有太大的优势。</p>
+<p>农业社会，人驯养了很多动物，动物成了人类的私有物品。人对动物可以为所欲为，不再需要考虑对方的感受，人和动物不再平等。这时候泛灵论就不满足时代的需要了，于是诞生了各种有神论。基督教宣布，上帝给人类永久的灵魂，而其他动物是没有灵魂的。人类成为第二可宝贵的。</p>
+<p>现代社会，进化论逐渐被社会认可，基督教那套灵魂的说法就站不住脚了。那人又如何比别的动物更宝贵呢？有人给出了答案，人有意识。这个理由还是很有市场的，它很难被证伪。科学家人认为人根本不需要意识。旧的记忆和新的外部刺激，对大脑来说都是电信号和化学反应。我们看到危险信号靠近后，视觉信号传递给大脑，大脑把神经信号传递给腿，腿受到命令就可以开始跑了。恐惧、害怕、惊慌等主观体验根本没有什么用。而且，现在科学家已经有足够证据证明哺乳动物和鸟类、鱼类都是有感情的。讨论意识不能说明人比动物宝贵。</p>
+<p>那人到底为什么可宝贵呢？<br>因为，突然有一天，人类基因突变，成为一个会幻想、懂虚构的年轻人。<br>人能虚构东西，并且能相信虚构的东西。虚构出来各种新的概念，上帝、国家、金钱、公司、价值观，能让人群实现大规模、跨越时间和空间的合作。</p>
+<p>国家也是虚构的，没有哪片土地天生属于某个国家。过去有一个国家，几千年来都维系着的文化和传统。突然有一天，在这个国家的土地上发生了一场战争。战争打完，这个国家被拆成了两片区域。这两片区域分别被植入了不同的想象共同体。最后出现了2个互相仇视的国家。</p>
+<p>这是现在我们认为人类为什么比别的动物更可贵的原因。这些虚构的概念甚至比真实存在的都显得重要。比如宗教的出现维系着大尺度的社会秩序。</p>
+<p>宗教是什么？<br>赫拉利总结了宗教的3个特点。<br>1 它有一套号称不是人发明的，而且不能被人改变的道德规范，要求人们必须遵守。<br>2 它给人们一个许诺，只要你遵从这套法规，就会有什么好处。<br>3 它的目的是为了巩固自己设想的社会秩序</p>
+<p>我想起我一个大学同学，一个信仰基督教的女生。她是一个善良、乐于助人，有所为有所不为。她相信以她的标准区为人处事，一定会收获幸福。她有一个特点，内心没有恐惧。她不惧怕现在、不惧怕未来，不惧怕自己的出生低微，不惧怕别人有更好的机会，不惧怕天灾、不惧怕人祸。</p>
+<p>这样的人，我们认为是有强大内心的。这也是基督教、佛教等主流宗教给社会带来的正面意义。每个宗教都有自己一套道德体系，只要这套道德体系无限趋近于社会共同的认知，那么我们可以只要大家去遵守，社会会变得更和谐。即便它给于教民的许诺是没有能力实现的。</p>
+<p>这么说来，各种主义、有价值观和远景的公司文化，其实也符合宗教的特点。这也是为什么管理学会认为，最高级的管理是价值观、理念的管理。大家都遵守同样的规定、并且愿意相信未来的收获和意义，管理起来成本是相当的低啊。所有人一颗心、指哪打哪，不论战略和战术如何调整和部署，都能朝同一个方向去发力，效果肯定是杠杠的6啊。</p>
+<p>看到这里，你估计也已经认为虚构的影响力确实很6，那你有没有想过你可以怎么使用虚构的思维呢？<br>虚构影响力可以这么大，是因为我们可以赋予虚构概念价值和意义，从而聚集更多的人。<br>我们做一个产品，要思考这个产品是否有改变世界的意义。做某一个项目，也需要思考它是否有影响深远的价值。<br>有新的想法，要尝试给想法定义一个新的概念。虚构的新概念，至少是需要经过思考和抽象的过程。大家对新概念的好奇，也能引发思考和传播。</p>
 
           
         
@@ -597,163 +1588,6 @@
 <h2 id="如果你精通八大菜系，来吧少年！"><a href="#如果你精通八大菜系，来吧少年！" class="headerlink" title="如果你精通八大菜系，来吧少年！"></a>如果你精通八大菜系，来吧少年！</h2><p>我们一起去吃遍全球：<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/5858ddc3d4ec7baac08fc659ca1fb739.png" alt=""></p>
 <p>如果以上这些都还不够打动你，那么下面一张一定可以<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/e49449564295d68aa2dbe212193b7cf6.png" alt=""></p>
 <h1 id="不要压抑你的天性了！打开邮箱把你的iOS-Android简历发到blackteachinese-gmail-com吧！"><a href="#不要压抑你的天性了！打开邮箱把你的iOS-Android简历发到blackteachinese-gmail-com吧！" class="headerlink" title="不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！"></a>不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/16/history-make-believe/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/16/history-make-believe/" itemprop="url">
-                  《未来简史》————虚构比真实更重要
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T22:33:49+08:00">
-                2017-08-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/history/" itemprop="url" rel="index">
-                    <span itemprop="name">history</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>赫拉利提出了一个了解历史的理由。了解历史可以让我们了解历史给我带上的枷锁，让我们不再被历史的枷锁困住。</p>
-<p>美国中产阶级们喜欢在自己家的小别墅前养一片绿油油、整齐的草坪。他们还会买除草机等各种设备，并且定期去修剪、浇灌、维护这块草坪。事实上这很浪费时间，也没有太多实际的价值，但为什么他们还要维持这样的习惯呢？</p>
-<p>在中世纪欧洲，维护这样的草坪是很费人力、物力的，那个时候没有先进的设备，只有贵族家才能养得起，这是尊贵的表现。现在只要愿意花时间，中产阶级们都能养得起。那么这恰恰就失去了养殖草坪的尊贵性。就好像LV、Gucci等奢侈品如果大家都买得起，就失去了显示身份的价值。而了解了这段历史，我们可以知道自己为什么会有维护草坪这种自己都无法解释的习惯。不用再为这段偶然产生的历史习惯，而买单。</p>
-<p>人和自然是我们常常思考的问题。人真的是第一可宝贵的吗？</p>
-<p>回顾历史，在采集狩猎时代，人类相信万物有灵，相信泛灵论。人类每天需要猜测动物的想法、避免被动物偷袭、还要想办法捕获动物。采集狩猎时代人类只是大自然食物链上普通的一环，没有太大的优势。</p>
-<p>农业社会，人驯养了很多动物，动物成了人类的私有物品。人对动物可以为所欲为，不再需要考虑对方的感受，人和动物不再平等。这时候泛灵论就不满足时代的需要了，于是诞生了各种有神论。基督教宣布，上帝给人类永久的灵魂，而其他动物是没有灵魂的。人类成为第二可宝贵的。</p>
-<p>现代社会，进化论逐渐被社会认可，基督教那套灵魂的说法就站不住脚了。那人又如何比别的动物更宝贵呢？有人给出了答案，人有意识。这个理由还是很有市场的，它很难被证伪。科学家人认为人根本不需要意识。旧的记忆和新的外部刺激，对大脑来说都是电信号和化学反应。我们看到危险信号靠近后，视觉信号传递给大脑，大脑把神经信号传递给腿，腿受到命令就可以开始跑了。恐惧、害怕、惊慌等主观体验根本没有什么用。而且，现在科学家已经有足够证据证明哺乳动物和鸟类、鱼类都是有感情的。讨论意识不能说明人比动物宝贵。</p>
-<p>那人到底为什么可宝贵呢？<br>因为，突然有一天，人类基因突变，成为一个会幻想、懂虚构的年轻人。<br>人能虚构东西，并且能相信虚构的东西。虚构出来各种新的概念，上帝、国家、金钱、公司、价值观，能让人群实现大规模、跨越时间和空间的合作。</p>
-<p>国家也是虚构的，没有哪片土地天生属于某个国家。过去有一个国家，几千年来都维系着的文化和传统。突然有一天，在这个国家的土地上发生了一场战争。战争打完，这个国家被拆成了两片区域。这两片区域分别被植入了不同的想象共同体。最后出现了2个互相仇视的国家。</p>
-<p>这是现在我们认为人类为什么比别的动物更可贵的原因。这些虚构的概念甚至比真实存在的都显得重要。比如宗教的出现维系着大尺度的社会秩序。</p>
-<p>宗教是什么？<br>赫拉利总结了宗教的3个特点。<br>1 它有一套号称不是人发明的，而且不能被人改变的道德规范，要求人们必须遵守。<br>2 它给人们一个许诺，只要你遵从这套法规，就会有什么好处。<br>3 它的目的是为了巩固自己设想的社会秩序</p>
-<p>我想起我一个大学同学，一个信仰基督教的女生。她是一个善良、乐于助人，有所为有所不为。她相信以她的标准区为人处事，一定会收获幸福。她有一个特点，内心没有恐惧。她不惧怕现在、不惧怕未来，不惧怕自己的出生低微，不惧怕别人有更好的机会，不惧怕天灾、不惧怕人祸。</p>
-<p>这样的人，我们认为是有强大内心的。这也是基督教、佛教等主流宗教给社会带来的正面意义。每个宗教都有自己一套道德体系，只要这套道德体系无限趋近于社会共同的认知，那么我们可以只要大家去遵守，社会会变得更和谐。即便它给于教民的许诺是没有能力实现的。</p>
-<p>这么说来，各种主义、有价值观和远景的公司文化，其实也符合宗教的特点。这也是为什么管理学会认为，最高级的管理是价值观、理念的管理。大家都遵守同样的规定、并且愿意相信未来的收获和意义，管理起来成本是相当的低啊。所有人一颗心、指哪打哪，不论战略和战术如何调整和部署，都能朝同一个方向去发力，效果肯定是杠杠的6啊。</p>
-<p>看到这里，你估计也已经认为虚构的影响力确实很6，那你有没有想过你可以怎么使用虚构的思维呢？<br>虚构影响力可以这么大，是因为我们可以赋予虚构概念价值和意义，从而聚集更多的人。<br>我们做一个产品，要思考这个产品是否有改变世界的意义。做某一个项目，也需要思考它是否有影响深远的价值。<br>有新的想法，要尝试给想法定义一个新的概念。虚构的新概念，至少是需要经过思考和抽象的过程。大家对新概念的好奇，也能引发思考和传播。</p>
-
           
         
       
@@ -1149,999 +1983,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/10/thought-to-be-lovely-man/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/07/10/thought-to-be-lovely-man/" itemprop="url">
-                  成为值得被爱的人
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-10T22:01:06+08:00">
-                2017-07-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/心灵/" itemprop="url" rel="index">
-                    <span itemprop="name">心灵</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>人不但天生希望被爱，而且希望自己成为值得被爱的人。<br>我们天生都是自利的。也许有人不同意这个观点。是的，你会不求回报地对某个人好，这很棒。但是这也是自利的表现。<br>我们对家人好，可能是我们喜欢得到家人的温暖的感觉。我们不希望家人远离我们，于是我们对他们额外的好。因为，我们不是活在只有一个人的世界里。我们的自利，会驱动我们，希望被别人爱。<br>被一个人爱还不够，我们还希望被更多人爱、持续地被爱。因此，我们便需要称为值得被爱的人。<br>是的，这也许便是我们一生为之奋斗的目标。即便你是一个放荡不羁的自由主义者，当你看到美得无法用言语表达的巴塞罗那夜景，你也不可能只希望独自欣赏。你至少会希望，有一个和你一样的人、你爱的人，能够和你一起分享，你内心的喜悦。</p>
-<p>我们如何成为一个值得被爱的人？<br>很多人一生在不断追求名利，希望通过名利的获取，让自己指得被爱。这确实是一种方法，但是这并不一定是最好的方法。因为如果你即便很有钱、很有名气，也不一定就特别值得被爱。你可以只是值得被拥有。<br>追求智慧和美德是更好的方法。<br>培养自己的美德，比如正义之气、比如仁慈的内心、比如不以物喜、不以己悲的价值观。<br>寻求改变世界的智慧。这并不是说要你做声么大事，恰恰是“不做大事的智慧”。我们要做的是，从我做起、从小事做起。见到别人做好事，就鼓掌，见到坏事就站出来说话，这样无数的你一起，就能通过“涌现”的办法，改变世界</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/05/09/webrtc-flow-introduce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/09/webrtc-flow-introduce/" itemprop="url">
-                  webrtc实现音视频通话
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-09T15:32:17+08:00">
-                2017-05-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/voip/" itemprop="url" rel="index">
-                    <span itemprop="name">voip</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="webrtc是什么？"><a href="#webrtc是什么？" class="headerlink" title="webrtc是什么？"></a>webrtc是什么？</h2><p>webrtc(Web Real-Time Communication)是跨平台的音视频实时通话协议。<br>使用webrtc开发一个移动端的实时音视频通讯协议功能需要具备以下几项能力，NAT穿越、SignalChannel信令通道、webRTC会话建立、音视频数据获取、音视频数据传输。</p>
-<h2 id="NAT穿越技术"><a href="#NAT穿越技术" class="headerlink" title="NAT穿越技术"></a>NAT穿越技术</h2><h3 id="ICE"><a href="#ICE" class="headerlink" title="ICE"></a>ICE</h3><p>由以下几个技术和协议组成的：STUN、NAT、TURN、SDP，这些协议技术，帮助ICE共同实现了NAT/防火墙穿越。</p>
-<h3 id="STUN"><a href="#STUN" class="headerlink" title="STUN"></a>STUN</h3><h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1 概念"></a>1 概念</h4><p>STUN（Session Traversal Utilities for NAT，NAT会话传输应用程序）是一种网络协议，它允许位于NAT（或多重NAT）后的客户端找出自己的公网地址，查出自己位于哪种类型的NAT之后以及NAT为某一个本地端口所绑定的Internet端端口。</p>
-<h4 id="2-作用"><a href="#2-作用" class="headerlink" title="2 作用"></a>2 作用</h4><p>STUN服务器部署2个IP以及2个port。A客户端通过向STUN服务器不同IP发UDP包。再根据是否能收到STUN服务器的response等等来判断。1是否当前在公网2NAT的类型</p>
-<h4 id="3-NAT探测过程"><a href="#3-NAT探测过程" class="headerlink" title="3 NAT探测过程"></a>3 NAT探测过程</h4><h5 id="STEP1："><a href="#STEP1：" class="headerlink" title="STEP1："></a>STEP1：</h5><p>B向C的IP1的pot1端口发送一个UDP 包。C收到这个包后，会把它收到包的源IP和port写到UDP包中，然后把此包通过IP1和port1发还给B。这个IP和port也就是NAT的外网 IP和port，也就是说你在STEP1中就得到了NAT的外网IP。当B收到此UDP后，把此UDP中的IP和自己的IP做比较，如果是一样的，就说明自己是在公网。如果不一样，说明有NAT的存在，系统进行STEP2的操作。 </p>
-<h5 id="STEP2："><a href="#STEP2：" class="headerlink" title="STEP2："></a>STEP2：</h5><p>B向C的IP1发送一个UDP包，请求C通过另外一个IP2和PORT（不同与SETP1的IP1）向B返回一个UDP数据包。我们来分析一下，如果B收到了这个数据包，那说明什么？说明NAT来着不拒，不对数据包进行任何过滤，这也就是STUN标准中的full cone NAT。如果没收到，那么系统进行STEP3的操作。 </p>
-<h5 id="STEP3："><a href="#STEP3：" class="headerlink" title="STEP3："></a>STEP3：</h5><p>B向C的IP2的port2发送一个数据包，C收到数据包后，把它收到包的源IP和port写到UDP包中，然后通过自己的IP2和port2把此包发还给B。如果这个port和step1中的port一样，那么可以肯定这个NAT是个CONE NAT，否则是对称NAT。</p>
-<h5 id="STEP4："><a href="#STEP4：" class="headerlink" title="STEP4："></a>STEP4：</h5><p>B向C的IP2的一个端口PD发送一个数据请求包，要求C用IP2和不同于PD的port返回一个数据包给B。 </p>
-<p>我们来分析结果：如果B收到了，那也就意味着只要IP相同，即使port不同，NAT也允许UDP包通过。显然这是restrict cone NAT。如果没收到，没别的好说，port restrict NAT. </p>
-<h5 id="4-获取客户端公网地址"><a href="#4-获取客户端公网地址" class="headerlink" title="4 获取客户端公网地址"></a>4 获取客户端公网地址</h5><p>客户端A向STUN服务器发送一个UDP包1。STUN服务器接收到UDP包1后，将该UDP包的源IP和源Port写到UDP包2发送给A。A收到UDP包2后，打开一看，源IP和源Port就是自己的公网地址</p>
-<h3 id="TURN（数据中转）"><a href="#TURN（数据中转）" class="headerlink" title="TURN（数据中转）"></a>TURN（数据中转）</h3><h4 id="1-概念-1"><a href="#1-概念-1" class="headerlink" title="1 概念"></a>1 概念</h4><p>TURN（Traversal Using Relay NAT），是一种资料传输协议（data-transfer protocol）。通过中继服务器，穿透 NAT 或防火墙使两个 TCP 或 UPD 客户端建立连接。</p>
-<h4 id="2-作用-1"><a href="#2-作用-1" class="headerlink" title="2 作用"></a>2 作用</h4><p>如果使用STUN打洞失败，只能使用TURN服务器做中转数据</p>
-<h2 id="信令通道（SignalChannel）"><a href="#信令通道（SignalChannel）" class="headerlink" title="信令通道（SignalChannel）"></a>信令通道（SignalChannel）</h2><p>Signalling 来发现各个 Peer，通过 Signalling 来控制各个 Peer 之间连接的建立和断开。（通常用WebSocket/MQTT/Socket原生/XMPP）</p>
-<h2 id="webRTC协议"><a href="#webRTC协议" class="headerlink" title="webRTC协议"></a>webRTC协议</h2><h3 id="WebRTC会话建立"><a href="#WebRTC会话建立" class="headerlink" title="WebRTC会话建立"></a>WebRTC会话建立</h3><h4 id="SDP（客户端配置信息）"><a href="#SDP（客户端配置信息）" class="headerlink" title="SDP（客户端配置信息）"></a>SDP（客户端配置信息）</h4><p>会话描述协议Session Description Protocol (SDP) 是一个描述多媒体连接内容的协议，例如分辨率，格式，编码，加密算法等</p>
-<h4 id="JSEP（会话建立协议JavaScript-Session-Establishment-Protocol）"><a href="#JSEP（会话建立协议JavaScript-Session-Establishment-Protocol）" class="headerlink" title="JSEP（会话建立协议JavaScript Session Establishment Protocol）"></a>JSEP（会话建立协议JavaScript Session Establishment Protocol）</h4><p>•    呼叫方发送 offer；<br>•    被呼叫方接受这个 offer；<br>•    被呼叫方发送 answer；<br>•    呼叫方接受 answer</p>
-<h4 id="必要信息"><a href="#必要信息" class="headerlink" title="必要信息"></a>必要信息</h4><p>1    本地客户端的配置信息；<br>2    远程客户端的配置信息；<br>3    远程参与建立P2P连接的信息：主要是 IP 和端口。</p>
-<h4 id="P2P连接的过程"><a href="#P2P连接的过程" class="headerlink" title="P2P连接的过程"></a>P2P连接的过程</h4><p>1    A和B连接上服务端，建立一个TCP长连接（任意协议都可以，WebSocket/MQTT/Socket原生/XMPP），我们这里为了省事，直接采用WebSocket，这样一个信令通道就有了。</p>
-<p>2    A从ice server（STUN Server）获取ice candidate并发送给Socket服务端，并生成包含session description（SDP）的offer，发送给Socket服务端。</p>
-<p>3 Socket服务端把A的offer和ice candidate转发给B，B会保存下A这些信息。</p>
-<p>4 然后B发送包含自己session description的answer(因为它收到的是offer，所以返回的是answer，但是内容都是SDP)和ice candidate给Socket服务端</p>
-<p>5 Socket服务端把B的answer和ice candidate给A，A保存下B的这些信息。至此A与B建立起了一个P2P连接。</p>
-<h3 id="获取音视频数据"><a href="#获取音视频数据" class="headerlink" title="获取音视频数据"></a>获取音视频数据</h3><p>MediaStream：<br>媒体流，一个媒体流包含 0 个到多个的媒体数据源，媒体流里面的数据源在呈现（render）必须同步</p>
-<p>MediaStreamTrack：<br>媒体数据源，一个媒体数据源构成一个 MediaStreamTrack，比如音频数据源和视频数据源，多个相互之间有关联的媒体数据源（比如有同步关系的音频视频媒体数据源）构成一个媒体流（MediaStream）。</p>
-<h3 id="传输音频和视频数据"><a href="#传输音频和视频数据" class="headerlink" title="传输音频和视频数据"></a>传输音频和视频数据</h3><p>PeerConnection（RTCPeerConnection (C++)）：</p>
-<p>表示一个 WebRTC 通讯连接对象，它维护与这个通讯连接相关的 MediaStream，处理通讯双方信令事件，完成通讯数据的传输。</p>
-<h3 id="传输任意二进制数据"><a href="#传输任意二进制数据" class="headerlink" title="传输任意二进制数据"></a>传输任意二进制数据</h3><p>DataChannel（RTCDataChannel）</p>
-<p>数据通道，两个 WebRTC 终端的连接建立后，它们可以通过这个数据通道传输任意类型的数据。</p>
-<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><ul>
-<li>对通话对象的安全身份认证</li>
-<li>对通话内容的加密</li>
-</ul>
-<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ul>
-<li>对客户端的合法性认证，对自身的保护</li>
-<li>对合法客户端的保护</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/04/25/compile-principleintroduce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/25/compile-principleintroduce/" itemprop="url">
-                  编译原理入门
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-25T14:12:53+08:00">
-                2017-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/compile/" itemprop="url" rel="index">
-                    <span itemprop="name">compile</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="编译器结构"><a href="#编译器结构" class="headerlink" title="编译器结构"></a>编译器结构</h1><p>编译器由两个部分组成：分析 (analysis)部分和综合 (synthesis)部分。</p>
-<ul>
-<li>分析部分也称前端 (front end)，它把源程序分解成为多个组成要素，并在这些要素之上加上语法结构，然后使用这个结构来创建该源程序的一个中间表示。</li>
-<li>分析部分还会收集有关源程序的信息，放在一个称为符号表 (symbol table)的数据结构中。符号表将和中间表示形式一起传送给综合部分。</li>
-<li>综合部分也称后端 (back end)，根据中间表示和符号表中的信息来构造用户期待的目标程序。</li>
-</ul>
-<h1 id="编译步骤"><a href="#编译步骤" class="headerlink" title="编译步骤"></a>编译步骤</h1><ul>
-<li>词法分析<ul>
-<li>词法分析器读入组成源程序的字符流，将他们切分组织成有意义的词法单元 (token)的序列作为输出。</li>
-</ul>
-</li>
-<li>语法分析<ul>
-<li>语法分析器根据各个词法单元，创建树形中间表示，常用语法树 (syntax tree)。语法分析只判断源程序在结构上是否正确。</li>
-</ul>
-</li>
-<li>语义分析<ul>
-<li>使用语法树和符号表中的信息来检查源程序是否和语言定义的语义一致。语义分析是判断结构正确的源程序所表达的意义是否正确，其中一个重要部分是类型检查 (type checking)。</li>
-</ul>
-</li>
-<li>中间代码生成<ul>
-<li>编译器根据语法树和符号表，生成一个明确的低级的或类机器语言的中间表示 (intermediate representation)。三地址代码 (three-address code)是一种常见的中间表示形式。 </li>
-</ul>
-</li>
-<li>代码优化（机器无关）<ul>
-<li>机器无关的代码优化步骤试图改进中间代码，以便生成更好的目标代码。 </li>
-</ul>
-</li>
-<li>代码生成器<ul>
-<li>代码生成器以源程序的中间表示形式作为输入，并把它映射到目标语言。如果目标语言是机器代码，就必须为程序使用的每个变量选择寄存器或内存位置。然后，中间指令被翻译成为能够完成相同任务的机器指令序列 </li>
-</ul>
-</li>
-<li>代码优化（机器相关）<ul>
-<li>优化目标机器语言 </li>
-</ul>
-</li>
-</ul>
-<h2 id="查看编译步骤"><a href="#查看编译步骤" class="headerlink" title="查看编译步骤"></a>查看编译步骤</h2><p>创建文件 compileText.c</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#include <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line">  <span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[]) &#123;</div><div class="line">  printf(<span class="string">"Hello workd"</span>);</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用clnag/llvm,输入下面命令查看编译步骤：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clang -ccc-print-phases compileTest.c</div></pre></td></tr></table></figure>
-<p>输出得到编译步骤：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="number">0</span>: input, <span class="string">"compileTest.c"</span>, c</div><div class="line"><span class="number">1</span>: preprocessor, &#123;<span class="number">0</span>&#125;, cpp-output</div><div class="line"><span class="number">2</span>: compiler, &#123;<span class="number">1</span>&#125;, ir</div><div class="line"><span class="number">3</span>: backend, &#123;<span class="number">2</span>&#125;, assembler</div><div class="line"><span class="number">4</span>: assembler, &#123;<span class="number">3</span>&#125;, object</div><div class="line"><span class="number">5</span>: linker, &#123;<span class="number">4</span>&#125;, image</div><div class="line"><span class="number">6</span>: bind-arch, <span class="string">"x86_64"</span>, &#123;<span class="number">5</span>&#125;, image</div></pre></td></tr></table></figure></p>
-<h1 id="符号表"><a href="#符号表" class="headerlink" title="符号表"></a>符号表</h1><p>符号表记录源程序中使用的变量的名字，并收集和每个名字的各种属性有关的信息。如一个名字的存储分配、类型、作用域、参数数量和类型、返回类型等。<br>符号表为每个变量名字创建一个记录条目。编译器可以向记录中快速存放和获取数据。</p>
-<h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><h2 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h2><p>创建文件 compileText.c</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#include <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line">  <span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[]) &#123;</div><div class="line">  printf(<span class="string">"Hello workd"</span>);</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>输入以下命令：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clang -fmodules -fsyntax-only -Xclang -dump-tokens compileTest.c</div></pre></td></tr></table></figure>
-<p>输出token序列：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">annot_module_include '#include &lt;s'		Loc=&lt;compileTest.c:1:1&gt;</div><div class="line">int 'int'		Loc=&lt;compileTest.c:2:1&gt;</div><div class="line">identifier 'main'	 [LeadingSpace]	Loc=&lt;compileTest.c:2:5&gt;</div><div class="line">l_paren '('	 [LeadingSpace]	Loc=&lt;compileTest.c:2:10&gt;</div><div class="line">int 'int'		Loc=&lt;compileTest.c:2:11&gt;</div><div class="line">identifier 'argc'	 [LeadingSpace]	Loc=&lt;compileTest.c:2:15&gt;</div><div class="line">comma ','		Loc=&lt;compileTest.c:2:19&gt;</div><div class="line">char 'char'	 [LeadingSpace]	Loc=&lt;compileTest.c:2:21&gt;</div><div class="line">star '*'	 [LeadingSpace]	Loc=&lt;compileTest.c:2:26&gt;</div><div class="line">identifier 'argv'		Loc=&lt;compileTest.c:2:27&gt;</div><div class="line">l_square '['		Loc=&lt;compileTest.c:2:31&gt;</div><div class="line">r_square ']'		Loc=&lt;compileTest.c:2:32&gt;</div><div class="line">r_paren ')'		Loc=&lt;compileTest.c:2:33&gt;</div><div class="line">l_brace '&#123;'	 [LeadingSpace]	Loc=&lt;compileTest.c:2:35&gt;</div><div class="line">identifier 'printf'	 [StartOfLine] [LeadingSpace]	Loc=&lt;compileTest.c:3:5&gt;</div><div class="line">l_paren '('		Loc=&lt;compileTest.c:3:11&gt;</div><div class="line">string_literal '"Hello workd"'		Loc=&lt;compileTest.c:3:12&gt;</div><div class="line">r_paren ')'		Loc=&lt;compileTest.c:3:25&gt;</div><div class="line">semi ';'		Loc=&lt;compileTest.c:3:26&gt;</div><div class="line">return 'return'	 [StartOfLine] [LeadingSpace]	Loc=&lt;compileTest.c:4:5&gt;</div><div class="line">numeric_constant '0'	 [LeadingSpace]	Loc=&lt;compileTest.c:4:12&gt;</div><div class="line">semi ';'		Loc=&lt;compileTest.c:4:13&gt;</div><div class="line">r_brace '&#125;'	 [StartOfLine]	Loc=&lt;compileTest.c:5:1&gt;</div><div class="line">eof ''		Loc=&lt;compileTest.c:5:2&gt;</div></pre></td></tr></table></figure>
-<h2 id="语法分析"><a href="#语法分析" class="headerlink" title="语法分析"></a>语法分析</h2><p>输入以下命令：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clang -fmodules -fsyntax-only -Xclang -ast-dump compileTest.c</div></pre></td></tr></table></figure>
-<p>输出如下：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">TranslationUnitDecl 0x7f8e4d81fad0 &lt;&lt;invalid sloc&gt;&gt; &lt;invalid sloc&gt;</div><div class="line">|-TypedefDecl 0x7f8e4d820018 &lt;&lt;invalid sloc&gt;&gt; &lt;invalid sloc&gt; implicit __int128_t '__int128'</div><div class="line">| `-BuiltinType 0x7f8e4d81fd40 '__int128'</div><div class="line">|-TypedefDecl 0x7f8e4d820078 &lt;&lt;invalid sloc&gt;&gt; &lt;invalid sloc&gt; implicit __uint128_t 'unsigned __int128'</div><div class="line">| `-BuiltinType 0x7f8e4d81fd60 'unsigned __int128'</div><div class="line">|-TypedefDecl 0x7f8e4d820368 &lt;&lt;invalid sloc&gt;&gt; &lt;invalid sloc&gt; implicit __NSConstantString 'struct __NSConstantString_tag'</div><div class="line">| `-RecordType 0x7f8e4d820170 'struct __NSConstantString_tag'</div><div class="line">|   `-Record 0x7f8e4d8200c8 '__NSConstantString_tag'</div><div class="line">|-TypedefDecl 0x7f8e4d8203f8 &lt;&lt;invalid sloc&gt;&gt; &lt;invalid sloc&gt; implicit __builtin_ms_va_list 'char *'</div><div class="line">| `-PointerType 0x7f8e4d8203c0 'char *'</div><div class="line">|   `-BuiltinType 0x7f8e4d81fb60 'char'</div><div class="line">|-TypedefDecl 0x7f8e4d8206d8 &lt;&lt;invalid sloc&gt;&gt; &lt;invalid sloc&gt; implicit __builtin_va_list 'struct __va_list_tag [1]'</div><div class="line">| `-ConstantArrayType 0x7f8e4d820680 'struct __va_list_tag [1]' 1</div><div class="line">|   `-RecordType 0x7f8e4d8204f0 'struct __va_list_tag'</div><div class="line">|     `-Record 0x7f8e4d820448 '__va_list_tag'</div><div class="line">|-ImportDecl 0x7f8e4d98ada0 &lt;compileTest.c:1:1&gt; col:1 implicit Darwin.C.stdio</div><div class="line">|-FunctionDecl 0x7f8e4d98b040 &lt;line:2:1, line:5:1&gt; line:2:5 main 'int (int, char **)'</div><div class="line">| |-ParmVarDecl 0x7f8e4d98ade8 &lt;col:11, col:15&gt; col:15 argc 'int'</div><div class="line">| |-ParmVarDecl 0x7f8e4d98af00 &lt;col:21, col:32&gt; col:27 argv 'char **':'char **'</div><div class="line">| `-CompoundStmt 0x7f8e4d9e9ab0 &lt;col:35, line:5:1&gt;</div><div class="line">|   |-CallExpr 0x7f8e4d9e9a18 &lt;line:3:5, col:25&gt; 'int'</div><div class="line">|   | |-ImplicitCastExpr 0x7f8e4d9e9a00 &lt;col:5&gt; 'int (*)(const char *, ...)' &lt;FunctionToPointerDecay&gt;</div><div class="line">|   | | `-DeclRefExpr 0x7f8e4d98b538 &lt;col:5&gt; 'int (const char *, ...)' Function 0x7f8e4d98b158 'printf' 'int (const char *, ...)'</div><div class="line">|   | `-ImplicitCastExpr 0x7f8e4d9e9a60 &lt;col:12&gt; 'const char *' &lt;BitCast&gt;</div><div class="line">|   |   `-ImplicitCastExpr 0x7f8e4d9e9a48 &lt;col:12&gt; 'char *' &lt;ArrayToPointerDecay&gt;</div><div class="line">|   |     `-StringLiteral 0x7f8e4d98b598 &lt;col:12&gt; 'char [12]' lvalue "Hello workd"</div><div class="line">|   `-ReturnStmt 0x7f8e4d9e9a98 &lt;line:4:5, col:12&gt;</div><div class="line">|     `-IntegerLiteral 0x7f8e4d9e9a78 &lt;col:12&gt; 'int' 0</div><div class="line">`-&lt;undeserialized declarations&gt;</div></pre></td></tr></table></figure>
-<h2 id="中间代码生成"><a href="#中间代码生成" class="headerlink" title="中间代码生成"></a>中间代码生成</h2><p>输入命令：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clang -S -emit-llvm compileTest.c -o compileTest.ll</div></pre></td></tr></table></figure>
-<p>得到compileTest.ll文件：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">; ModuleID = 'compileTest.c'</div><div class="line">source_filename = "compileTest.c"</div><div class="line">target datalayout = "e-m:o-i64:64-f80:128-n8:16:32:64-S128"</div><div class="line">target triple = "x86_64-apple-macosx10.12.0"</div><div class="line"></div><div class="line">@.str = private unnamed_addr constant [12 x i8] c"Hello workd\00", align 1</div><div class="line"></div><div class="line">; Function Attrs: nounwind ssp uwtable</div><div class="line">define i32 @main(i32, i8**) #0 &#123;</div><div class="line">  %3 = alloca i32, align 4</div><div class="line">  %4 = alloca i32, align 4</div><div class="line">  %5 = alloca i8**, align 8</div><div class="line">  store i32 0, i32* %3, align 4</div><div class="line">  store i32 %0, i32* %4, align 4</div><div class="line">  store i8** %1, i8*** %5, align 8</div><div class="line">  %6 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str, i32 0, i32 0))</div><div class="line">  ret i32 0</div><div class="line">&#125;</div><div class="line"></div><div class="line">declare i32 @printf(i8*, ...) #1</div><div class="line"></div><div class="line">attributes #0 = &#123; nounwind ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+fxsr,+mmx,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" &#125;</div><div class="line">attributes #1 = &#123; "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+fxsr,+mmx,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" &#125;</div><div class="line"></div><div class="line">!llvm.module.flags = !&#123;!0&#125;</div><div class="line">!llvm.ident = !&#123;!1&#125;</div><div class="line"></div><div class="line">!0 = !&#123;i32 1, !"PIC Level", i32 2&#125;</div><div class="line">!1 = !&#123;!"Apple LLVM version 8.1.0 (clang-802.0.41)"&#125;</div><div class="line"></div></pre></td></tr></table></figure>
-<h2 id="生成汇编"><a href="#生成汇编" class="headerlink" title="生成汇编"></a>生成汇编</h2><p>输入命令：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clang -S compileTest.c -o compileTest.s</div></pre></td></tr></table></figure>
-<p>得到compileTest.s:</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">	.section	__TEXT,__text,regular,pure_instructions</div><div class="line">	.macosx_version_min <span class="number">10</span>, <span class="number">12</span></div><div class="line">	.globl	_main</div><div class="line">	.p2align	<span class="number">4</span>, <span class="number">0x90</span></div><div class="line">_main:                                  <span class="meta">## @main</span></div><div class="line">	.cfi_startproc</div><div class="line">    <span class="meta">## BB#0:</span></div><div class="line">	pushq	%rbp</div><div class="line">Ltmp0:</div><div class="line">	.cfi_def_cfa_offset <span class="number">16</span></div><div class="line">Ltmp1:</div><div class="line">	.cfi_offset %rbp, <span class="number">-16</span></div><div class="line">	movq	%rsp, %rbp</div><div class="line">Ltmp2:</div><div class="line">	.cfi_def_cfa_register %rbp</div><div class="line">	subq	$<span class="number">32</span>, %rsp</div><div class="line">	leaq	L_.str(%rip), %rax</div><div class="line">	movl	$<span class="number">0</span>, <span class="number">-4</span>(%rbp)</div><div class="line">	movl	%edi, <span class="number">-8</span>(%rbp)</div><div class="line">	movq	%rsi, <span class="number">-16</span>(%rbp)</div><div class="line">	movq	%rax, %rdi</div><div class="line">	movb	$<span class="number">0</span>, %al</div><div class="line">	callq	_printf</div><div class="line">	xorl	%ecx, %ecx</div><div class="line">	movl	%eax, <span class="number">-20</span>(%rbp)         <span class="meta">## 4-byte Spill</span></div><div class="line">	movl	%ecx, %eax</div><div class="line">	addq	$<span class="number">32</span>, %rsp</div><div class="line">	popq	%rbp</div><div class="line">	retq</div><div class="line">	.cfi_endproc</div><div class="line"></div><div class="line">	.section	__TEXT,__cstring,cstring_literals</div><div class="line">L_.str:                                 <span class="meta">## @.str</span></div><div class="line">	.asciz	<span class="string">"Hello workd"</span></div><div class="line"></div><div class="line"></div><div class="line">.subsections_via_symbols</div><div class="line"></div></pre></td></tr></table></figure>
-<h2 id="生成目标文件"><a href="#生成目标文件" class="headerlink" title="生成目标文件"></a>生成目标文件</h2><p>输入命令：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clang -fmodules -c compileTest.c -o compileTest.o</div></pre></td></tr></table></figure>
-<p>输出文件compileTest.o:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">cffa edfe <span class="number">0700</span> <span class="number">0001</span> <span class="number">0300</span> <span class="number">0000</span> <span class="number">0100</span> <span class="number">0000</span></div><div class="line"><span class="number">0400</span> <span class="number">0000</span> <span class="number">0002</span> <span class="number">0000</span> <span class="number">0020</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">1900</span> <span class="number">0000</span> <span class="number">8801</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line">a000 <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">2002</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line">a000 <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0700</span> <span class="number">0000</span> <span class="number">0700</span> <span class="number">0000</span></div><div class="line"><span class="number">0400</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">5f</span>5f <span class="number">7465</span> <span class="number">7874</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">5f</span>5f <span class="number">5445</span> <span class="number">5854</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">3400</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">2002</span> <span class="number">0000</span> <span class="number">0400</span> <span class="number">0000</span></div><div class="line">c002 <span class="number">0000</span> <span class="number">0200</span> <span class="number">0000</span> <span class="number">0004</span> <span class="number">0080</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">5f</span>5f <span class="number">6373</span> <span class="number">7472</span> <span class="number">696</span>e</div><div class="line"><span class="number">6700</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">5f</span>5f <span class="number">5445</span> <span class="number">5854</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">3400</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0</span>c00 <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">5402</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0200</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">5f</span>5f <span class="number">636f</span> <span class="number">6</span>d70 <span class="number">6163</span></div><div class="line"><span class="number">745f</span> <span class="number">756</span>e <span class="number">7769</span> <span class="number">6e64</span> <span class="number">5f</span>5f <span class="number">4</span>c44 <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">4000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">2000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">6002</span> <span class="number">0000</span> <span class="number">0300</span> <span class="number">0000</span></div><div class="line">d002 <span class="number">0000</span> <span class="number">0100</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0002</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">5f</span>5f <span class="number">6568</span> <span class="number">5f</span>66 <span class="number">7261</span></div><div class="line"><span class="number">6</span>d65 <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">5f</span>5f <span class="number">5445</span> <span class="number">5854</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">6000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">4000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">8002</span> <span class="number">0000</span> <span class="number">0300</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0b00</span> <span class="number">0068</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">2400</span> <span class="number">0000</span> <span class="number">1000</span> <span class="number">0000</span></div><div class="line"><span class="number">000</span>c <span class="number">0</span>a00 <span class="number">0000</span> <span class="number">0000</span> <span class="number">0200</span> <span class="number">0000</span> <span class="number">1800</span> <span class="number">0000</span></div><div class="line">d802 <span class="number">0000</span> <span class="number">0200</span> <span class="number">0000</span> f802 <span class="number">0000</span> <span class="number">1000</span> <span class="number">0000</span></div><div class="line"><span class="number">0b00</span> <span class="number">0000</span> <span class="number">5000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0100</span> <span class="number">0000</span> <span class="number">0100</span> <span class="number">0000</span> <span class="number">0100</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">5548</span> <span class="number">89e5</span> <span class="number">4883</span> ec20 <span class="number">488</span>d <span class="number">0525</span> <span class="number">0000</span> <span class="number">00</span>c7</div><div class="line"><span class="number">45f</span>c <span class="number">0000</span> <span class="number">0000</span> <span class="number">897</span>d f848 <span class="number">8975</span> f048 <span class="number">89</span>c7</div><div class="line">b000 e800 <span class="number">0000</span> <span class="number">0031</span> c989 <span class="number">45</span>ec <span class="number">89</span>c8 <span class="number">4883</span></div><div class="line">c420 <span class="number">5</span>dc3 <span class="number">4865</span> <span class="number">6</span>c6c <span class="number">6f</span>20 <span class="number">776f</span> <span class="number">726b</span> <span class="number">6400</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">3400</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0001</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">1400</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">017</span>a <span class="number">5200</span> <span class="number">0178</span> <span class="number">1001</span></div><div class="line"><span class="number">100</span>c <span class="number">0708</span> <span class="number">9001</span> <span class="number">0000</span> <span class="number">2400</span> <span class="number">0000</span> <span class="number">1</span>c00 <span class="number">0000</span></div><div class="line"><span class="number">80f</span>f ffff ffff ffff <span class="number">3400</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">0041</span> <span class="number">0e10</span> <span class="number">8602</span> <span class="number">430</span>d <span class="number">0600</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span></div><div class="line"><span class="number">2300</span> <span class="number">0000</span> <span class="number">0100</span> <span class="number">002</span>d <span class="number">0b00</span> <span class="number">0000</span> <span class="number">0200</span> <span class="number">0015</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0100</span> <span class="number">0006</span> <span class="number">0100</span> <span class="number">0000</span> <span class="number">0f</span>01 <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0700</span> <span class="number">0000</span> <span class="number">0100</span> <span class="number">0000</span></div><div class="line"><span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">005f</span> <span class="number">6</span>d61 <span class="number">696</span>e <span class="number">005f</span></div><div class="line"><span class="number">7072</span> <span class="number">696</span>e <span class="number">7466</span> <span class="number">0000</span></div></pre></td></tr></table></figure>
-<h2 id="生成可执行文件"><a href="#生成可执行文件" class="headerlink" title="生成可执行文件"></a>生成可执行文件</h2><p>输入命令：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clang compileTest.o -o compileTest</div></pre></td></tr></table></figure>
-<p>输出可执行文件compileTest,执行如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./compileTest</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">输出</div><div class="line">Hello world</div></pre></td></tr></table></figure>
-<h2 id="Example传送门"><a href="#Example传送门" class="headerlink" title="Example传送门"></a>Example传送门</h2><p><a href="https://github.com/blackteachinese/compile_principle_introduce/tree/master" target="_blank" rel="external">https://github.com/blackteachinese/compile_principle_introduce/tree/master</a></p>
-<h1 id="编译器-compiler"><a href="#编译器-compiler" class="headerlink" title="编译器 (compiler)"></a>编译器 (compiler)</h1><p>编译器是一个程序，可以阅读以某一种语言(源语言)编写的程序，并把该程序翻译成为一个等价的、用另一种语言(目标语言)编写的程序。</p>
-<h1 id="解释器-interpreter"><a href="#解释器-interpreter" class="headerlink" title="解释器 (interpreter)"></a>解释器 (interpreter)</h1><p>解释器不通过翻译的方式生成目标程序，直接利用用户提供的输入执行源程序中指定的操作。</p>
-<h2 id="编译器和解析器的区别"><a href="#编译器和解析器的区别" class="headerlink" title="编译器和解析器的区别"></a>编译器和解析器的区别</h2><p>编译型语言在编译过程中生成目标平台的指令，解释型语言在运行过程中才生成目标平台的指令。<br>虚拟机的任务是在运行过程中将中间代码翻译成目标平台的指令。</p>
-<h1 id="语言处理流程"><a href="#语言处理流程" class="headerlink" title="语言处理流程"></a>语言处理流程</h1><p>预处理器 (preprocessor)<br>编译器 (compiler)<br>汇编器 (assembler)<br>链接器 (linker)/加载器 (loader)</p>
-<h1 id="相关名词"><a href="#相关名词" class="headerlink" title="相关名词"></a>相关名词</h1><ul>
-<li>词法单元 (token)</li>
-<li>抽象语法树 (AST - abstract syntax tree)</li>
-<li>类型检查 (type checking)</li>
-<li>三地址代码 (three-address code)</li>
-<li>中间表示形式 (IR - intermediate representation)<ul>
-<li>中间语言 (IL - intermediate language)</li>
-<li>字节码 (bytecode)</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/04/18/webrtc-compile-ios-framework/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/18/webrtc-compile-ios-framework/" itemprop="url">
-                  WebRTC源码如何编译iOS使用的Framework
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T23:21:09+08:00">
-                2017-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webrtc/" itemprop="url" rel="index">
-                    <span itemprop="name">webrtc</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="webRTC简介"><a href="#webRTC简介" class="headerlink" title="webRTC简介"></a>webRTC简介</h2><h2 id="编译工具准备"><a href="#编译工具准备" class="headerlink" title="编译工具准备"></a>编译工具准备</h2><ul>
-<li>depot_tools<ul>
-<li>depot_tools是Chromium 和 Chromium OS管理代码拉取的脚本包。里面包含了gclient, gcl, git-cl, repo</li>
-</ul>
-</li>
-<li>创建一个build工作目录<ul>
-<li>/webrtc_build</li>
-</ul>
-</li>
-<li>在webrtc_build目录下，使用git下载Chromium的depot_tools工具</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git</div></pre></td></tr></table></figure>
-<ul>
-<li>添加depot_tools到你OS的环境变量</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">export</span> PATH=`<span class="built_in">pwd</span>`/depot_tools:<span class="string">"<span class="variable">$PATH</span>"</span></div></pre></td></tr></table></figure>
-<h2 id="获取源码"><a href="#获取源码" class="headerlink" title="获取源码"></a>获取源码</h2><p>在webrtc_build目录下，使用命令行拉取webRTC的源码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">fetch --nohooks webrtc_ios</div><div class="line">gclient sync</div></pre></td></tr></table></figure>
-<p>得到源码：src/…</p>
-<h2 id="开一个新的分支"><a href="#开一个新的分支" class="headerlink" title="开一个新的分支"></a>开一个新的分支</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git new-branch &lt;branch name&gt;</div></pre></td></tr></table></figure>
-<h2 id="使用GN生成Ninja工程文件"><a href="#使用GN生成Ninja工程文件" class="headerlink" title="使用GN生成Ninja工程文件"></a>使用GN生成Ninja工程文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># debug build for 64-bit iOS</span></div><div class="line">gn gen out/ios_64 --args=<span class="string">'target_os="ios" target_cpu="arm64"'</span></div><div class="line"><span class="comment"># debug build for simulator</span></div><div class="line">gn gen out/ios_sim --args=<span class="string">'target_os="ios" target_cpu="x64"'</span></div></pre></td></tr></table></figure>
-<h2 id="命令行编译Ninja工程"><a href="#命令行编译Ninja工程" class="headerlink" title="命令行编译Ninja工程"></a>命令行编译Ninja工程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ninja -C out/ios_64 AppRTCMobile</div></pre></td></tr></table></figure>
-<p>AppRTCMobile是其中一个Target,可以切换别的</p>
-<h2 id="生成Xcode工程"><a href="#生成Xcode工程" class="headerlink" title="生成Xcode工程"></a>生成Xcode工程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">gn gen out/ios --args=&apos;target_os=&quot;ios&quot; target_cpu=&quot;arm64&quot;&apos; --ide=xcode</div><div class="line">open -a Xcode.app out/ios/all.xcworkspace</div></pre></td></tr></table></figure>
-<h2 id="编译webRTC-framwork"><a href="#编译webRTC-framwork" class="headerlink" title="编译webRTC.framwork"></a>编译webRTC.framwork</h2><ul>
-<li>查看编译选项</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./src/tools-webrtc/ios/build_ios_libs.py --help</div></pre></td></tr></table></figure>
-<ul>
-<li>默认会编译出全部架构的 [‘arm64’, ‘arm’, ‘x64’, ‘x86’] 的 framework.</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./src/tools-webrtc/ios/build_ios_libs.py</div></pre></td></tr></table></figure>
-<ul>
-<li>只编译ARM架构</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./src/tools-webrtc/ios/build_ios_libs.py --arch &#123;&apos;arm64&apos;,&apos;arm&apos;&#125;</div></pre></td></tr></table></figure>
-<p><img src="http://ww2.sinaimg.cn/large/006tNc79gy1feses56wbmj31gs0j6q8t.jpg" alt=""></p>
-<ul>
-<li>xcode8.3的编译错误</li>
-</ul>
-<p>如果你的XCode版本是8.3，执行build_ios_libs.py会出现下面的错误</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">error: taking address of packed member &apos;time_entered&apos; of class or structure &apos;sctp_state_cookie&apos; may result in an unaligned pointer value [-Werror,-Waddress-of-packed-member]</div></pre></td></tr></table></figure>
-<p><img src="http://ww3.sinaimg.cn/large/006tNc79gy1fesetelf94j31hg0twdq7.jpg" alt=""></p>
-<p>原因是有两个文件有错需要改正：<br>third_party/usrsctp/usrsctplib/usrsctplib/netinet/sctp_input.c<br>third_party/usrsctp/usrsctplib/usrsctplib/netinet/sctp_output.c<br>具体改正点下面可以查看<br><a href="https://trac.webkit.org/changeset/211848/webkit/trunk/Source/ThirdParty/libwebrtc/Source/third_party/usrsctp/usrsctplib/usrsctplib/netinet/sctp_output.c" target="_blank" rel="external">sctp_input.c改正</a><br><a href="https://trac.webkit.org/changeset/211848/webkit/trunk/Source/ThirdParty/libwebrtc/Source/third_party/usrsctp/usrsctplib/usrsctplib/netinet/sctp_input.c" target="_blank" rel="external">sctp_output.c改正</a></p>
-<ul>
-<li><p>编译配置文件错误<br>你把编译好的WebRTC.framework放到Demo工程跃跃欲试，却可能发现编译不过。<br>日了🐶了。。。<br> “Could not build module ‘WebRTC’”<br> “‘WebRTC/RTCVideoCapturer.h’ file not found”<br><img src="http://ww3.sinaimg.cn/large/006tNc79gy1fesetv8i40j31jm0t8qhw.jpg" alt=""></p>
-<p>太可怕了。。看来编译的脚本又有问题，欲哭无泪。。。<br>一通找终于找到生成WebRTC.framework头文件的脚本。<br><img src="http://ww3.sinaimg.cn/large/006tNc79gy1fesesq52cmj30tu18mgwa.jpg" alt=""></p>
-<p>缺了下面几个头文件链接</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&quot;objc/Framework/Headers/WebRTC/RTCCameraVideoCapturer.h&quot;,</div><div class="line">&quot;objc/Framework/Headers/WebRTC/RTCNSGLVideoView.h&quot;,</div><div class="line">&quot;objc/Framework/Headers/WebRTC/RTCVideoCapturer.h&quot;,</div></pre></td></tr></table></figure>
-<p>修改BUILD.gn，再使用build_ios_libs.py编译，就可以得到完美的WebRTC.framework。</p>
-<ul>
-<li>把编译好的WebRTC.framework导入demo工程，编译demo工程,发现动态库找不到。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dyld: Library not loaded: @rpath/WebRTC.framework/WebRTC</div></pre></td></tr></table></figure>
-<p>在Embedded Binaries +WebRTC.framework即可</p>
-<p>最后附上修改后的文件BUILD.gn、sctp_input.c、sctp_output.c<br>以及编译成功后的webRTC.Framework(arm和All)</p>
-<p><a href="https://github.com/blackteachinese/WebRTCCompileFix" target="_blank" rel="external">git地址：https://github.com/blackteachinese/WebRTCCompileFix</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/04/09/server-intelliJ-Servlet-and-mysql-mac-guide/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/09/server-intelliJ-Servlet-and-mysql-mac-guide/" itemprop="url">
-                  Mac上使用intelliJ开发WEbServer(Servlet)、mysql的新手教程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T17:03:57+08:00">
-                2017-04-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/server/" itemprop="url" rel="index">
-                    <span itemprop="name">server</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h1><h2 id="什么是Servlet"><a href="#什么是Servlet" class="headerlink" title="什么是Servlet"></a>什么是Servlet</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Servlet是Java提供的用于开发Web服务器应用程序的一个组件，运行在服务器端，由Servlet容器所管理，用于生成动态的内容。Servlet是平台独立的Java类，编写一个Servlet，实际上就是按照Servlet规范编写一个Java类。</div></pre></td></tr></table></figure>
-<h3 id="什么是JSP"><a href="#什么是JSP" class="headerlink" title="什么是JSP"></a>什么是JSP</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">JSP是Servlet的一种特殊形式，每个JSP页面就是一个Servlet实例——JSP页面由系统编译成Servlet，Servlet再负责响应用户请求。JSP其实也是Servlet的一种简化，使用JSP时，其实还是使用Servlet，因为Web应用中的每个JSP页面都会由Servlet容器生成对应的Servlet。对于Tomcat而言，JSP页面生成的Servlet放在work路径对应的Web应用下。</div></pre></td></tr></table></figure>
-<h2 id="IntelliJ开发WebServer"><a href="#IntelliJ开发WebServer" class="headerlink" title="IntelliJ开发WebServer"></a>IntelliJ开发WebServer</h2><h3 id="Demo源码github地址"><a href="#Demo源码github地址" class="headerlink" title="Demo源码github地址"></a>Demo源码github地址</h3><p><a href="https://github.com/blackteachinese/servletDemo" target="_blank" rel="external">https://github.com/blackteachinese/servletDemo</a></p>
-<h3 id="搭建Webserver工程环境"><a href="#搭建Webserver工程环境" class="headerlink" title="搭建Webserver工程环境"></a>搭建Webserver工程环境</h3><ul>
-<li>创建一个Maven Demo工程</li>
-</ul>
-<p><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fegnm20xl9j31k614g7ht.jpg" alt=""></p>
-<ul>
-<li>项目名称右键，选择”Add Framework Support”</li>
-</ul>
-<p><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegol1jdxwj31kw0oggwi.jpg" alt=""></p>
-<ul>
-<li><p>添加Web Application<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegns27f26j315w0wodla.jpg" alt=""></p>
-</li>
-<li><p>添加完后可以看到WebServer的目录<br><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fegohsev6aj31kw0oen5p.jpg" alt=""></p>
-</li>
-<li><p>配置Artifact打包部署设置<br><img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fekapz6ibvj31kw0zkat2.jpg" alt=""></p>
-</li>
-<li><p>配置Tomcat服务器<br><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fego68iog8j31kw0yf138.jpg" alt=""></p>
-</li>
-<li><p>Maven依赖配置<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fekbzxggzxj31kw0zke1q.jpg" alt=""></p>
-</li>
-</ul>
-<h3 id="开发一个Get请求接口"><a href="#开发一个Get请求接口" class="headerlink" title="开发一个Get请求接口"></a>开发一个Get请求接口</h3><ul>
-<li>创建一个formGetApi.html,做为表单承载页<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegpiusk8pj31kw0zkx0h.jpg" alt=""></li>
-<li>在Index.jsp配置跳转到formGetApi.html页面<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegplchmg6j31kw0zkx00.jpg" alt=""></li>
-<li>创建一个继承于HttpServlet的Java类GetApiTest<ul>
-<li>你会发现HttpServlet找不到。不用急，选中“HttpServlet”按“option”+”enter”,点击添加Maven依赖,导入HttpServlet的依赖即可。<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegpzl7dutj31kw0zk4ig.jpg" alt=""><br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegq0dby9jj31kw0zk4qp.jpg" alt=""></li>
-</ul>
-</li>
-<li>重载HttpServlet的“service”方法。通过“getParameter”和“getParameterValues”获取表单的字段，并将获取到的结果输出回浏览器。<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegq84bcd0j31kw0zktwj.jpg" alt=""></li>
-<li><p>web.xml里配置api的映射</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span>?&gt;</div><div class="line">&lt;web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"</div><div class="line">         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"</div><div class="line">         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"</div><div class="line">         version="3.1"&gt;</div><div class="line">    &lt;servlet&gt;</div><div class="line">        &lt;servlet-name&gt;GetApiServlet&lt;/servlet-name&gt;</div><div class="line">        &lt;servlet-class&gt;GetApiTest&lt;/servlet-class&gt;</div><div class="line">    &lt;/servlet&gt;</div><div class="line">    &lt;servlet-mapping&gt;</div><div class="line">        &lt;servlet-name&gt;GetApiServlet&lt;/servlet-name&gt;</div><div class="line">        &lt;url-pattern&gt;/getApi&lt;/url-pattern&gt;</div><div class="line">    &lt;/servlet-mapping&gt;</div><div class="line">&lt;/web-app&gt;</div></pre></td></tr></table></figure>
-</li>
-<li><p>启动Tomcat<br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegqhun83wj31kw0zk1h9.jpg" alt=""></p>
-<h3 id="开发一个Post请求接口"><a href="#开发一个Post请求接口" class="headerlink" title="开发一个Post请求接口"></a>开发一个Post请求接口</h3></li>
-<li>创建一个formPostApi.html。唯一的不同是对”method”的设置。<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegreb6o2aj31kw0zktus.jpg" alt=""></li>
-<li>创建一个继承于HttpServlet的Java类PostApiTest。<ul>
-<li>post请求需要先对request、response对象设置CharacterEncoding<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span>  <span class="title">service</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        <span class="comment">// right to read chinese</span></div><div class="line">        req.setCharacterEncoding(<span class="string">"utf-8"</span>);</div><div class="line">        <span class="comment">// right to output chinese</span></div><div class="line">        resp.setContentType(<span class="string">"text/html;charset=utf-8"</span>);</div><div class="line">        PrintWriter out = resp.getWriter();</div><div class="line">        <span class="comment">// get name value</span></div><div class="line">        String name = req.getParameter(<span class="string">"name"</span>);</div><div class="line">        out.println(<span class="string">"&lt;h1&gt;Hello,"</span>+name+<span class="string">"&lt;/h1&gt;"</span>);</div><div class="line">        <span class="comment">// get info value</span></div><div class="line">        String[] infos = req.getParameterValues(<span class="string">"info"</span>);</div><div class="line">        <span class="keyword">if</span> (infos != <span class="keyword">null</span>) &#123;</div><div class="line">            out.print(<span class="string">"&lt;h1&gt;info :&lt;/h1&gt;"</span>);</div><div class="line">            <span class="keyword">for</span> (String contact :infos) &#123;</div><div class="line">                out.print(<span class="string">"&lt;h1&gt;"</span>+contact+<span class="string">"&lt;/h1&gt;"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<img src="https://ww4.sinaimg.cn/large/006tNbRwgy1fegs5i2yuej31kw0zktw1.jpg" alt=""></li>
-</ul>
-</li>
-</ul>
-<h3 id="使用mysql储存提交的表单数据"><a href="#使用mysql储存提交的表单数据" class="headerlink" title="使用mysql储存提交的表单数据"></a>使用mysql储存提交的表单数据</h3><ul>
-<li>创建一个formMysqlApi.html页面</li>
-<li>web.xml映射配置</li>
-<li>创建一个继承于HttpServlet的Java类MysqlApiTest。<br><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegxj3mr6gj31kw0zktxp.jpg" alt=""><h3 id="mql操作"><a href="#mql操作" class="headerlink" title="mql操作"></a>mql操作</h3></li>
-</ul>
-<h4 id="IntelliJ添加一个Datasource"><a href="#IntelliJ添加一个Datasource" class="headerlink" title="IntelliJ添加一个Datasource"></a>IntelliJ添加一个Datasource</h4><p><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegwssbwsij31kw0zkb1s.jpg" alt=""><br><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegx5ivyf0j31kw0zkh6b.jpg" alt=""></p>
-<h4 id="mysql命令行创建一个DataBase"><a href="#mysql命令行创建一个DataBase" class="headerlink" title="mysql命令行创建一个DataBase"></a>mysql命令行创建一个DataBase</h4><p><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fegx6wfmamj30ew0203yp.jpg" alt=""></p>
-<h4 id="IntelliJ创建一个createDB-sql文件，创建userInfo表"><a href="#IntelliJ创建一个createDB-sql文件，创建userInfo表" class="headerlink" title="IntelliJ创建一个createDB.sql文件，创建userInfo表"></a>IntelliJ创建一个createDB.sql文件，创建userInfo表</h4><p><img src="https://ww2.sinaimg.cn/large/006tNbRwgy1fegx9n7gb7j31kw0zkqlc.jpg" alt=""></p>
-<h4 id="mysql命令行设置userInfo表character为UTF8"><a href="#mysql命令行设置userInfo表character为UTF8" class="headerlink" title="mysql命令行设置userInfo表character为UTF8"></a>mysql命令行设置userInfo表character为UTF8</h4><p><img src="https://ww1.sinaimg.cn/large/006tNbRwgy1fegxbs3pw7j30ss084abd.jpg" alt=""></p>
-<h4 id="IntelliJ创建一个insertDB-sql文件，插入一条数据"><a href="#IntelliJ创建一个insertDB-sql文件，插入一条数据" class="headerlink" title="IntelliJ创建一个insertDB.sql文件，插入一条数据"></a>IntelliJ创建一个insertDB.sql文件，插入一条数据</h4><p><img src="https://ww3.sinaimg.cn/large/006tNbRwgy1fegxd9h002j31kw0zk1a3.jpg" alt=""></p>
-<h4 id="动态加载mysql驱动"><a href="#动态加载mysql驱动" class="headerlink" title="动态加载mysql驱动"></a>动态加载mysql驱动</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</div></pre></td></tr></table></figure>
-<h4 id="JDBC连接MySQL"><a href="#JDBC连接MySQL" class="headerlink" title="JDBC连接MySQL"></a>JDBC连接MySQL</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conn = DriverManager.getConnection(<span class="string">"jdbc:mysql://localhost:3306/webserverDemo?user=root&amp;password=19880622"</span>);</div></pre></td></tr></table></figure>
-<h2 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h2><h3 id="IntelliJ环境搭建"><a href="#IntelliJ环境搭建" class="headerlink" title="IntelliJ环境搭建"></a>IntelliJ环境搭建</h3><h3 id="mysql环境搭建"><a href="#mysql环境搭建" class="headerlink" title="mysql环境搭建"></a>mysql环境搭建</h3><h3 id="常用mysql命令"><a href="#常用mysql命令" class="headerlink" title="常用mysql命令"></a>常用mysql命令</h3><ul>
-<li>连接mysql:<ul>
-<li>格式： mysql -h主机地址 -u用户名 －p用户密码</li>
-<li>example:mysql -uroot -p</li>
-</ul>
-</li>
-<li>退出MYSQL命令<ul>
-<li>格式：exit （回车）</li>
-</ul>
-</li>
-<li>创建数据库<ul>
-<li>命令：create databas &lt;数据库名&gt;;</li>
-</ul>
-</li>
-<li>显示数据库<ul>
-<li>命令：show databases;</li>
-</ul>
-</li>
-<li>连接数据库<ul>
-<li>命令： use &lt;数据库名&gt;</li>
-</ul>
-</li>
-<li>创建数据库表<ul>
-<li>命令：create table &lt;表名&gt; ( &lt;字段名1&gt; &lt;类型1&gt; [,..&lt;字段名n&gt; &lt;类型n&gt;]);</li>
-</ul>
-</li>
-<li>删除表<ul>
-<li>命令：drop table &lt;表名&gt;</li>
-</ul>
-</li>
-<li>插入表数据 <ul>
-<li>命令：insert into &lt;表名&gt; [( &lt;字段名1&gt;[,..&lt;字段名n &gt; ])] values ( 值1 )[, ( 值n )]</li>
-</ul>
-</li>
-<li>查看表中所有数据<ul>
-<li>命令： select &lt;字段1，字段2，…&gt; from &lt; 表名 &gt; where &lt; 表达式 &gt;</li>
-<li>example:select * from MyClass;</li>
-</ul>
-</li>
-</ul>
-<h3 id="MySQL的JDBC-URL格式"><a href="#MySQL的JDBC-URL格式" class="headerlink" title="MySQL的JDBC URL格式"></a>MySQL的JDBC URL格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jdbc:mysql//[hostname][:port]/[dbname][?param1=value1][&amp;param2=value2]….</div></pre></td></tr></table></figure>
-<p>Example：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jdbc:mysql://localhost:3306/sample_db?user=root&amp;password=your_password</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2186,7 +2032,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2197,7 +2043,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2208,7 +2054,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -107,21 +107,22 @@
 
 
 
-<meta name="description" content="为什么我们需要性能基线？差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
-波动性随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数">
+<meta name="description" content="为什么我们需要页面性能基线？开发人员的差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
+业务迭代的变化随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何系统建设App的性能基线和流程">
+<meta property="og:title" content="如何建设App的页面性能基线">
 <meta property="og:url" content="http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="为什么我们需要性能基线？差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
-波动性随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数">
+<meta property="og:description" content="为什么我们需要页面性能基线？开发人员的差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
+业务迭代的变化随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fjeywnme3lj319w0saq5d.jpg">
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg">
-<meta property="og:updated_time" content="2017-08-31T10:39:21.000Z">
+<meta property="og:updated_time" content="2017-09-10T17:16:08.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何系统建设App的性能基线和流程">
-<meta name="twitter:description" content="为什么我们需要性能基线？差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
-波动性随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数">
-<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg">
+<meta name="twitter:title" content="如何建设App的页面性能基线">
+<meta name="twitter:description" content="为什么我们需要页面性能基线？开发人员的差异性在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。
+业务迭代的变化随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是">
+<meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fjeywnme3lj319w0saq5d.jpg">
 
 
 
@@ -155,7 +156,7 @@
 
 
 
-  <title> 如何系统建设App的性能基线和流程 | Blacktea's Life </title>
+  <title> 如何建设App的页面性能基线 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -334,7 +335,7 @@
             
             
               
-                如何系统建设App的性能基线和流程
+                如何建设App的页面性能基线
               
             
           </h1>
@@ -407,28 +408,39 @@
       
 
       
-        <h1 id="为什么我们需要性能基线？"><a href="#为什么我们需要性能基线？" class="headerlink" title="为什么我们需要性能基线？"></a>为什么我们需要性能基线？</h1><p>差异性<br>在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。</p>
-<p>波动性<br>随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数据做为参考线，则可以对存量页面的性能进行自动化分析。</p>
-<h1 id="3个目标"><a href="#3个目标" class="headerlink" title="3个目标"></a>3个目标</h1><p>流程化<br>建立完整、合理的基线产出流程。</p>
-<p>工具统一化<br>建立统一的性能分析方法论、分析工具。</p>
-<p>标准化<br>建立标准化的基线算法，通过该算法计算出各页面的基线标准</p>
-<h1 id="怎样获得合理的性能基线？"><a href="#怎样获得合理的性能基线？" class="headerlink" title="怎样获得合理的性能基线？"></a>怎样获得合理的性能基线？</h1><h2 id="两个特性"><a href="#两个特性" class="headerlink" title="两个特性"></a>两个特性</h2><p>不一致性</p>
+        <h1 id="为什么我们需要页面性能基线？"><a href="#为什么我们需要页面性能基线？" class="headerlink" title="为什么我们需要页面性能基线？"></a>为什么我们需要页面性能基线？</h1><p>开发人员的差异性<br>在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。</p>
+<p>业务迭代的变化<br>随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数据做为参考线，则可以对存量页面的性能进行自动化分析。</p>
+<h2 id="页面性能的两个特性"><a href="#页面性能的两个特性" class="headerlink" title="页面性能的两个特性"></a>页面性能的两个特性</h2><p>不一致性</p>
 <p>一个页面的性能指标怎么定主要受2个因素的影响，一个是UI元素的复杂度，一个是接口数据的复杂度。UI布局越复杂，页面渲染就会越慢。数据获取越复杂，页面就需要等待越长的时间进行渲染。因此我们不能一视同仁，所有页面都设置同样的基线。</p>
 <p>合理波动性</p>
-<p>鲜肉页面进入市场后，随着版本迭代，性能数据一定会有所波动。在一定范围内波动，我们认为是合理波动。</p>
-<h2 id="3条准线"><a href="#3条准线" class="headerlink" title="3条准线"></a>3条准线</h2><p>性能红线</p>
+<p>鲜肉页面（新开发的页面）进入市场后，随着版本迭代，性能数据一定会有所波动。在一定范围内波动，我们认为是合理波动。</p>
+<h1 id="基线建设的3个目标"><a href="#基线建设的3个目标" class="headerlink" title="基线建设的3个目标"></a>基线建设的3个目标</h1><p>流程化<br>建立完整、合理的基线产出流程。</p>
+<p>工具统一化<br>建立统一的性能分析方法论、分析工具。</p>
+<p>标准化<br>建立标准化的基线算法，通过该算法计算出各页面的基线标准</p>
+<h2 id="3条性能基准线"><a href="#3条性能基准线" class="headerlink" title="3条性能基准线"></a>3条性能基准线</h2><p>性能红线</p>
 <p>性能指标只要差到一定的程度，用户就会感受到明显的不顺畅、慢、卡。这时候，无论页面多复杂、接口多慢，都不是理由（再有价值的产品，如果体验太差对用户来说就是垃圾）。因此，我们需要设立一个性能红线，无论如何不能超过红线。</p>
-<p>页面综合性能指数</p>
-<p>正如证券市场的道琼斯指数一样，取所有页面性能数据的平均值作为页面综合性能指数。</p>
-<p>性能基线</p>
+<p>App综合性能指数</p>
+<p>正如证券市场的道琼斯指数一样，取App所有页面性能数据的平均值作为页面综合性能指数。鲜肉页面没有历史版本的数据，没有参考的标准。由于页面复杂度存在不一致性，不能随便找找一个页面来做参考，这个时候取App综合性能指数做参考是最合适的。</p>
+<p>页面性能基线（3个历史版本数据的均值）</p>
 <p>鲜肉页面通过过滤流水线后，我们就将通过后页面的线上平均数据做为该页面的性能基线。</p>
 <h2 id="2条流水线"><a href="#2条流水线" class="headerlink" title="2条流水线"></a>2条流水线</h2><p>鲜肉过滤流水线</p>
-<p>新开发的页面（鲜肉页面），由于复杂度不一致，我们不能准确判断开发出来的页面性能是否合理。但我们可以根据两天基准线做为参考值来估算页面性能是否合理。第一条是红线，高压线不能越。第二条是页面综合性能指数，如果低于这条线则合格，如果高于这条线则进入鉴别池。进入鉴别池的页面，将使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
+<p>新开发的页面（鲜肉页面），由于复杂度不一致，我们不能准确判断开发出来的页面性能是否合理。但我们可以根据两条基准线做为参考值来估算页面性能是否合理。第一条是红线，高压线不能越。第二条是“APP综合性能指数”，如果低于这条线则合格，如果高于这条线则进入鉴别池。进入鉴别池的页面，将使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
 <p>熟肉自动流水线</p>
 <p>鲜肉页面经过过滤后，性能基本可以得到保障。但我们还需要保证，随着版本迭代这些页面性不能超过合理波动的范围。每期的版本迭代前，我们通过自动化测试拿到线下性能数据，然后与该页面的性能基线进行自动对比，计算迭代后的数据是否超过了基线的合理波动范围。若超过了，则进入鉴别池，使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
+<p>两条流水线都可以建立自动化过滤系统，根据基准线进行自动化数据分析，解放测试同学的同时，保证全面地覆盖。</p>
+<h2 id="落地设计"><a href="#落地设计" class="headerlink" title="落地设计"></a>落地设计</h2><p>根据实际的项目流程，可以分为线上实时监控和线下自动化数据分析。</p>
+<h2 id="线上实时监控"><a href="#线上实时监控" class="headerlink" title="线上实时监控"></a>线上实时监控</h2><p>线上建立可视化的性能数据图表，方便进行实时监控和分析。<br>图片显示如下几条线</p>
+<ul>
+<li>波动线（页面性能基线+合理波动值）</li>
+<li>性能红线</li>
+<li>当前版本均值</li>
+</ul>
+<h2 id="线下自动化数据分析"><a href="#线下自动化数据分析" class="headerlink" title="线下自动化数据分析"></a>线下自动化数据分析</h2><p>线下建立自动化过滤系统，根据基准线进行自动化数据分析。</p>
+<p>鲜肉页面过滤条件：<br>测试数据 &gt; APP综合指数（剔除一定范围0-500，2000+）<br>熟肉页面过滤条件：<br>测试数据 &gt; 页面基线值（页面性能基线+合理波动值）</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fjeywnme3lj319w0saq5d.jpg" alt=""></p>
 <h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg" alt=""></p>
-<h1 id="如何落地？"><a href="#如何落地？" class="headerlink" title="如何落地？"></a>如何落地？</h1><p>基线的流程和方法的建设，需要开发和测试人员一起协作完成。<br>开发人员负责：数据埋点、问题优化分析、积累沉淀<br>测试人员负责：测试件、数据平台建设、测试流程建设</p>
-<p>落地是重点也是难点。我认为有2个要点。<br>1进行方案评审和宣导，获取团队人员的反馈，并进行改善，形成团队内的统一认知。<br>2合理安排落地节奏。</p>
+<h1 id="整体落地"><a href="#整体落地" class="headerlink" title="整体落地"></a>整体落地</h1><p>基线的流程和方法的建设，需要开发和测试人员一起协作完成。<br>开发人员负责：数据埋点、问题优化分析、积累沉淀<br>测试人员负责：测试件、数据平台建设、测试流程建设</p>
+<p>落地是重点也是难点。其中有2个要点。<br>1进行方案评审和宣导，获取团队人员的反馈，并进行改善，形成团队内的统一认知。<br>2合理安排落地节奏。</p>
 
       
     </div>
@@ -497,8 +509,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/16/Invite_Job_aliabbamd/" rel="next" title="阿里巴巴国际无线技术部 - 在这里遇见最好的自己">
-                <i class="fa fa-chevron-left"></i> 阿里巴巴国际无线技术部 - 在这里遇见最好的自己
+              <a href="/2017/08/16/history-make-believe/" rel="next" title="《未来简史》————虚构比真实更重要">
+                <i class="fa fa-chevron-left"></i> 《未来简史》————虚构比真实更重要
               </a>
             
           </div>
@@ -506,6 +518,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/03/thought_structure_thinking/" rel="prev" title="结构化思考——完美应对电梯30秒的思考模型">
+                结构化思考——完美应对电梯30秒的思考模型 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -577,7 +593,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -588,7 +604,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -599,7 +615,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -679,7 +695,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么我们需要性能基线？"><span class="nav-number">1.</span> <span class="nav-text">为什么我们需要性能基线？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3个目标"><span class="nav-number">2.</span> <span class="nav-text">3个目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#怎样获得合理的性能基线？"><span class="nav-number">3.</span> <span class="nav-text">怎样获得合理的性能基线？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#两个特性"><span class="nav-number">3.1.</span> <span class="nav-text">两个特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3条准线"><span class="nav-number">3.2.</span> <span class="nav-text">3条准线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2条流水线"><span class="nav-number">3.3.</span> <span class="nav-text">2条流水线</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整体流程图"><span class="nav-number">4.</span> <span class="nav-text">整体流程图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何落地？"><span class="nav-number">5.</span> <span class="nav-text">如何落地？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么我们需要页面性能基线？"><span class="nav-number">1.</span> <span class="nav-text">为什么我们需要页面性能基线？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#页面性能的两个特性"><span class="nav-number">1.1.</span> <span class="nav-text">页面性能的两个特性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基线建设的3个目标"><span class="nav-number">2.</span> <span class="nav-text">基线建设的3个目标</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3条性能基准线"><span class="nav-number">2.1.</span> <span class="nav-text">3条性能基准线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2条流水线"><span class="nav-number">2.2.</span> <span class="nav-text">2条流水线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#落地设计"><span class="nav-number">2.3.</span> <span class="nav-text">落地设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线上实时监控"><span class="nav-number">2.4.</span> <span class="nav-text">线上实时监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线下自动化数据分析"><span class="nav-number">2.5.</span> <span class="nav-text">线下自动化数据分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整体流程图"><span class="nav-number">3.</span> <span class="nav-text">整体流程图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整体落地"><span class="nav-number">4.</span> <span class="nav-text">整体落地</span></a></li></ol></div>
             
 
           </div>
