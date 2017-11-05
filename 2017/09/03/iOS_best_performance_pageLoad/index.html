@@ -108,21 +108,21 @@
 
 
 <meta name="description" content="如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。
-UIViewControllerUIViewController生命周期的回调函数（主线程），要避免耗时计算。下面是检查清单：
-1234567initinitWithNibName:bundleviewWillAppearviewDidAppearviewDidLoadviewWillDisappearv">
+跳转事件触发后不要做阻塞操作
+过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。建议有两种做法：1 提前做好权限校验2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS开发性能最佳实践系列之——页面加载快的性能检查清单">
+<meta property="og:title" content="iOS性能最佳实践系列之--加快页面加载的检查清单">
 <meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
 <meta property="og:description" content="如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。
-UIViewControllerUIViewController生命周期的回调函数（主线程），要避免耗时计算。下面是检查清单：
-1234567initinitWithNibName:bundleviewWillAppearviewDidAppearviewDidLoadviewWillDisappearv">
-<meta property="og:updated_time" content="2017-09-11T13:51:28.000Z">
+跳转事件触发后不要做阻塞操作
+过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。建议有两种做法：1 提前做好权限校验2">
+<meta property="og:updated_time" content="2017-09-16T10:24:22.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS开发性能最佳实践系列之——页面加载快的性能检查清单">
+<meta name="twitter:title" content="iOS性能最佳实践系列之--加快页面加载的检查清单">
 <meta name="twitter:description" content="如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。
-UIViewControllerUIViewController生命周期的回调函数（主线程），要避免耗时计算。下面是检查清单：
-1234567initinitWithNibName:bundleviewWillAppearviewDidAppearviewDidLoadviewWillDisappearv">
+跳转事件触发后不要做阻塞操作
+过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。建议有两种做法：1 提前做好权限校验2">
 
 
 
@@ -156,7 +156,7 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
 
 
 
-  <title> iOS开发性能最佳实践系列之——页面加载快的性能检查清单 | Blacktea's Life </title>
+  <title> iOS性能最佳实践系列之--加快页面加载的检查清单 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -335,7 +335,7 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
             
             
               
-                iOS开发性能最佳实践系列之——页面加载快的性能检查清单
+                iOS性能最佳实践系列之--加快页面加载的检查清单
               
             
           </h1>
@@ -409,11 +409,19 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
 
       
         <p>如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。</p>
-<h2 id="UIViewController"><a href="#UIViewController" class="headerlink" title="UIViewController"></a>UIViewController</h2><p><strong>UIViewController生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">init</div><div class="line">initWithNibName:bundle</div><div class="line">viewWillAppear</div><div class="line">viewDidAppear</div><div class="line">viewDidLoad</div><div class="line">viewWillDisappear</div><div class="line">viewDidDisappear</div></pre></td></tr></table></figure>
-<h2 id="UITableView"><a href="#UITableView" class="headerlink" title="UITableView"></a>UITableView</h2><p><strong>UITableView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tableView:cellForRowAtIndexPath</div><div class="line">tableView:heightForRowAtIndexPath</div><div class="line">tableView:didSelectRowAtIndexPath</div></pre></td></tr></table></figure>
-<p><strong>减少tableview高度计算次数</strong></p>
+<p><strong>跳转事件触发后不要做阻塞操作</strong></p>
+<p>过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。<br>建议有两种做法：<br>1 提前做好权限校验<br>2 直接进入新页面后再做权限校验，没有权限显示无权限的背景图</p>
+<p><strong>UIViewController的生命周期要避免阻塞</strong><br>UIViewController的生命周期方法都在主线程，不要因为做消耗资源的事情（除了初始化视图）导致主线程被阻塞。</p>
+<p>有消耗资源的操作放到子线程里，需要做UI渲染再回到主线程</p>
+<p>下面是检查清单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">init</div><div class="line">initWithNibName:bundle</div><div class="line">viewWillAppear</div><div class="line">viewDidAppear</div><div class="line">viewDidLoad</div><div class="line">viewWillDisappear</div><div class="line">viewDidDisappear</div><div class="line">...</div></pre></td></tr></table></figure>
+<p><strong>如果接口请求慢，先加载缓存，再刷最新数据</strong></p>
+<p>如果页面的网络请求很慢，会出现白屏转菊花很久的情况，改善的策略如下。<br>1 先加载缓存数据<br>2 同步请求网络数据，网络数据请求完成后和本地数据校对，得出需要变化的数据。<br>3 将新增的数据加载到页面里，并提示“有数据更新”（类似新浪微博）</p>
+<p><strong>UITableView的DataSource的代理实现要避免阻塞</strong></p>
+<p>UITableView的DataSource回调函数在主线程，要避免耗时计算。</p>
+<p>下面是检查清单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tableView:cellForRowAtIndexPath</div><div class="line">tableView:heightForRowAtIndexPath</div><div class="line">...</div></pre></td></tr></table></figure>
+<p><strong>减少UITableView高度计算次数</strong></p>
 <ul>
 <li>有多种Cell或高度是动态的<ul>
 <li>设置estimatedRowHeight(设置后会开启self—sizing，自动计算高度)</li>
@@ -425,7 +433,8 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
 </ul>
 </li>
 </ul>
-<h2 id="UICollectionView"><a href="#UICollectionView" class="headerlink" title="UICollectionView"></a>UICollectionView</h2><p><strong>UICollectionView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
+<p><strong>UICollectionView的DataSource的代理实现要避免阻塞</strong></p>
+<p>UICollectionView生命周期的回调函数在主线程，要避免耗时计算。<br>下面是检查清单：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">collectionView:cellForItemAtIndexPath</div><div class="line">collectionView:layout:sizeForItemAtIndexPath</div><div class="line">collectionView:didSelectItemAtIndexPath</div></pre></td></tr></table></figure>
 
       
@@ -505,8 +514,8 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/09/03/iOS_best_performance_collection_enumeration/" rel="prev" title="iOS开发性能最佳实践系列之——集合遍历">
-                iOS开发性能最佳实践系列之——集合遍历 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/09/05/iOS_best_performance_pageSlide/" rel="prev" title="iOS性能最佳实践之--保证页面流畅性的检查清单">
+                iOS性能最佳实践之--保证页面流畅性的检查清单 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -554,17 +563,8 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.JPG"
@@ -579,7 +579,7 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -671,22 +671,6 @@ UIViewControllerUIViewController生命周期的回调函数（主线程），要
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UIViewController"><span class="nav-number">1.</span> <span class="nav-text">UIViewController</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UITableView"><span class="nav-number">2.</span> <span class="nav-text">UITableView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UICollectionView"><span class="nav-number">3.</span> <span class="nav-text">UICollectionView</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

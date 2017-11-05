@@ -107,37 +107,25 @@
 
 
 
-<meta name="description" content="避免滑动时加工数据
-网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。
-计算高度耗时较长时，将高度进行缓存
-建议使用”UITableView+FDTemplateLayoutCell“。
-使用Cell的复用机制
-此处不需要解释
-复用Cell内的子视图
-有些开">
+<meta name="description" content="核心概念组件(Components)可以复用的UI元素,相当于在iOS里自己写了一个UI控件
+属性(Props)Props 就是组件的属性，相当于iOS里的Property
+状态(State)
+组件内部维持的状态数据称为 state ，它是组件的当前状态。可以把组件简单看成一个”状态机”，根据 state 呈现不同的 UI 展示。一旦 state 被更改，组件就会自动调用自身的 render 函数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单">
-<meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/index.html">
+<meta property="og:title" content="零基础如何做Weex开发">
+<meta property="og:url" content="http://blackteachinese.com/2017/09/14/weex_how_to_start/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="避免滑动时加工数据
-网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。
-计算高度耗时较长时，将高度进行缓存
-建议使用”UITableView+FDTemplateLayoutCell“。
-使用Cell的复用机制
-此处不需要解释
-复用Cell内的子视图
-有些开">
-<meta property="og:updated_time" content="2017-09-11T13:58:06.000Z">
+<meta property="og:description" content="核心概念组件(Components)可以复用的UI元素,相当于在iOS里自己写了一个UI控件
+属性(Props)Props 就是组件的属性，相当于iOS里的Property
+状态(State)
+组件内部维持的状态数据称为 state ，它是组件的当前状态。可以把组件简单看成一个”状态机”，根据 state 呈现不同的 UI 展示。一旦 state 被更改，组件就会自动调用自身的 render 函数">
+<meta property="og:updated_time" content="2017-10-26T02:35:44.226Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单">
-<meta name="twitter:description" content="避免滑动时加工数据
-网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。
-计算高度耗时较长时，将高度进行缓存
-建议使用”UITableView+FDTemplateLayoutCell“。
-使用Cell的复用机制
-此处不需要解释
-复用Cell内的子视图
-有些开">
+<meta name="twitter:title" content="零基础如何做Weex开发">
+<meta name="twitter:description" content="核心概念组件(Components)可以复用的UI元素,相当于在iOS里自己写了一个UI控件
+属性(Props)Props 就是组件的属性，相当于iOS里的Property
+状态(State)
+组件内部维持的状态数据称为 state ，它是组件的当前状态。可以把组件简单看成一个”状态机”，根据 state 呈现不同的 UI 展示。一旦 state 被更改，组件就会自动调用自身的 render 函数">
 
 
 
@@ -165,13 +153,13 @@
 
 
 
-  <link rel="canonical" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/"/>
+  <link rel="canonical" href="http://blackteachinese.com/2017/09/14/weex_how_to_start/"/>
 
 
 
 
 
-  <title> iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单 | Blacktea's Life </title>
+  <title> 零基础如何做Weex开发 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -329,7 +317,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/14/weex_how_to_start/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -350,7 +338,7 @@
             
             
               
-                iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单
+                零基础如何做Weex开发
               
             
           </h1>
@@ -365,8 +353,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-14T21:39:27+08:00">
+                2017-09-14
               </time>
             
 
@@ -423,26 +411,39 @@
       
 
       
-        <p><strong>避免滑动时加工数据</strong></p>
-<p>网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。</p>
-<p><strong>计算高度耗时较长时，将高度进行缓存</strong></p>
-<p>建议使用”UITableView+FDTemplateLayoutCell“。</p>
-<p><strong>使用Cell的复用机制</strong></p>
-<p>此处不需要解释</p>
-<p><strong>复用Cell内的子视图</strong></p>
-<p>有些开发者确实是使用了cell的复用机制，但是每次复用时由于子视图有一些差异，会把Cell里子视图释放掉，再重新初始化需要的子视图。这种做法是非常消耗CPU的，子视图也要尽量复用。</p>
-<p><strong>使用隐藏而不是移除</strong></p>
-<p>移除一个子视图也是需要开销的。如果有一些子视图不需要显示，将其隐藏而不是移除。</p>
-<p><strong>到后台线程销毁视图</strong></p>
-<p>有大量视图需要销毁时，放到后台线程，减少主线程的计算量。</p>
-<p><strong>到后台线程图片解码</strong></p>
-<p>加载图片时，图片的解码需要消耗CPU的资源，而这部分是可以放到子线程处理的。（SDWebImage默认是在子线程解码的，除非你关了）</p>
-<p><strong>到后台线程图片绘制</strong></p>
-<p>CoreGraphic是线程安全的，使用CoreGraphic绘制图片可以在子线程做，绘制完再回主线程加载到要呈现的控件里</p>
-<p><strong>减少透明视图的混合</strong></p>
-<p>设置视图的opaque属性为True,减少视图的混合消耗GPU资源</p>
-<p><strong>手动计算布局，并缓存</strong></p>
-<p>特别复杂的Cell，Autolayout的布局消耗大量CPU资源。可以根据数据源手动计算frame并进行缓存，从而避免每次都重新计算布局。</p>
+        <h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><p><strong>组件(Components)</strong><br>可以复用的UI元素,相当于在iOS里自己写了一个UI控件</p>
+<p><strong>属性(Props)</strong><br>Props 就是组件的属性，相当于iOS里的Property</p>
+<p><strong>状态(State)</strong></p>
+<p>组件内部维持的状态数据称为 state ，它是组件的当前状态。可以把组件简单看成一个”状态机”，根据 state 呈现不同的 UI 展示。一旦 state 被更改，组件就会自动调用自身的 render 函数重新渲染 UI，这个更改 state 的动作会通过 this.setState方法来触发</p>
+<p><strong>事件(Events)</strong><br>使用驼峰式命名指定要绑定的事件属性为组件定义的一个方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;TextInput onInput=&#123; (event) =&gt; this.setState(&#123; text: event.value &#125;) &#125; /&gt;</div></pre></td></tr></table></figure>
+<p><strong>JSX</strong><br>JSX 是一个看起来很像 XML 的 JavaScript 语法扩展。 它只是一种语法糖。Rax 的 DSL 语法是基于 React JSX 语法而创造。</p>
+<p><strong>Flexbox 布局</strong><br>使用flexbox 规则来描述组件</p>
+<p><strong>样式</strong><br>使用对象的方式来描述 CSS 中的样式，并传递给组件的 style<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;View style=&#123;&#123; width: 100, height: 100, backgroundColor: &apos;skyblue&apos; &#125;&#125; /&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="组件的生命周期"><a href="#组件的生命周期" class="headerlink" title="组件的生命周期"></a>组件的生命周期</h2><p>渲染阶段</p>
+<p><strong>getDefaultPops</strong><br>用于返回组件实例的默认props值。对于组件类来说，这个方法只会被调用一次.</p>
+<p><strong>getInitialState</strong><br>用来初始化每个实例的state。对于每个组件实例来讲，这个方法只会调用一次</p>
+<p><strong>componentWillMount</strong><br>该方法在首次渲染之前调用</p>
+<p><strong>render</strong><br>该方法会创建一个虚拟 DOM，用来表示组件的输出。</p>
+<p><strong>componentDidMount</strong><br>该方法被调用时，页面中已经渲染出真实的节点。</p>
+<p>存在阶段</p>
+<p><strong>componentWillReceiveProps</strong><br>父组件可以在外部更改子组件的props，更改后会调用此方法</p>
+<p>组件的写法</p>
+<p><strong>componentWillUnmount</strong></p>
+<p>在 componentDidMount 中添加的任务都需要再该方法中撤销，如创建的定时器或事件监听器</p>
+<h2 id="Flexbox-和样式"><a href="#Flexbox-和样式" class="headerlink" title="Flexbox 和样式"></a>Flexbox 和样式</h2><p>style属性用来定义组件的样式,并支持一个数组.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;View style=&#123;[styles.container, styles.custom]&#125;&gt;</div><div class="line">  &lt;Text&gt;hello world&lt;/Text&gt;</div><div class="line">&lt;/View&gt;</div><div class="line"></div><div class="line">const styles = &#123;</div><div class="line">  container: &#123;</div><div class="line">    background: &apos;grey&apos;,</div><div class="line">    width: &apos;750rem&apos;</div><div class="line">  &#125;,</div><div class="line">  custom: &#123;</div><div class="line">    height: &apos;100rem&apos;</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>设置单位时,推荐使用不加单位的写法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;View style=&#123;styles.container&#125;&gt;</div><div class="line">  &lt;Text&gt;hello world&lt;/Text&gt;</div><div class="line">&lt;/View&gt;</div><div class="line"></div><div class="line">const styles = &#123;</div><div class="line">  container: &#123;</div><div class="line">    background: &apos;grey&apos;,</div><div class="line">    width: 375</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">1 个单位的大小为屏幕宽度的 1/750，这样做的好处是当你拿到一份 750px 宽的视觉稿，你再也不需要去做人工换算。</div></pre></td></tr></table></figure>
+<p>JSX语法</p>
+<p>Rax中使用CSS书写样式</p>
+<p>详细文档:<a href="https://alibaba.github.io/rax/guide/style" target="_blank" rel="external">Rax-CSS</a></p>
+<h2 id="事件处理"><a href="#事件处理" class="headerlink" title="事件处理"></a>事件处理</h2><p>简单的点击事件、Appear事件、滚动事件、用户输入事件、复杂手势事件<br>详细文档：<a href="https://alibaba.github.io/rax/guide/event-handle" target="_blank" rel="external">Rax事件处理</a></p>
+<h2 id="网络请求"><a href="#网络请求" class="headerlink" title="网络请求"></a>网络请求</h2><p>Rax 实现了 Fetch API,并推荐使用 fetch 来发起异步网络请求<br>详细文档:<a href="https://alibaba.github.io/rax/guide/network" target="_blank" rel="external">Fetch</a></p>
+<h2 id="调试工具"><a href="#调试工具" class="headerlink" title="调试工具"></a>调试工具</h2><p>使用 weex-toolkit。<br>详细文档:<a href="http://weex.apache.org/cn/guide/tools/toolkit.html" target="_blank" rel="external">weex-toolkit</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g weex-toolkit</div></pre></td></tr></table></figure>
+<h2 id="ES6语法"><a href="#ES6语法" class="headerlink" title="ES6语法"></a>ES6语法</h2><p><a href="http://es6.ruanyifeng.com/" target="_blank" rel="external">ECMAScript 6 入门</a></p>
+<p><a href="http://www.ruanyifeng.com/blog/2015/03/react.html" target="_blank" rel="external">React 新手</a><br><a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html" target="_blank" rel="external">Flexbox布局教程</a><br><a href="http://blog.csdn.net/liuyan19891230/article/details/50724630" target="_blank" rel="external">CSS3的border-radius属性详解</a><br><a href="https://alibaba.github.io/rax/guide" target="_blank" rel="external">Rax官方文档</a><br><a href="https://weex.incubator.apache.org/cn/guide/" target="_blank" rel="external">Weex官方文档</a></p>
 
       
     </div>
@@ -511,8 +512,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/03/iOS_business_developer_value/" rel="next" title="业务开发人员的价值是什么？">
-                <i class="fa fa-chevron-left"></i> 业务开发人员的价值是什么？
+              <a href="/2017/09/11/iOS_best_performance_rounded_and_shadow/" rel="next" title="iOS性能最佳实践之——圆角和阴影的正确使用姿势">
+                <i class="fa fa-chevron-left"></i> iOS性能最佳实践之——圆角和阴影的正确使用姿势
               </a>
             
           </div>
@@ -520,6 +521,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/15/iOS_coding_rule/" rel="prev" title="iOS最容易违反的代码规范">
+                iOS最容易违反的代码规范 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -566,8 +571,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.JPG"
@@ -582,7 +596,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -674,6 +688,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#核心概念"><span class="nav-number">1.</span> <span class="nav-text">核心概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件的生命周期"><span class="nav-number">2.</span> <span class="nav-text">组件的生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flexbox-和样式"><span class="nav-number">3.</span> <span class="nav-text">Flexbox 和样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件处理"><span class="nav-number">4.</span> <span class="nav-text">事件处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络请求"><span class="nav-number">5.</span> <span class="nav-text">网络请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试工具"><span class="nav-number">6.</span> <span class="nav-text">调试工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES6语法"><span class="nav-number">7.</span> <span class="nav-text">ES6语法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

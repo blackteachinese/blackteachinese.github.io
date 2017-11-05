@@ -1,0 +1,874 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blacktea's Life" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="URL里中文字符正确过滤姿势今天有个同事跟我反馈，有个复杂参数的路由跳转需求，目前路由解析满足不了。这个需求是服务推送一个URL scheme到app，又app的路由寻找到对应的页面。这个URL结构大致如下：
+1blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;amp;url2=https://www.blacktea.com">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个多层嵌套URL引发的URLEncode血案">
+<meta property="og:url" content="http://blackteachinese.com/2017/10/25/ios_urlencode/index.html">
+<meta property="og:site_name" content="Blacktea's Life">
+<meta property="og:description" content="URL里中文字符正确过滤姿势今天有个同事跟我反馈，有个复杂参数的路由跳转需求，目前路由解析满足不了。这个需求是服务推送一个URL scheme到app，又app的路由寻找到对应的页面。这个URL结构大致如下：
+1blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;amp;url2=https://www.blacktea.com">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1fkvva3w5xnj30k60er76g.jpg">
+<meta property="og:updated_time" content="2017-10-30T06:37:51.619Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一个多层嵌套URL引发的URLEncode血案">
+<meta name="twitter:description" content="URL里中文字符正确过滤姿势今天有个同事跟我反馈，有个复杂参数的路由跳转需求，目前路由解析满足不了。这个需求是服务推送一个URL scheme到app，又app的路由寻找到对应的页面。这个URL结构大致如下：
+1blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;amp;url2=https://www.blacktea.com">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tKfTcgy1fkvva3w5xnj30k60er76g.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blackteachinese.com/2017/10/25/ios_urlencode/"/>
+
+
+
+
+
+  <title> 一个多层嵌套URL引发的URLEncode血案 | Blacktea's Life </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63129529";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blacktea's Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">A programmer who love music and football</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/25/ios_urlencode/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                一个多层嵌套URL引发的URLEncode血案
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-25T18:05:24+08:00">
+                2017-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="URL里中文字符正确过滤姿势"><a href="#URL里中文字符正确过滤姿势" class="headerlink" title="URL里中文字符正确过滤姿势"></a>URL里中文字符正确过滤姿势</h2><p>今天有个同事跟我反馈，有个复杂参数的路由跳转需求，目前路由解析满足不了。<br>这个需求是服务推送一个URL scheme到app，又app的路由寻找到对应的页面。<br>这个URL结构大致如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;url2=https://www.blacktea.com.js&amp;key3=value3</div></pre></td></tr></table></figure>
+<p>第一层嵌了一个参数url，第二层url的value里又嵌了一个参数url2。</p>
+<p>服务端对这个url做了encode,推送到app的字符串如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https%3a%2f%2fm.alibaba.com%3fkey1%3dvalue1%26url2%3dhttps%253a%252f%252fwww.blacktea.com.js%26key3%3dvalue3</div></pre></td></tr></table></figure>
+<p>在路由里为了避免空格和中文字符，会对传入的url分别调用stringByReplacingPercentEscapesUsingEncoding和stringByAddingPercentEscapesUsingEncoding</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">urlString = [urlString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];</div><div class="line">urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];</div></pre></td></tr></table></figure>
+<p>问题来了，因为stringByReplacingPercentEscapesUsingEncoding会对”%3a%2f%3d%26%3f”等被转义的保留字符反转义回”:/=&amp;?”。<br>而stringByAddingPercentEscapesUsingEncoding只会对中文非法字符做percent转义，不会处理”:/=&amp;?”等保留字符做encode处理。所以最后经过路由后，URL变成如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;url2=https%253a%252f%252fwww.blacktea.com.js&amp;key3=value3</div></pre></td></tr></table></figure>
+<p>这就导致第一层的参数url里的链接没有被encode，url2、key3这两个参数都被错认为是第一层的参数了。</p>
+<p>路由层做过滤的实际意图是希望，把中文字符转义掉，同时又不影响url各层参数的encode状态。<br>解决的办法是使用如下两个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">static NSString *ASCRouterReplacingPercentEscapes(NSString *string, NSStringEncoding encoding)&#123;</div><div class="line">    NSString *result = ( NSString *)CFBridgingRelease(CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault,</div><div class="line">                                                                                                             (__bridge CFStringRef)string,</div><div class="line">                                                                                                             NULL,</div><div class="line">                                                                                                             CFStringConvertNSStringEncodingToEncoding(encoding)));</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">static NSString *ASCRouterAddingPercentEscapes(NSString *string, NSStringEncoding encoding) &#123;</div><div class="line">    return (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,</div><div class="line">                                                                                  (__bridge CFStringRef)string,</div><div class="line">                                                                                  NULL,</div><div class="line">                                                                                  NULL,</div><div class="line">                                                                                  CFStringConvertNSStringEncodingToEncoding(encoding)));</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用以上2个方法，便只会对中文非法字符进行转义，不会影响其他保留字符的转义情况。</p>
+<h2 id="多层嵌套url正确的encode姿势"><a href="#多层嵌套url正确的encode姿势" class="headerlink" title="多层嵌套url正确的encode姿势"></a>多层嵌套url正确的encode姿势</h2><p>除此之外，对于多层嵌套的url需要正确地encode.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;url2=https%253a%252f%252fwww.blacktea.com.js&amp;key3=value3</div></pre></td></tr></table></figure>
+<p>对于上面例子这个url,需要做2层的urlencode</p>
+<p><strong>错误encode方式：</strong></p>
+<p>blacktea%3a%2f%2fgotoWebView%3furl%3dhttps%3a%2f%2fm.alibaba.com%3fkey1%3dvalue1%26url2%3dhttps%3a%2f%2fwww.blacktea.com.js%26key3%3dvalue3</p>
+<p><strong>正确encode方式：</strong></p>
+<p>第一次encode<br>from:<br><a href="https://www.blacktea.com.js" target="_blank" rel="external">https://www.blacktea.com.js</a><br>to:<br>https%3a%2f%2fwww.blacktea.com.js</p>
+<p>第二次encode</p>
+<p>from:<br><a href="https://m.alibaba.com?key1=value1&amp;url2=https%3a%2f%2fwww.blacktea.com.js&amp;key3=value3" target="_blank" rel="external">https://m.alibaba.com?key1=value1&amp;url2=https%3a%2f%2fwww.blacktea.com.js&amp;key3=value3</a></p>
+<p>to:<br>https%3a%2f%2fm.alibaba.com%3fkey1%3dvalue1%26url2%3dhttps%253a%252f%252fwww.blacktea.com.js%26key3%3dvalue3</p>
+<p>result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https%3a%2f%2fm.alibaba.com%3fkey1%3dvalue1%26url2%3dhttps%253a%252f%252fwww.blacktea.com.js%26key3%3dvalue3</div></pre></td></tr></table></figure>
+<p>客户端拿到这个被多层encode的url后，再一层一层能地解开，没解开一层都要decode一遍。</p>
+<h2 id="UrlEncode编码原理"><a href="#UrlEncode编码原理" class="headerlink" title="UrlEncode编码原理"></a>UrlEncode编码原理</h2><p>编码原理：<br>将需要转码的字符转为16进制，然后从右到左，取4位(不足4位直接处理)，每2位做一位，前面加上%，编码成%XY格式。</p>
+<p>比如：<br>空格ASCII码是32，对应16进制是20，那么urlencode编码结果是:%20<br>比如：<br>中ASCII码是-10544，对应的16进制是FFFFFFFFFFFFD6D0，那么urlencode编码结果是:%D6%D0</p>
+<p>URI统一资源标识符里允许的所有字符里，分为保留字符和非保留字符。百分号编码(Percent-encoding)会把保留字符转义为特殊字符序列。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1fkvva3w5xnj30k60er76g.jpg" alt=""><br><a href="https://baike.baidu.com/item/urlencode" target="_blank" rel="external">百度百科urlencode</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ww2.sinaimg.cn/large/006tNbRwgy1feav9se587j30kw0r2adr.jpg" alt="Blacktea wechat" style="width: 200px; max-width: 100%;"/>
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>记录生活于感悟，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="https://ww4.sinaimg.cn/large/006tNbRwgy1feav9e683oj30yi1e6q7b.jpg" alt="Blacktea WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="https://ww3.sinaimg.cn/large/006tNbRwgy1feav9mjqarj30p011iq6c.jpg" alt="Blacktea Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/24/iOS_device_pixel/" rel="next" title="iPhone的屏幕像素">
+                <i class="fa fa-chevron-left"></i> iPhone的屏幕像素
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/28/c_memory_alloc/" rel="prev" title="计算机的内存分配问题">
+                计算机的内存分配问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="Blacktea" />
+          <p class="site-author-name" itemprop="name">Blacktea</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/blackteachinese" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/your-user-name" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/your-user-name" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/your-user-name" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#URL里中文字符正确过滤姿势"><span class="nav-number">1.</span> <span class="nav-text">URL里中文字符正确过滤姿势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多层嵌套url正确的encode姿势"><span class="nav-number">2.</span> <span class="nav-text">多层嵌套url正确的encode姿势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UrlEncode编码原理"><span class="nav-number">3.</span> <span class="nav-text">UrlEncode编码原理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Blacktea</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

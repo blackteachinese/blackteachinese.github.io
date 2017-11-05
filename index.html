@@ -309,7 +309,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageSlide/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/11/02/ios_iOS11_iphoneX_problem/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -331,8 +331,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/09/03/iOS_best_performance_pageSlide/" itemprop="url">
-                  iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单
+                <a class="post-title-link" href="/2017/11/02/ios_iOS11_iphoneX_problem/" itemprop="url">
+                  iOS开发性能最佳实践之——iOS布局技术的演变和iPhoneX适配
                 </a>
               
             
@@ -348,8 +348,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-02T17:35:20+08:00">
+                2017-11-02
               </time>
             
 
@@ -408,26 +408,32 @@
       
         
           
-            <p><strong>避免滑动时加工数据</strong></p>
-<p>网络接口回来的数据有时需要进行字符串拼接、时间格式转换等销毁CPU的操作。这种场景可以在后台线程进行数据加工，然后将加工后的数据存放到ViewModel。当列表滑动的时候，不需要在单独做计算。</p>
-<p><strong>计算高度耗时较长时，将高度进行缓存</strong></p>
-<p>建议使用”UITableView+FDTemplateLayoutCell“。</p>
-<p><strong>使用Cell的复用机制</strong></p>
-<p>此处不需要解释</p>
-<p><strong>复用Cell内的子视图</strong></p>
-<p>有些开发者确实是使用了cell的复用机制，但是每次复用时由于子视图有一些差异，会把Cell里子视图释放掉，再重新初始化需要的子视图。这种做法是非常消耗CPU的，子视图也要尽量复用。</p>
-<p><strong>使用隐藏而不是移除</strong></p>
-<p>移除一个子视图也是需要开销的。如果有一些子视图不需要显示，将其隐藏而不是移除。</p>
-<p><strong>到后台线程销毁视图</strong></p>
-<p>有大量视图需要销毁时，放到后台线程，减少主线程的计算量。</p>
-<p><strong>到后台线程图片解码</strong></p>
-<p>加载图片时，图片的解码需要消耗CPU的资源，而这部分是可以放到子线程处理的。（SDWebImage默认是在子线程解码的，除非你关了）</p>
-<p><strong>到后台线程图片绘制</strong></p>
-<p>CoreGraphic是线程安全的，使用CoreGraphic绘制图片可以在子线程做，绘制完再回主线程加载到要呈现的控件里</p>
-<p><strong>减少透明视图的混合</strong></p>
-<p>设置视图的opaque属性为True,减少视图的混合消耗GPU资源</p>
-<p><strong>手动计算布局，并缓存</strong></p>
-<p>特别复杂的Cell，Autolayout的布局消耗大量CPU资源。可以根据数据源手动计算frame并进行缓存，从而避免每次都重新计算布局。</p>
+            <h1 id="Top-and-Bottom-Layouts-Guides"><a href="#Top-and-Bottom-Layouts-Guides" class="headerlink" title="Top and Bottom Layouts Guides"></a>Top and Bottom Layouts Guides</h1><p>iOS11后苹果推出了”Safe Area Layout Guide”布局技术，废弃了iOS7推出的布局技术”Top and Bottom Layouts Guides”,”Top and Bottom Layouts Guides”寿终正寝，让我们回顾一下它彪悍的历史。</p>
+<p>借用Harrison的一张图来说明一下”Top and Bottom Layouts Guides”<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fl4ni5bxkpj30lc12e0v9.jpg" alt=""></p>
+<p>Apple 引入topLayoutGuide和bottomLayoutGuide做为UIViewController的属性,用来设置你内容区域不要被navigation、status、tabbar遮挡。<br>上图绿色部分的Content View，加了一个顶部约束相对于topLayoutGuide的底部的锚，加了一个底部约束相对于bottomLayoutGuide的顶部的锚。</p>
+<h1 id="Safe-Area-Layout-Guide"><a href="#Safe-Area-Layout-Guide" class="headerlink" title="Safe Area Layout Guide"></a>Safe Area Layout Guide</h1><p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fl4oqxa9e2j30ki0kkt93.jpg" alt=""><br>safe Area帮助我们将View放到整个屏幕可视的区域。即使navigationbar被设置为透明，系统也认为安全区域是从navigationbar的bottom开始计算的</p>
+<p><strong>additionalSafeAreaInsets扩展安全区域</strong><br>使用additionalSafeAreaInsets可以扩展安全区域使它包括你自定义的content,每个View、controller都可以改变安全区域嵌入的区域</p>
+<p><strong>safeAreaInsets</strong><br>safeAreaInsets表示一个view距离该View的安全区域的边距。一个controller的根视图的safeAreaInsets包括了被statusBar、navigationBar、tabbar等覆盖的区域，同时包括<br>additionalSafeAreaInsets自定义的insert值。</p>
+<p><a href="https://developer.apple.com/documentation/uikit/uiview/positioning_content_relative_to_the_safe_area" target="_blank" rel="external">Positioning Content Relative to the Safe Area</a></p>
+<h1 id="Adapt-for-Safe-Area-Layout-Guide"><a href="#Adapt-for-Safe-Area-Layout-Guide" class="headerlink" title="Adapt for Safe Area Layout Guide"></a>Adapt for Safe Area Layout Guide</h1><h2 id="tableview下移20pt或64pt"><a href="#tableview下移20pt或64pt" class="headerlink" title="tableview下移20pt或64pt"></a>tableview下移20pt或64pt</h2><p>iOS11的automaticallyAdjustsScrollViewInsets被废弃了。在iOS 11中决定tableView的内容与边缘距离的是adjustedContentInset属性，而不是contentInset。<br>当tableView超出安全区域时系统自动调整了SafeAreaInsets值从而影响adjustedContentInset值。</p>
+<h1 id="iPhoneX的适配"><a href="#iPhoneX的适配" class="headerlink" title="iPhoneX的适配"></a>iPhoneX的适配</h1><p>iPhoneX设备的top多了刘海，bottom去了home键变成圆角的全屏区域。</p>
+<h2 id="竖屏"><a href="#竖屏" class="headerlink" title="竖屏"></a>竖屏</h2><p>iPhone8 竖屏<br><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fl4pobnfu0j30af0ijglr.jpg" alt=""></p>
+<p>iPhoneX 竖屏<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fl4pofkx0jj30fm0xt74r.jpg" alt=""></p>
+<p>iPhoneX竖屏状态时top的安全区域从20到44，如果带navigationbar则从64到88。bottom的安全区域从0变成34</p>
+<h2 id="横屏"><a href="#横屏" class="headerlink" title="横屏"></a>横屏</h2><p>iPhone8 横屏<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fl4pwlgtw4j30ij0aft8t.jpg" alt=""></p>
+<p>iPhoneX 横屏<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fl4pwntmp0j30xu0fnmxl.jpg" alt=""></p>
+<p>iPhoneX横屏状态时top安全区域为0，如果带navigationbar横屏下会缩小top为34，bottom的安全区域也为0，但是left和right都变成44</p>
+<h2 id="controls适配"><a href="#controls适配" class="headerlink" title="controls适配"></a>controls适配</h2><p>所有的controls都不应该出现在safe area,项目中可能有一些自动布局的代码bottom的约束没有相对于bottomLayoutGuide，由于iPhoneX的底部是圆弧状的，所以控件如果靠边可能会被遮挡。适配的方法是添加约束到layoutMargins。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">let margin = view.layoutMarginsGuide</div><div class="line">NSLayoutConstraint.activate([</div><div class="line">  button.leadingAnchor.constraint(equalTo: margin.leadingAnchor),</div><div class="line">  button.bottomAnchor.constraint(equalTo: margin.bottomAnchor)</div><div class="line">])</div></pre></td></tr></table></figure>
+<h2 id="滑动手势适配"><a href="#滑动手势适配" class="headerlink" title="滑动手势适配"></a>滑动手势适配</h2><p>因为iPhoneX没有Home键，所以开锁是从底部往上滑来进行的。因此在底部34高度的区域，我们不应该放置会被响应的控件</p>
+<h2 id="Table-View-Content-Insets适配"><a href="#Table-View-Content-Insets适配" class="headerlink" title="Table View Content Insets适配"></a>Table View Content Insets适配</h2><p>iOS11新增了一个insetsContentViewsToSafeArea属性来控制cell的content View是否insert到safe area。默认是true，这会导致在横屏时iPhoneX有一些微妙的变化。</p>
+<p>看一下给Cell的content view设置背景色会是什么效果：</p>
+<p>iPhone8下的效果：<br><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fl4qttrwsaj30ij0afglr.jpg" alt=""></p>
+<p>iPhoneX下的效果：<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fl4quaud0fj30m80aadg3.jpg" alt=""></p>
+<p>为什么会有这样的效果，因为Cell的content View是在安全区域里面的。但是cell的backgroundView却扩展到整个屏幕，所以iPhoneX下设置背景色得设置cell的backgroundView而不是contentView的。<br>设置cell的backgroundView的效果如下</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fl4quh15ujj30m80a9dg1.jpg" alt=""></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>本文参考了相关文献</p>
+<p><a href="https://useyourloaf.com/blog/supporting-iphone-x/" target="_blank" rel="external">Supporting iPhone X</a><br><a href="https://useyourloaf.com/blog/safe-area-layout-guide/" target="_blank" rel="external">Safe Area Layout Guide</a><br><a href="https://mp.weixin.qq.com/s/W1_0VrchCO50owhJNmJnuQ" target="_blank" rel="external">iOS 11 安全区域适配总结</a><br><a href="http://www.jianshu.com/p/370d82ba3939" target="_blank" rel="external">你可能需要为你的APP适配iOS11</a><br><a href="https://github.com/2877025939/iOS11" target="_blank" rel="external">iOS适配汇总文章</a></p>
 
           
         
@@ -471,7 +477,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_business_developer_value/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/30/iOS_multithreading/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -493,8 +499,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/09/03/iOS_business_developer_value/" itemprop="url">
-                  业务开发人员的价值是什么？
+                <a class="post-title-link" href="/2017/10/30/iOS_multithreading/" itemprop="url">
+                  iOS开发性能最佳实践之——如何找到多线程技术合适的应用场景
                 </a>
               
             
@@ -510,8 +516,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-30T18:19:00+08:00">
+                2017-10-30
               </time>
             
 
@@ -570,7 +576,22 @@
       
         
           
-            <p>产品经理的核心价值是</p>
+            <p>iOS常用的多线程技术有NSThread、GCD、pthread、NSOperation几种技术。之前看过一些开发者对这几种技术做过实验测试，得出具体的数据比较。但仅仅统计一定数量级别的运行效率对实际应用没有太大的指导性意义，最好是能模拟实际场景的线程环境来做测试。</p>
+<p>那不同场景的因子有什么呢？<br>并发频率高低、任务耗时长短、稳定性</p>
+<p>对应的测试关注点是什么？<br>并发频率高低：统计多个线程并发运行，最后全部运行完成的耗时长短<br>任务耗时长短：统计单个线程里不同耗时任务的完成时间<br>稳定性：进行多次实验，统计数据的变动区间</p>
+<p>分析出上面测试关注点后，我们可以开始来设计实验了。</p>
+<p><strong>实验对象：</strong><br>NSThread、单队列并行GCD、多队列串行GCD、NSOperation、pthread</p>
+<p><strong>实验环境：</strong><br>设备、编译环境</p>
+<p><strong>实验变量：</strong><br>线程的数量、每个线程里执行的任务次数、每个任务的耗时长短</p>
+<p><strong>实验方法：</strong><br>模拟实际场景，设置几组实验变量的搭配，比如下面几组。</p>
+<p>线程数：5/15个<br>任务数：1000/10000/100000次<br>耗时：1/5/10 毫秒</p>
+<p><strong>实验结果：</strong></p>
+<p>任务平均耗时速度排名<br>NSOperation &gt; 多队列串行GCD/NSThread &gt; 单队列并行GCD</p>
+<p>所有线程任务全部完成速度排名</p>
+<p>多队列串行GCD/NSThread &gt; NSOperation/单队列并行GCD</p>
+<p><strong>实验结论</strong></p>
+<p>多队列串行GCD和NSThread的特点相似，多个线程高并发的完成速度最快，单个线程的执行性能中等。<br>所以这两种技术适合高频率、低任务耗时的应用场景，比如IM、位置更新、抢订单等实时消息通信场景</p>
+<p>NSOperation的特点是单个线程的执行性能最快，所以适合低频率、高任务耗时的应用场景，比如数据库、文件等IO场景</p>
 
           
         
@@ -614,7 +635,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_rounded_and_shadow/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/28/c_memory_alloc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -636,8 +657,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/09/03/iOS_best_performance_rounded_and_shadow/" itemprop="url">
-                  iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势
+                <a class="post-title-link" href="/2017/10/28/c_memory_alloc/" itemprop="url">
+                  计算机的内存分配问题
                 </a>
               
             
@@ -653,8 +674,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-28T18:21:31+08:00">
+                2017-10-28
               </time>
             
 
@@ -713,17 +734,19 @@
       
         
           
-            <h2 id="图片使用阴影的正确姿势"><a href="#图片使用阴影的正确姿势" class="headerlink" title="图片使用阴影的正确姿势"></a>图片使用阴影的正确姿势</h2><p>错误示范：会导致离屏渲染</p>
-<p><del>imageView.layer.shadowOpacity = 0.5;</del></p>
-<p>正确做法：通过shadowPath，告诉CoreAnimation你要渲染的形状，减少离屏渲染</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">imageView.layer.shadowOpacity = 0.5;</div><div class="line">imageView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:imageView.bounds] CGPath];</div></pre></td></tr></table></figure>
-<h2 id="对图片做圆角处理的正确姿势"><a href="#对图片做圆角处理的正确姿势" class="headerlink" title="对图片做圆角处理的正确姿势"></a>对图片做圆角处理的正确姿势</h2><p>错误示范：<br>给imageView加cornerRadius后用masksToBounds切。因为加masksToBounds后，会触发离屏幕渲染，如果一个Cell里有多个这样的图片，滑动的时候GPU压力会很大，从而导致严重的掉帧。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">UIImage *image = [UIImage imageNamed:@&quot;IMG_6083&quot;];</div><div class="line">imageView.image = image;</div><div class="line">imageView.layer.cornerRadius = CGRectGetWidth(imageView.frame)/ 4.0;</div><div class="line">imageView.layer.masksToBounds = YES;</div></pre></td></tr></table></figure>
-<p>正确做法：<br>通过Core Graphics创建一块位图画布（bitmap graphics context），将图片画到画布，再画Path将图片剪切</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">+ (id)createRoundedRectImage:(UIImage *)image size:(CGSize)size radius:(int)radius &#123;</div><div class="line">    size = CGSizeMake(size.width * image.scale, size.height * image.scale);</div><div class="line">    radius = radius * image.scale;</div><div class="line">    UIImage *img = image;</div><div class="line">    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();</div><div class="line">    CGContextRef context = CGBitmapContextCreate(NULL, size.width, size.height, CGImageGetBitsPerComponent(image.CGImage), 4 * size.width, CGImageGetColorSpace(image.CGImage), kCGImageAlphaPremultipliedFirst);</div><div class="line">    CGRect rect = CGRectMake(0, 0, size.width, size.height);</div><div class="line">    CGContextBeginPath(context);</div><div class="line">    addRoundedRectToPath(context, rect, radius, radius);</div><div class="line">    CGContextClosePath(context);</div><div class="line">    CGContextClip(context);</div><div class="line">    CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), img.CGImage);</div><div class="line">    CGImageRef imageMasked = CGBitmapContextCreateImage(context);</div><div class="line">    img = [UIImage imageWithCGImage:imageMasked];</div><div class="line">    CGContextRelease(context);</div><div class="line">    CGColorSpaceRelease(colorSpace);</div><div class="line">    CGImageRelease(imageMasked);</div><div class="line">    return img;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="给UIButton或UILabel等非图片视图做圆角处理"><a href="#给UIButton或UILabel等非图片视图做圆角处理" class="headerlink" title="给UIButton或UILabel等非图片视图做圆角处理"></a>给UIButton或UILabel等非图片视图做圆角处理</h2><p>视图里如果不需要呈现图片，可以直接在后台线程画一个带圆角的背景图片，做为子视图。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> UIImage *image = [UIImage rounedCornerImage:20 borderWidth:0.5 backgroundColor:[UIColor purpleColor] borderColor:[UIColor clearColor] size:CGSizeMake(CGRectGetWidth(view.frame), CGRectGetHeight(view.frame))];</div><div class="line">UIImageView *imageView = [[UIImageView alloc] initWithImage:image];</div><div class="line">[button insertSubview:imageView atIndex:0];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">+ (UIImage *)rounedCornerImage:(CGFloat)radius</div><div class="line">                   borderWidth:(CGFloat)borderWidth</div><div class="line">               backgroundColor:(UIColor *)backgroundColor</div><div class="line">                   borderColor:(UIColor *)borderColor</div><div class="line">                          size:(CGSize)size&#123;</div><div class="line">    CGSize sizeToFit = CGSizeMake(floor(size.width), floor(size.height));</div><div class="line">    CGFloat halfBorderWidth = (CGFloat)borderWidth / 2.0;</div><div class="line">    UIGraphicsBeginImageContextWithOptions(sizeToFit, false, [[UIScreen mainScreen] scale]);</div><div class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</div><div class="line">    CGContextSetLineWidth(context, borderWidth);</div><div class="line">    CGContextSetStrokeColorWithColor(context, borderColor.CGColor);</div><div class="line">    CGContextSetFillColorWithColor(context, backgroundColor.CGColor);</div><div class="line">    </div><div class="line">    CGFloat width = sizeToFit.width, height = sizeToFit.height;</div><div class="line">    CGContextMoveToPoint(context, width - halfBorderWidth, radius + halfBorderWidth);  // 开始坐标右边开始</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, height - halfBorderWidth, width - radius - halfBorderWidth, height - halfBorderWidth, radius);  // 右下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, height - halfBorderWidth, halfBorderWidth, height - radius - halfBorderWidth, radius); // 左下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, halfBorderWidth, width - halfBorderWidth, halfBorderWidth, radius); // 左上角</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, halfBorderWidth, width - halfBorderWidth, radius + halfBorderWidth, radius); // 右上角</div><div class="line">       CGContextDrawPath(UIGraphicsGetCurrentContext(), kCGPathFillStroke);</div><div class="line">    UIImage *output = UIGraphicsGetImageFromCurrentImageContext();</div><div class="line">    UIGraphicsEndImageContext();</div><div class="line">    return output;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+            <h2 id="内存对齐原则"><a href="#内存对齐原则" class="headerlink" title="内存对齐原则"></a>内存对齐原则</h2><p><strong>什么是内存对齐</strong><br>计算机的内存都是按byte来划分的，计算机在范围不同数据类型变量时会按照特定的内存地址访问，所以各种数据类型会按照一定规则在内存空间上排列，而不是顺序地一个一个排列，这就是内存对齐</p>
+<p><strong>有什么用</strong><br>各平台对数据类型的读取会按特定的地址开始存取，访问不对齐的内存处理器需要做两次处理，访问对齐的内存处理器只需要做一次处理</p>
+<p><strong>对齐算法</strong></p>
+<p>1 数据类型以自身需要占用的字节数做为内存对齐值。</p>
+<p>对于char型数据，其自身对齐值为1，对于short型为2，对于int,float型，其自身对齐值为4，对于double型，其自身对齐值为8，单位字节。</p>
+<p>例如：int变量所分配的内存地址必须能够被4整除，double则必须能倍8整除</p>
+<p>2 结构体或类自身的对齐值和自身成员变量对齐值最大的那个保持一致。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">例如：</div><div class="line"></div><div class="line">struct D &#123;</div><div class="line">    char a;</div><div class="line">    int b;</div><div class="line">    double c;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>结构D的成员变量里c的对齐值最大为8，所以结构D的对齐值就是8</p>
+<p>3 指定对齐值，使用#pragma pack (value）可以指定对齐值为Value</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">例如：</div><div class="line">#pragma pack (1) // 指定对齐值为1</div><div class="line">struct D &#123;</div><div class="line">    char a;</div><div class="line">    int b;</div><div class="line">    double c;</div><div class="line">&#125;</div><div class="line">#pragma pack () // 取消指定对齐，恢复默认的对齐方式</div></pre></td></tr></table></figure>
+<p>4 当数据成员、结构体、类处于指定对齐区间时，真实的有效对齐值是自身对齐值和指定对齐值两个中更小的那个。</p>
+<p><a href="https://baike.baidu.com/item/内存对齐/9537460?fr=aladdin" target="_blank" rel="external">内存对齐百科</a></p>
 
           
         
@@ -767,7 +790,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_collection_enumeration/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/25/ios_urlencode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -789,8 +812,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/09/03/iOS_best_performance_collection_enumeration/" itemprop="url">
-                  iOS开发性能最佳实践系列之——集合遍历
+                <a class="post-title-link" href="/2017/10/25/ios_urlencode/" itemprop="url">
+                  一个多层嵌套URL引发的URLEncode血案
                 </a>
               
             
@@ -806,8 +829,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-25T18:05:24+08:00">
+                2017-10-25
               </time>
             
 
@@ -866,49 +889,35 @@
       
         
           
-            <h2 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h2><p>场景条件</p>
-<ul>
-<li>需要按顺序</li>
-<li>同步执行</li>
-</ul>
-<p>使用建议：</p>
-<ul>
-<li>for..in （NSFastEnumeration）<br><del>* enumerateObjectsUsingBlock</del><br><del>* 经典for循环</del></li>
-</ul>
-<p>推荐原因：<br>在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for in.</p>
-<h2 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h2><p>场景条件</p>
-<ul>
-<li>需要按顺序</li>
-<li>同时需要key和value</li>
-</ul>
-<p>按顺序优先考虑下列方法<br><del>* enumerateKeysAndObjectsUsingBlock</del><br><del>* 经典for循环</del></p>
-<p>推荐原因：<br>在集合元素”100“量级和“1000000”量级时，enumerateKeysAndObjectsUsingBlock的效率都比“经典for循环”要高，而且不会出现“off-by-one errors”错误。建议需要key、vlaue时使用enumerateKeysAndObjectsUsingBlock</p>
-<h2 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h2><p>场景条件</p>
-<ul>
-<li>处理比较耗时</li>
-<li>不需要按顺序</li>
-</ul>
-<p>按顺序优先考虑下列方法</p>
-<ul>
-<li>enumerateObjectsWithOptions （NSEnumerationConcurrent）<br><del>* dispatch_apply(Concurrent)</del></li>
-</ul>
-<p>推荐原因：<br>enumerateObjectsWithOptions和dispatch_apply(Concurrent)各种场景的效率都差不多，但是enumerateObjectsWithOptions可读性更强，特性也更多。建议使用enumerateObjectsWithOptions。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[array enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) &#123;</div><div class="line">    [sark doSomethingSlow];</div><div class="line">&#125;];</div></pre></td></tr></table></figure></p>
-<h2 id="场景四"><a href="#场景四" class="headerlink" title="场景四"></a>场景四</h2><p>场景条件</p>
-<ul>
-<li>倒序遍历</li>
-</ul>
-<p>按顺序优先考虑下列方法</p>
-<ul>
-<li>enumerateObjectsWithOptions:NSEnumerationReverse</li>
-<li>reverseObjectEnumerator</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSArray *strings = @[@&quot;1&quot;, @&quot;2&quot;, @&quot;3&quot;];</div><div class="line">for (NSString *string in [strings reverseObjectEnumerator]) &#123;</div><div class="line">    NSLog(@&quot;%@&quot;, string);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) &#123;</div><div class="line">    [sark doSomething];</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
-<p>推荐原因：<br>enumerateObjectsWithOptions和reverseObjectEnumerator在各量级的效率表现相似，两个方法均可使用</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
-<li><a href="http://blog.sunnyxx.com/2014/04/30/ios_iterator/" target="_blank" rel="external">iOS遍历方法实验数据</a></li>
-<li><a href="http://nshipster.com/enumerators/" target="_blank" rel="external">Enumerators</a></li>
-</ul>
+            <h2 id="URL里中文字符正确过滤姿势"><a href="#URL里中文字符正确过滤姿势" class="headerlink" title="URL里中文字符正确过滤姿势"></a>URL里中文字符正确过滤姿势</h2><p>今天有个同事跟我反馈，有个复杂参数的路由跳转需求，目前路由解析满足不了。<br>这个需求是服务推送一个URL scheme到app，又app的路由寻找到对应的页面。<br>这个URL结构大致如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;url2=https://www.blacktea.com.js&amp;key3=value3</div></pre></td></tr></table></figure>
+<p>第一层嵌了一个参数url，第二层url的value里又嵌了一个参数url2。</p>
+<p>服务端对这个url做了encode,推送到app的字符串如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https%3a%2f%2fm.alibaba.com%3fkey1%3dvalue1%26url2%3dhttps%253a%252f%252fwww.blacktea.com.js%26key3%3dvalue3</div></pre></td></tr></table></figure>
+<p>在路由里为了避免空格和中文字符，会对传入的url分别调用stringByReplacingPercentEscapesUsingEncoding和stringByAddingPercentEscapesUsingEncoding</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">urlString = [urlString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];</div><div class="line">urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];</div></pre></td></tr></table></figure>
+<p>问题来了，因为stringByReplacingPercentEscapesUsingEncoding会对”%3a%2f%3d%26%3f”等被转义的保留字符反转义回”:/=&amp;?”。<br>而stringByAddingPercentEscapesUsingEncoding只会对中文非法字符做percent转义，不会处理”:/=&amp;?”等保留字符做encode处理。所以最后经过路由后，URL变成如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;url2=https%253a%252f%252fwww.blacktea.com.js&amp;key3=value3</div></pre></td></tr></table></figure>
+<p>这就导致第一层的参数url里的链接没有被encode，url2、key3这两个参数都被错认为是第一层的参数了。</p>
+<p>路由层做过滤的实际意图是希望，把中文字符转义掉，同时又不影响url各层参数的encode状态。<br>解决的办法是使用如下两个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">static NSString *ASCRouterReplacingPercentEscapes(NSString *string, NSStringEncoding encoding)&#123;</div><div class="line">    NSString *result = ( NSString *)CFBridgingRelease(CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault,</div><div class="line">                                                                                                             (__bridge CFStringRef)string,</div><div class="line">                                                                                                             NULL,</div><div class="line">                                                                                                             CFStringConvertNSStringEncodingToEncoding(encoding)));</div><div class="line">    return result;</div><div class="line">&#125;</div><div class="line">static NSString *ASCRouterAddingPercentEscapes(NSString *string, NSStringEncoding encoding) &#123;</div><div class="line">    return (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,</div><div class="line">                                                                                  (__bridge CFStringRef)string,</div><div class="line">                                                                                  NULL,</div><div class="line">                                                                                  NULL,</div><div class="line">                                                                                  CFStringConvertNSStringEncodingToEncoding(encoding)));</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用以上2个方法，便只会对中文非法字符进行转义，不会影响其他保留字符的转义情况。</p>
+<h2 id="多层嵌套url正确的encode姿势"><a href="#多层嵌套url正确的encode姿势" class="headerlink" title="多层嵌套url正确的encode姿势"></a>多层嵌套url正确的encode姿势</h2><p>除此之外，对于多层嵌套的url需要正确地encode.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https://m.alibaba.com?key1=value1&amp;url2=https%253a%252f%252fwww.blacktea.com.js&amp;key3=value3</div></pre></td></tr></table></figure>
+<p>对于上面例子这个url,需要做2层的urlencode</p>
+<p><strong>错误encode方式：</strong></p>
+<p>blacktea%3a%2f%2fgotoWebView%3furl%3dhttps%3a%2f%2fm.alibaba.com%3fkey1%3dvalue1%26url2%3dhttps%3a%2f%2fwww.blacktea.com.js%26key3%3dvalue3</p>
+<p><strong>正确encode方式：</strong></p>
+<p>第一次encode<br>from:<br><a href="https://www.blacktea.com.js" target="_blank" rel="external">https://www.blacktea.com.js</a><br>to:<br>https%3a%2f%2fwww.blacktea.com.js</p>
+<p>第二次encode</p>
+<p>from:<br><a href="https://m.alibaba.com?key1=value1&amp;url2=https%3a%2f%2fwww.blacktea.com.js&amp;key3=value3" target="_blank" rel="external">https://m.alibaba.com?key1=value1&amp;url2=https%3a%2f%2fwww.blacktea.com.js&amp;key3=value3</a></p>
+<p>to:<br>https%3a%2f%2fm.alibaba.com%3fkey1%3dvalue1%26url2%3dhttps%253a%252f%252fwww.blacktea.com.js%26key3%3dvalue3</p>
+<p>result:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">blacktea://gotoWebView?url=https%3a%2f%2fm.alibaba.com%3fkey1%3dvalue1%26url2%3dhttps%253a%252f%252fwww.blacktea.com.js%26key3%3dvalue3</div></pre></td></tr></table></figure>
+<p>客户端拿到这个被多层encode的url后，再一层一层能地解开，没解开一层都要decode一遍。</p>
+<h2 id="UrlEncode编码原理"><a href="#UrlEncode编码原理" class="headerlink" title="UrlEncode编码原理"></a>UrlEncode编码原理</h2><p>编码原理：<br>将需要转码的字符转为16进制，然后从右到左，取4位(不足4位直接处理)，每2位做一位，前面加上%，编码成%XY格式。</p>
+<p>比如：<br>空格ASCII码是32，对应16进制是20，那么urlencode编码结果是:%20<br>比如：<br>中ASCII码是-10544，对应的16进制是FFFFFFFFFFFFD6D0，那么urlencode编码结果是:%D6%D0</p>
+<p>URI统一资源标识符里允许的所有字符里，分为保留字符和非保留字符。百分号编码(Percent-encoding)会把保留字符转义为特殊字符序列。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1fkvva3w5xnj30k60er76g.jpg" alt=""><br><a href="https://baike.baidu.com/item/urlencode" target="_blank" rel="external">百度百科urlencode</a></p>
 
           
         
@@ -952,7 +961,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/24/iOS_device_pixel/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -974,8 +983,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/09/03/iOS_best_performance_pageLoad/" itemprop="url">
-                  iOS开发性能最佳实践系列之——页面加载快的性能检查清单
+                <a class="post-title-link" href="/2017/10/24/iOS_device_pixel/" itemprop="url">
+                  iPhone的屏幕像素
                 </a>
               
             
@@ -991,8 +1000,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-24T17:11:00+08:00">
+                2017-10-24
               </time>
             
 
@@ -1051,25 +1060,33 @@
       
         
           
-            <p>如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。</p>
-<h2 id="UIViewController"><a href="#UIViewController" class="headerlink" title="UIViewController"></a>UIViewController</h2><p><strong>UIViewController生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">init</div><div class="line">initWithNibName:bundle</div><div class="line">viewWillAppear</div><div class="line">viewDidAppear</div><div class="line">viewDidLoad</div><div class="line">viewWillDisappear</div><div class="line">viewDidDisappear</div></pre></td></tr></table></figure>
-<h2 id="UITableView"><a href="#UITableView" class="headerlink" title="UITableView"></a>UITableView</h2><p><strong>UITableView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tableView:cellForRowAtIndexPath</div><div class="line">tableView:heightForRowAtIndexPath</div><div class="line">tableView:didSelectRowAtIndexPath</div></pre></td></tr></table></figure>
-<p><strong>减少tableview高度计算次数</strong></p>
+            <h2 id="iPhone设备的尺寸分辨率表"><a href="#iPhone设备的尺寸分辨率表" class="headerlink" title="iPhone设备的尺寸分辨率表"></a>iPhone设备的尺寸分辨率表</h2><p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fktgi7tz7zj30ey05ogm4.jpg" alt=""></p>
+<h3 id="分辨率"><a href="#分辨率" class="headerlink" title="分辨率"></a>分辨率</h3><p>分辨率就是屏幕上横、纵的总象素点数</p>
+<h3 id="物理分辨率"><a href="#物理分辨率" class="headerlink" title="物理分辨率"></a>物理分辨率</h3><ul>
+<li>单位px</li>
+<li>上图physic pixel都是物理分辨率</li>
+</ul>
+<h3 id="逻辑分辨率"><a href="#逻辑分辨率" class="headerlink" title="逻辑分辨率"></a>逻辑分辨率</h3><ul>
+<li>单位pt</li>
+</ul>
+<h2 id="iPhone-6"><a href="#iPhone-6" class="headerlink" title="iPhone 6+"></a>iPhone 6+</h2><p>除了iPhone 6+，其他所有iPhone的PPI都是326，用@2x的素材。而6+的PPI是401，理论上应该用401/326*@2=@2.46的素材。但是这个比例很难切图，所以苹果让6+用@3x的素材，然后再将@3x缩放87%到@2.46。<br>按照这个逻辑，物理分辨率/虚拟分辨率=87%。</p>
+<p>虚拟分辨率高度= 1920/0.87 = 2208<br>虚拟分辨率宽度= 1080/0.87 = 1242</p>
+<p>这样开发的时候针对6+就准备@3x的素材就好了</p>
+<h2 id="基本单位"><a href="#基本单位" class="headerlink" title="基本单位"></a>基本单位</h2><p><strong>英寸</strong><br>1 inch = 2.54cm = 25.4mm<br><strong>屏幕尺寸</strong><br>我们通常所说的iPhone5屏幕尺寸为4英寸、iPhone6屏幕尺寸为4.7英寸，指的是显示屏对角线的长度（diagonal）。<br><strong>像素密度PPI</strong><br>PPI（Pixel Per Inch by diagonal）：表示沿着对角线，每英寸所拥有的像素（Pixel）数目。<br>PPI数值越高，代表显示屏能够以越高的密度显示图像，即通常所说的分辨率越高、颗粒感越弱。<br><strong>缩放因子Scale</strong></p>
+<p>Scale的起源</p>
 <ul>
-<li>有多种Cell或高度是动态的<ul>
-<li>设置estimatedRowHeight(设置后会开启self—sizing，自动计算高度)</li>
+<li>早期的iPhone3GS的屏幕分辨率是320*480（PPI=163），iOS绘制图形（CGPoint/CGSize/CGRect）均以point为单位（measured in points）：</li>
 </ul>
-</li>
-<li>只有一种Cell并且高度固定<ul>
-<li>设置rowHeight</li>
-<li>不要重载”tableView:heightForRowAtIndexPath”</li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1 point = 1 pixel（Point Per Inch=Pixel Per Inch=PPI）</div></pre></td></tr></table></figure>
+<ul>
+<li>后来在iPhone4中，同样大小（3.5 inch）的屏幕采用了Retina显示技术，横、纵向方向像素密度都被放大到2倍，像素分辨率提高到(320x2)x(480x2) = 960x640，PPI从163提升2倍到326（PPI=326），显像分辨率提升至iPhone3GS的4倍（1个Point被渲染成1个2x2的像素矩阵）。<br>  但是对于开发者来说，iOS绘制图形的API依然沿袭point(pt，注意区分印刷行业的“磅”)为单位。在同样的逻辑坐标系下（320x480）：</li>
 </ul>
-</li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1 point = scale*pixel</div><div class="line">（在iPhone4~6中，缩放因子scale=2；在iPhone6+中，缩放因子scale=3）。</div></pre></td></tr></table></figure>
+<ul>
+<li>scale计算公式：</li>
 </ul>
-<h2 id="UICollectionView"><a href="#UICollectionView" class="headerlink" title="UICollectionView"></a>UICollectionView</h2><p><strong>UICollectionView生命周期的回调函数（主线程），要避免耗时计算。</strong><br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">collectionView:cellForItemAtIndexPath</div><div class="line">collectionView:layout:sizeForItemAtIndexPath</div><div class="line">collectionView:didSelectItemAtIndexPath</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scale=绝对长度比（point/pixel）=单位长度内的数量比（pixel/point）</div></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://zhuanlan.zhihu.com/zhezhexiong/19565895" target="_blank" rel="external">dp、sp、px傻傻分不清楚</a></p>
 
           
         
@@ -1113,7 +1130,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/thought_structure_thinking/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/19/iOS_ synchronized/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -1135,8 +1152,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/09/03/thought_structure_thinking/" itemprop="url">
-                  结构化思考——完美应对电梯30秒的思考模型
+                <a class="post-title-link" href="/2017/10/19/iOS_ synchronized/" itemprop="url">
+                  iOS里synchronized的死锁、性能、实效
                 </a>
               
             
@@ -1152,169 +1169,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/thought/" itemprop="url" rel="index">
-                    <span itemprop="name">thought</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="为什么你的想法总是不能很好地表达？"><a href="#为什么你的想法总是不能很好地表达？" class="headerlink" title="为什么你的想法总是不能很好地表达？"></a>为什么你的想法总是不能很好地表达？</h1><p>如果你的工作内容是技术型的（程序员），你很可能对自己日常工作中的语言表达不太满意。你可能专业知识很丰满，对事情的看法也很独到，但就是讲不好。</p>
-<p>你也许还不觉得这是个很大的问题，因为大家会给某种职业贴标签：“XXX就是不善于表达”。这样的说法你听多了，可能会真的接受这种观点，但事实并不是如此。</p>
-<p>讲得不好主要有三个因素影响，思考能力、语言能力、心态。<br>思考能力决定你的表达内容的质量，思路是否清晰、重点是否突出、观点是否独到。<br>语言能力决定你的表达的内容形式是否丰富、有没有文采，有没有类比、举例帮组听众理解更深刻等。<br>心态决定你能不能正常发挥自己的水平。</p>
-<p>也许你已经可以看出来，思考能力决定你表达的核心内容。因为在日常工作中，工作中的交流是趋于理性的，大家更看重的是你的思路和观点。</p>
-<h1 id="为什么是结构力思考？"><a href="#为什么是结构力思考？" class="headerlink" title="为什么是结构力思考？"></a>为什么是结构力思考？</h1><p>在工作中我们遇到各种问题时，大脑会习惯性依据经验来思考。这样思考的结果，观点通常是散状的，类似现在微信文章的清单体。散状的观点，重点不突出，各个观点间没有清晰的逻辑联系。这样不能形成严密的逻辑关系，不利于让听众了解你表达的重点，观点之间有可能相互重复、甚至冲突。而在工作中，我们讨论解决方案时，最终是需要团队协作去执行的。这需要方案重点突出、逻辑严密，既能够统一思想又具有指导意义。</p>
-<p>因此，我们需要结构化思考的意识。</p>
-<h1 id="4个策略助你进行结构化思考"><a href="#4个策略助你进行结构化思考" class="headerlink" title="4个策略助你进行结构化思考"></a>4个策略助你进行结构化思考</h1><h2 id="结论先行"><a href="#结论先行" class="headerlink" title="结论先行"></a>结论先行</h2><p>将结论（核心观点／内容）作为树形结构的父节点。</p>
-<h2 id="以下呼上"><a href="#以下呼上" class="headerlink" title="以下呼上"></a>以下呼上</h2><p>树形结构里，子节点要呼应／支持父节点的内容。</p>
-<h2 id="合理归类"><a href="#合理归类" class="headerlink" title="合理归类"></a>合理归类</h2><p>通过合理地归纳分类，让一个复杂地问题逐步细化，成为可理解、可执行的观点／指南。</p>
-<h2 id="逻辑递进"><a href="#逻辑递进" class="headerlink" title="逻辑递进"></a>逻辑递进</h2><p>如果能形成时间、重要程度、结构顺序，这几种逻辑顺序，能让人更容易理解和记忆。</p>
-<p>先看一个清单体：“如何帮孩子缓解入园焦虑、快速融入幼儿园生活”。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1. 最开始上幼儿园时，大部分孩子会感到压力和不适应。作为家长，不要觉得孩子小题大做，而要认真对待。</div><div class="line">2. 提前在家帮孩子调整作息，尽量跟幼儿园保持一致。比如早晨7:30起床吃早饭、中午12点左右午睡。同步作息时间，能让孩子快速适应幼儿园的节奏。</div><div class="line">3. 不要在平时借幼儿园抱怨孩子。“还不会自己吃饭，上了幼儿园怎么办”……这只会增加孩子对它的恐惧。</div><div class="line">4. 提前带孩子熟悉幼儿园环境。试着坐坐小椅子，上个卫生间，在校园里散散步。熟悉了环境，孩子会更有安全感。</div><div class="line">5. 尽快让孩子和老师熟悉起来——和孩子一起与老师聊聊天、当孩子的面夸夸老师，都会增加他对老师的信任。如果有机会提前让孩子和老师接触，那就更好了。</div><div class="line">6. 让孩子挑选一件熟悉的物件陪他上学，比如一块手绢、一辆玩具车或一块午睡毯。一件熟悉的物品，能缓解孩子对陌生环境的不适。</div><div class="line">7. 不要用欺骗的方式把孩子骗到幼儿园，更不要偷偷溜走，鼓励孩子主动跟你说“再见”。</div><div class="line">8. 跟孩子约定时间时，要说他能理解的话。不要说“妈妈5点来接你”，孩子没有“5点”的概念，应该说“你在幼儿园乖乖吃完晚餐，妈妈就来接你”。且一定要说话算数，否则会失去孩子的信任。</div><div class="line">9. 让孩子练习表达自己的感受，鼓励他说出需求。不妨引导他多说说学校的事情。习惯于表达需求后，孩子更敢于向老师求助。</div><div class="line">10. 分离焦虑，很大程度上是父母的焦虑。你的情绪会传染给孩子，一定要控制好。孩子哭闹时，不要跟他一起难过；一旦约定分别，就安心上班，不要在边上偷看，被孩子看到反而会激起他刚平复的心情。</div><div class="line">11. 孩子哭诉时，告诉他幼儿园的好是没用的，要用“共情”的方式沟通——“宝宝，妈妈也想念你”。向孩子表达你和他有同样的感受，这样孩子才会觉得你和他是一个“阵营”的。</div><div class="line">12. 不要觉得孩子在幼儿园受了委屈，就在家里加倍补偿。那反而会让孩子觉得“家里这么舒服，还是不要去幼儿园了”。</div><div class="line">13. 最后，从入园第一天，你的态度就要一以贯之，不要昨天去了，今天孩子哭得厉害就不去了。相信幼儿园和老师，他们比你有经验。</div></pre></td></tr></table></figure>
-<p>下面看看，如果使用结构化进行思考会怎么样。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fj6g5b0w07j31ee0us19w.jpg" alt=""></p>
-<h2 id="合理选择结构化思考的表达层次"><a href="#合理选择结构化思考的表达层次" class="headerlink" title="合理选择结构化思考的表达层次"></a>合理选择结构化思考的表达层次</h2><p>在工作中我们以下有几种场景会发表观点：</p>
-<p>临时汇报（电梯30秒）<br>只有一句话时间，就说第一层。</p>
-<p>会议发言（1分钟）<br>说到第二层。</p>
-<p>工作总结（3到5分钟）<br>讲到第三层。</p>
-<p>主题分享／培训 （30分钟）<br>抓住一个故事／案例展开来，深入浅出地阐述</p>
-<p>根据不同场景和时间限制，合理地把握表达的层次和深度，无论是电梯30秒、会议发表观点、主题分享、培训、还是述职答辩都能应对自如。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/30/ios_app_base_performance_stratege/" itemprop="url">
-                  如何建设App的页面性能基线
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T21:39:27+08:00">
-                2017-08-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-19T10:39:00+08:00">
+                2017-10-19
               </time>
             
 
@@ -1373,39 +1229,26 @@
       
         
           
-            <h1 id="为什么我们需要页面性能基线？"><a href="#为什么我们需要页面性能基线？" class="headerlink" title="为什么我们需要页面性能基线？"></a>为什么我们需要页面性能基线？</h1><p>开发人员的差异性<br>在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。</p>
-<p>业务迭代的变化<br>随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数据做为参考线，则可以对存量页面的性能进行自动化分析。</p>
-<h2 id="页面性能的两个特性"><a href="#页面性能的两个特性" class="headerlink" title="页面性能的两个特性"></a>页面性能的两个特性</h2><p>不一致性</p>
-<p>一个页面的性能指标怎么定主要受2个因素的影响，一个是UI元素的复杂度，一个是接口数据的复杂度。UI布局越复杂，页面渲染就会越慢。数据获取越复杂，页面就需要等待越长的时间进行渲染。因此我们不能一视同仁，所有页面都设置同样的基线。</p>
-<p>合理波动性</p>
-<p>鲜肉页面（新开发的页面）进入市场后，随着版本迭代，性能数据一定会有所波动。在一定范围内波动，我们认为是合理波动。</p>
-<h1 id="基线建设的3个目标"><a href="#基线建设的3个目标" class="headerlink" title="基线建设的3个目标"></a>基线建设的3个目标</h1><p>流程化<br>建立完整、合理的基线产出流程。</p>
-<p>工具统一化<br>建立统一的性能分析方法论、分析工具。</p>
-<p>标准化<br>建立标准化的基线算法，通过该算法计算出各页面的基线标准</p>
-<h2 id="3条性能基准线"><a href="#3条性能基准线" class="headerlink" title="3条性能基准线"></a>3条性能基准线</h2><p>性能红线</p>
-<p>性能指标只要差到一定的程度，用户就会感受到明显的不顺畅、慢、卡。这时候，无论页面多复杂、接口多慢，都不是理由（再有价值的产品，如果体验太差对用户来说就是垃圾）。因此，我们需要设立一个性能红线，无论如何不能超过红线。</p>
-<p>App综合性能指数</p>
-<p>正如证券市场的道琼斯指数一样，取App所有页面性能数据的平均值作为页面综合性能指数。鲜肉页面没有历史版本的数据，没有参考的标准。由于页面复杂度存在不一致性，不能随便找找一个页面来做参考，这个时候取App综合性能指数做参考是最合适的。</p>
-<p>页面性能基线（3个历史版本数据的均值）</p>
-<p>鲜肉页面通过过滤流水线后，我们就将通过后页面的线上平均数据做为该页面的性能基线。</p>
-<h2 id="2条流水线"><a href="#2条流水线" class="headerlink" title="2条流水线"></a>2条流水线</h2><p>鲜肉过滤流水线</p>
-<p>新开发的页面（鲜肉页面），由于复杂度不一致，我们不能准确判断开发出来的页面性能是否合理。但我们可以根据两条基准线做为参考值来估算页面性能是否合理。第一条是红线，高压线不能越。第二条是“APP综合性能指数”，如果低于这条线则合格，如果高于这条线则进入鉴别池。进入鉴别池的页面，将使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
-<p>熟肉自动流水线</p>
-<p>鲜肉页面经过过滤后，性能基本可以得到保障。但我们还需要保证，随着版本迭代这些页面性不能超过合理波动的范围。每期的版本迭代前，我们通过自动化测试拿到线下性能数据，然后与该页面的性能基线进行自动对比，计算迭代后的数据是否超过了基线的合理波动范围。若超过了，则进入鉴别池，使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
-<p>两条流水线都可以建立自动化过滤系统，根据基准线进行自动化数据分析，解放测试同学的同时，保证全面地覆盖。</p>
-<h2 id="落地设计"><a href="#落地设计" class="headerlink" title="落地设计"></a>落地设计</h2><p>根据实际的项目流程，可以分为线上实时监控和线下自动化数据分析。</p>
-<h2 id="线上实时监控"><a href="#线上实时监控" class="headerlink" title="线上实时监控"></a>线上实时监控</h2><p>线上建立可视化的性能数据图表，方便进行实时监控和分析。<br>图片显示如下几条线</p>
-<ul>
-<li>波动线（页面性能基线+合理波动值）</li>
-<li>性能红线</li>
-<li>当前版本均值</li>
-</ul>
-<h2 id="线下自动化数据分析"><a href="#线下自动化数据分析" class="headerlink" title="线下自动化数据分析"></a>线下自动化数据分析</h2><p>线下建立自动化过滤系统，根据基准线进行自动化数据分析。</p>
-<p>鲜肉页面过滤条件：<br>测试数据 &gt; APP综合指数（剔除一定范围0-500，2000+）<br>熟肉页面过滤条件：<br>测试数据 &gt; 页面基线值（页面性能基线+合理波动值）</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fjeywnme3lj319w0saq5d.jpg" alt=""></p>
-<h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg" alt=""></p>
-<h1 id="整体落地"><a href="#整体落地" class="headerlink" title="整体落地"></a>整体落地</h1><p>基线的流程和方法的建设，需要开发和测试人员一起协作完成。<br>开发人员负责：数据埋点、问题优化分析、积累沉淀<br>测试人员负责：测试件、数据平台建设、测试流程建设</p>
-<p>落地是重点也是难点。其中有2个要点。<br>1进行方案评审和宣导，获取团队人员的反馈，并进行改善，形成团队内的统一认知。<br>2合理安排落地节奏。</p>
+            <h2 id="synchronized的死锁"><a href="#synchronized的死锁" class="headerlink" title="synchronized的死锁"></a>synchronized的死锁</h2><p>我们已经习惯了使用synchronized来做同步锁，但在实际开发中发现，写得不好容易出现死锁的坑。比如像下面这样的代码有两个个锁被公用，在多线程的情况下就容易导致死锁。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">#import &quot;BTSynchronizedObjectA.h&quot;</div><div class="line"></div><div class="line">@implementation BTSynchronizedObjectA</div><div class="line">- (void)dosomethingInA &#123;</div><div class="line">    @synchronized(self)&#123;</div><div class="line">        NSLog(@&quot;dosomethingInA&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;BTSynchronizedObjectB.h&quot;</div><div class="line"></div><div class="line">@implementation BTSynchronizedObjectB</div><div class="line"></div><div class="line">- (void)callA &#123;</div><div class="line">    NSLog(@&quot;call A begin&quot;);</div><div class="line">    [self.shareLock lock];</div><div class="line">    [self.synchronizedObjectA dosomethingInA];</div><div class="line">    [self.shareLock unlock];</div><div class="line">    NSLog(@&quot;call A end&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)dosomethingInB &#123;</div><div class="line">    NSLog(@&quot;dosomethingInB begin&quot;);</div><div class="line">        @synchronized(self.synchronizedObjectA) &#123;</div><div class="line">            [self.shareLock lock];</div><div class="line">            NSLog(@&quot;dosomethingInB&quot;);</div><div class="line">            [self.shareLock unlock];</div><div class="line">        &#125;</div><div class="line">    NSLog(@&quot;dosomethingInB begin&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>怎么写可以避免这种情况出现呢?改写的方法是在用到synchronized时传入一个内部NSObject成员变量，外部不能获取到这个变量，就不会形成交替死锁。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">#import &quot;BTSynchronizedObjectA.h&quot;</div><div class="line"></div><div class="line">@implementation BTSynchronizedObjectA</div><div class="line">- (void)dosomethingInA &#123;</div><div class="line">    @synchronized(self.tokenA)&#123;</div><div class="line">        NSLog(@&quot;dosomethingInA&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<h2 id="synchronized的性能"><a href="#synchronized的性能" class="headerlink" title="synchronized的性能"></a>synchronized的性能</h2><p>synchronized锁本身性能是会比其他锁要慢，有人对此做过测试。但是在实际使用中，锁本身的性能差异几乎可以忽略不计。<br>那为什么有人会抱怨用synchronized性能不好呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (void)testPerformance &#123;</div><div class="line">    @synchronized(self.token) &#123;</div><div class="line">        // do some thing</div><div class="line">        [self dosomethingelse];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>像上面这段被加锁的代码里，通过[self dosomethingelse]再调用别的方法。dosomethingelse方法的开发者，很可能并不知道自己的方法被锁同步的，他又可能调用别的函数，这样一层一层调用就可能变得更慢。<br>所以使用synchronized时一定要注意，尽量减少锁的范围和粒度。</p>
+<p>不同数据使用不同锁，控制最小的粒度<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">@synchronized (tokenA) &#123;</div><div class="line">    // do some thing</div><div class="line">&#125;</div><div class="line"></div><div class="line">@synchronized (tokenB) &#123;</div><div class="line">    // do some thing</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>减小加锁的范围，不必要加锁的代码放到外面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@synchronized (tokenA) &#123;</div><div class="line">    // do some thing need locked</div><div class="line">&#125;</div><div class="line">    // do some thing else</div><div class="line">   [self dosomethingelse];</div><div class="line">   ...</div></pre></td></tr></table></figure>
+<h2 id="synchronized的失效"><a href="#synchronized的失效" class="headerlink" title="synchronized的失效"></a>synchronized的失效</h2><p>用synchronized时需要传入一个object,你有没有想过如果你传入的是nil会怎么样呢？<br>根据汇编代码可以发现，synchronized实现里会调用objc_sync_enter和objc_sync_exit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  @synchronized(self) &#123;</div><div class="line">    return [[myString retain] autorelease];</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>转换为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  objc_sync_enter(self)</div><div class="line">    id retVal = [[myString retain] autorelease];</div><div class="line">  objc_sync_exit(self);</div><div class="line">  return retVal;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>objc_sync_enter和objc_sync_exit函数定义在<objc objc-sync.h=""><br>其中objc_sync_enter函数的实现里，正常的情况obj不为nil时，会根据obj内存地址的哈希值查找合适的SyncData然后使用递归mutex加锁recursive_mutex_lock。到了objc_sync_exit时同样通过obj的内存地址的哈希值查找合适的SyncData，然后将其解锁recursive_mutex_unlock。</objc></p>
+<p>But,当执行objc_sync_enter函数时，如果传入的obj为nil，那并不会加锁，直接走到objc_sync_nil。也就是说，如果使用@synchronized时传入的obj为nil,那将不会加锁也就是失去了同步的效果。所以一定要保证obj不在执行期间被设置被nil。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">int objc_sync_enter(id obj)</div><div class="line">&#123;</div><div class="line">    int result = OBJC_SYNC_SUCCESS;</div><div class="line"></div><div class="line">    if (obj) &#123;</div><div class="line">        SyncData* data = id2data(obj, ACQUIRE);</div><div class="line">        require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_INITIALIZED, &quot;id2data failed&quot;);</div><div class="line">	</div><div class="line">        result = recursive_mutex_lock(&amp;data-&gt;mutex);</div><div class="line">        require_noerr_string(result, done, &quot;mutex_lock failed&quot;);</div><div class="line">    &#125; else &#123;</div><div class="line">        // @synchronized(nil) does nothing</div><div class="line">        if (DebugNilSync) &#123;</div><div class="line">            _objc_inform(&quot;NIL SYNC DEBUG: @synchronized(nil); set a breakpoint on objc_sync_nil to debug&quot;);</div><div class="line">        &#125;</div><div class="line">        objc_sync_nil();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">done: </div><div class="line">    return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">int objc_sync_exit(id obj)</div><div class="line">&#123;</div><div class="line">    int result = OBJC_SYNC_SUCCESS;</div><div class="line">    </div><div class="line">    if (obj) &#123;</div><div class="line">        SyncData* data = id2data(obj, RELEASE); </div><div class="line">        require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR, &quot;id2data failed&quot;);</div><div class="line">        </div><div class="line">        result = recursive_mutex_unlock(&amp;data-&gt;mutex);</div><div class="line">        require_noerr_string(result, done, &quot;mutex_unlock failed&quot;);</div><div class="line">    &#125; else &#123;</div><div class="line">        // @synchronized(nil) does nothing</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">done:</div><div class="line">    if ( result == RECURSIVE_MUTEX_NOT_LOCKED )</div><div class="line">         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;</div><div class="line"></div><div class="line">    return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在工程里，将obj设置为nil，给objc_sync_nil加个断点，会看到确实走到objc_sync_nil函数<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fknih8473kj30f20doad4.jpg" alt=""></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://stackoverflow.com/questions/1215330/how-does-synchronized-lock-unlock-in-objective-c/6047218#6047218" target="_blank" rel="external">synchronized的实现</a><br><a href="https://opensource.apple.com/source/objc4/objc4-646/runtime/objc-sync.mm" target="_blank" rel="external">objc-sync源码</a><br><a href="http://yulingtianxia.com/blog/2015/11/01/More-than-you-want-to-know-about-synchronized/" target="_blank" rel="external">关于 @synchronized，这儿比你想知道的还要多</a><br><a href="http://mrpeak.cn/blog/synchronized/" target="_blank" rel="external">正确使用多线程同步锁@synchronized()</a></p>
 
           
         
@@ -1449,7 +1292,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/16/history-make-believe/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/28/target_how_to_make_target/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -1471,8 +1314,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/08/16/history-make-believe/" itemprop="url">
-                  《未来简史》————虚构比真实更重要
+                <a class="post-title-link" href="/2017/09/28/target_how_to_make_target/" itemprop="url">
+                  明确的目标的反效果
                 </a>
               
             
@@ -1488,8 +1331,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T22:33:49+08:00">
-                2017-08-16
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-28T22:35:00+08:00">
+                2017-09-28
               </time>
             
 
@@ -1511,8 +1354,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/history/" itemprop="url" rel="index">
-                    <span itemprop="name">history</span>
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
                   </a>
                 </span>
 
@@ -1548,21 +1391,10 @@
       
         
           
-            <p>赫拉利提出了一个了解历史的理由。了解历史可以让我们了解历史给我带上的枷锁，让我们不再被历史的枷锁困住。</p>
-<p>美国中产阶级们喜欢在自己家的小别墅前养一片绿油油、整齐的草坪。他们还会买除草机等各种设备，并且定期去修剪、浇灌、维护这块草坪。事实上这很浪费时间，也没有太多实际的价值，但为什么他们还要维持这样的习惯呢？</p>
-<p>在中世纪欧洲，维护这样的草坪是很费人力、物力的，那个时候没有先进的设备，只有贵族家才能养得起，这是尊贵的表现。现在只要愿意花时间，中产阶级们都能养得起。那么这恰恰就失去了养殖草坪的尊贵性。就好像LV、Gucci等奢侈品如果大家都买得起，就失去了显示身份的价值。而了解了这段历史，我们可以知道自己为什么会有维护草坪这种自己都无法解释的习惯。不用再为这段偶然产生的历史习惯，而买单。</p>
-<p>人和自然是我们常常思考的问题。人真的是第一可宝贵的吗？</p>
-<p>回顾历史，在采集狩猎时代，人类相信万物有灵，相信泛灵论。人类每天需要猜测动物的想法、避免被动物偷袭、还要想办法捕获动物。采集狩猎时代人类只是大自然食物链上普通的一环，没有太大的优势。</p>
-<p>农业社会，人驯养了很多动物，动物成了人类的私有物品。人对动物可以为所欲为，不再需要考虑对方的感受，人和动物不再平等。这时候泛灵论就不满足时代的需要了，于是诞生了各种有神论。基督教宣布，上帝给人类永久的灵魂，而其他动物是没有灵魂的。人类成为第二可宝贵的。</p>
-<p>现代社会，进化论逐渐被社会认可，基督教那套灵魂的说法就站不住脚了。那人又如何比别的动物更宝贵呢？有人给出了答案，人有意识。这个理由还是很有市场的，它很难被证伪。科学家人认为人根本不需要意识。旧的记忆和新的外部刺激，对大脑来说都是电信号和化学反应。我们看到危险信号靠近后，视觉信号传递给大脑，大脑把神经信号传递给腿，腿受到命令就可以开始跑了。恐惧、害怕、惊慌等主观体验根本没有什么用。而且，现在科学家已经有足够证据证明哺乳动物和鸟类、鱼类都是有感情的。讨论意识不能说明人比动物宝贵。</p>
-<p>那人到底为什么可宝贵呢？<br>因为，突然有一天，人类基因突变，成为一个会幻想、懂虚构的年轻人。<br>人能虚构东西，并且能相信虚构的东西。虚构出来各种新的概念，上帝、国家、金钱、公司、价值观，能让人群实现大规模、跨越时间和空间的合作。</p>
-<p>国家也是虚构的，没有哪片土地天生属于某个国家。过去有一个国家，几千年来都维系着的文化和传统。突然有一天，在这个国家的土地上发生了一场战争。战争打完，这个国家被拆成了两片区域。这两片区域分别被植入了不同的想象共同体。最后出现了2个互相仇视的国家。</p>
-<p>这是现在我们认为人类为什么比别的动物更可贵的原因。这些虚构的概念甚至比真实存在的都显得重要。比如宗教的出现维系着大尺度的社会秩序。</p>
-<p>宗教是什么？<br>赫拉利总结了宗教的3个特点。<br>1 它有一套号称不是人发明的，而且不能被人改变的道德规范，要求人们必须遵守。<br>2 它给人们一个许诺，只要你遵从这套法规，就会有什么好处。<br>3 它的目的是为了巩固自己设想的社会秩序</p>
-<p>我想起我一个大学同学，一个信仰基督教的女生。她是一个善良、乐于助人，有所为有所不为。她相信以她的标准区为人处事，一定会收获幸福。她有一个特点，内心没有恐惧。她不惧怕现在、不惧怕未来，不惧怕自己的出生低微，不惧怕别人有更好的机会，不惧怕天灾、不惧怕人祸。</p>
-<p>这样的人，我们认为是有强大内心的。这也是基督教、佛教等主流宗教给社会带来的正面意义。每个宗教都有自己一套道德体系，只要这套道德体系无限趋近于社会共同的认知，那么我们可以只要大家去遵守，社会会变得更和谐。即便它给于教民的许诺是没有能力实现的。</p>
-<p>这么说来，各种主义、有价值观和远景的公司文化，其实也符合宗教的特点。这也是为什么管理学会认为，最高级的管理是价值观、理念的管理。大家都遵守同样的规定、并且愿意相信未来的收获和意义，管理起来成本是相当的低啊。所有人一颗心、指哪打哪，不论战略和战术如何调整和部署，都能朝同一个方向去发力，效果肯定是杠杠的6啊。</p>
-<p>看到这里，你估计也已经认为虚构的影响力确实很6，那你有没有想过你可以怎么使用虚构的思维呢？<br>虚构影响力可以这么大，是因为我们可以赋予虚构概念价值和意义，从而聚集更多的人。<br>我们做一个产品，要思考这个产品是否有改变世界的意义。做某一个项目，也需要思考它是否有影响深远的价值。<br>有新的想法，要尝试给想法定义一个新的概念。虚构的新概念，至少是需要经过思考和抽象的过程。大家对新概念的好奇，也能引发思考和传播。</p>
+            <p>最近听到一个毁三观的观点，”明确的目标是有害的“。为什么是有害的呢？<br>第一个理由是，明确的目标违背经济学原理“看不见的手”。<br>比如今年宝洁定了1000亿的业务目标，如果提前完成了，大家就会放松了。但今年行情可能就是很好，应该乘胜追击才不浪费机会。而如果行情不好，很难完成这个数字，就可能会做各种不合理的促销，消耗第二年的购买力。<br>第二个理由是，目标太明确，可能会让人不惜一切代价，忽视风险。<br>例如像我定了每天跑3.5公里的目标，但由于最近工作比较忙，回去已经10点多了。如果按目标继续跑，因为身体状况不好，跑步得到的可能达不到锻炼的效果，反而增加了身体的负担。</p>
+<p>这两个理由听起来还是很符合逻辑的。那我们难道就不定明确的目标吗？<br>也不是。<br>制定目标的过程，能使我们梳理清楚自己对未来的合理期望。<br>我们大部份人对自己未来的期望都很模糊。因为模糊，很难衡量期望的合理性、意义、价值和难度。<br>这个时候思考目标的过程就很有意义了，这让我们从混沌到清晰。<br>有点挑战的目标，并让一定范围内的社交关系知道，能让自己形成一定的焦虑，从而提升自己的执行力。</p>
+<p>目标制定好，在执行的过程中我们应该尽量遵循2个原则。<br>1 合理投入，理性调整<br>在执行的过程中，我们要投入预期的精力。遇到特殊情况应该适当地调整目标。<br>2 自我觉察，克服人性弱点。<br>我们常常因为懒惰、拖延、逃避等人性的弱点导致不能投入足够的精力在目标的执行中。这关键在于不能及时觉察到自己在拖延。<br>最典型例子就是我们平时会无意识地刷微信朋友圈，网易新闻。事后我们可能会懊恼，又浪费了时间。避免这种窘境的方法是，提升觉察能力，在打开微信前觉察到自己的行为不理性，也可以像查理.芒格一样思考一下，“我即将做的是一个理性的抉择吗？”</p>
+<p>以上主要针对个人目标来考虑，而针对团队的目标，其实还会有更多的意义…</p>
 
           
         
@@ -1606,7 +1438,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/16/Invite_Job_aliabbamd/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/22/iOS_best_performance_easyBlock/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -1628,8 +1460,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/08/16/Invite_Job_aliabbamd/" itemprop="url">
-                  阿里巴巴国际无线技术部 - 在这里遇见最好的自己
+                <a class="post-title-link" href="/2017/09/22/iOS_best_performance_easyBlock/" itemprop="url">
+                  iOS开发性能最佳实践之——容易出现耗时阻塞的检查清单(持续更新)
                 </a>
               
             
@@ -1645,8 +1477,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T22:33:49+08:00">
-                2017-08-16
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T11:19:00+08:00">
+                2017-09-22
               </time>
             
 
@@ -1668,8 +1500,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Invite/" itemprop="url" rel="index">
-                    <span itemprop="name">Invite</span>
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
                   </a>
                 </span>
 
@@ -1705,31 +1537,16 @@
       
         
           
-            <p><strong>不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！</strong></p>
-<h1 id="我们做什么"><a href="#我们做什么" class="headerlink" title="我们做什么"></a>我们做什么</h1><p>阿里巴巴国际无线技术部背靠阿里巴巴集团和阿里巴巴国际站，阿里巴巴国际站是全球领先的跨境B2B贸易服务平台，服务全世界数以千万计的采购商和供应商，阿里巴巴国际站（www.alibaba.com）帮助中小企业拓展国际贸易的出口营销推广服务，专注服务于全球中小微企业，在平台上，通过向海外买家展示、推广供应商的企业和产品，进而获得贸易商机和订单，买卖双方可以在线更高效地找到适合的彼此，并更快更安心地达成交易，是出口企业拓展国际贸易的首选跨境贸易平台。</p>
-<p>阿里巴巴国际站技术致力于打造一站式eWTP全球国际B类贸易服务平台解决方案，基于大数据在搜索、推荐、营销、流量、金融等场景中提供全方位一站式的服务，赋能卖家。</p>
-<p>近年来，随着智能手机的普及无线的趋势已经锐不可当。阿里巴巴国际无线技术部不仅是站在阿里巴巴集团和阿里巴巴国际站两个巨人的肩上，更是站在无线时代的浪潮之上。来吧少年，一起为全球中小企业服务！</p>
-<h1 id="我们在哪里"><a href="#我们在哪里" class="headerlink" title="我们在哪里"></a>我们在哪里</h1><p><em>杭州 - 一座来了就不想走的城市</em><br>杭州有“欲把西湖比西子，淡妆浓抹总相宜”的西湖，<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/175b41acb93011a4e220fbcf498603f0.png" alt=""><br>杭州有“钱塘岸上春如织，淼淼寒潮带晴色”的钱塘江（潮），<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/4781472e7fb735b122b5a47faf8c135a.png" alt=""><br>杭州有“最爱湖东行不足，绿杨阴里白沙堤”的白堤，<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/691676d5035cbdd8aa78e2514f7e4b26.png" alt=""><br>。。。。。。</p>
-<p>从古至今无数的文人墨客为杭州驻足，给杭州添色。正所谓“你在杭州看风景,看风景的人在历史中看你”。古有一本《西湖梦寻》让无数人慕名杭州，今有一家“阿里巴巴”让追梦人逐梦杭州。来吧少年，“江南无所有，聊赠一聘书”。</p>
-<h1 id="为什么是我们"><a href="#为什么是我们" class="headerlink" title="为什么是我们"></a>为什么是我们</h1><p>阿里巴巴早已经是一家庞大的集团公司，有大家熟知的淘宝、天猫等等。然而我却要说请记住它们，但请来阿里巴巴国际无线技术部：</p>
-<h2 id="内部环境：国际化-集团三大战略之一"><a href="#内部环境：国际化-集团三大战略之一" class="headerlink" title="内部环境：国际化 - 集团三大战略之一"></a>内部环境：国际化 - 集团三大战略之一</h2><p>早在2015年阿里巴巴集团提出：农村化、国际化、大数据和云计算是阿里巴巴集团未来的三大战略，2016年马老师又创造性的提出了eWTP，2016年9月马老师在二十国集团工商峰会（B20）发表演讲，系统性的阐述eWTP的理念、愿景和行动计划。并且在一年中几乎飞遍全球，向各国政府、国际组织描述和倡议eWTP。<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/04a5d40cf5de4a9d7cb7e8b585cd92dc.png" alt=""><br>2017年6月阿里巴巴在美国底特律举办大规模的论坛，马老师做了“中国的贸易机会”的主题演讲，更是承诺未来的5年内在美国创造100万的工作机。<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/e6d2d85ca980dee8afe223cd3e10c71e.png" alt=""><br>无论是国际化、eWTP和中美贸易阿里巴巴国际无线技术部都是最重要的战场。</p>
-<h2 id="外部环境：一带一路-国家级顶层战略"><a href="#外部环境：一带一路-国家级顶层战略" class="headerlink" title="外部环境：一带一路 - 国家级顶层战略"></a>外部环境：一带一路 - 国家级顶层战略</h2><p>2013年，中国首次超越美国跃居世界第一大贸易国。持续三年世界第一之后，世贸组织（WTO）的最新数据显示，2016年中国的进出口贸易额被美国反超，丧失了“世界第一外贸国家”的称号。</p>
-<p>2015国家发展改革委、外交部、商务部联合发布了《推动共建丝绸之路经济带和21世纪海上丝绸之路的愿景与行动》，即是大家熟知的“一带一路”。它将充分依靠中国与有关国家既有的双多边机制，借助既有的、行之有效的区域合作平台，一带一路旨在借用古代丝绸之路的历史符号，高举和平发展的旗帜，积极发展与沿线国家的经济合作伙伴关系，共同打造政治互信、经济融合、文化包容的利益共同体、命运共同体和责任共同体。可以说“一带一路”和eWTP有异曲同工之秒。</p>
-<p>2017年3月16号《中国新外贸模式研究报告》正式发布，重点分析了以阿里巴巴为代表的新外贸模式。结论是：新外贸模式极大降低了中国外贸的交易成本，同时交易平台提供的信息、数据和生态价值，会随时间增加为企业带来更大价值。阿里巴巴提倡的新外贸模式是外贸行业的新拐点。</p>
-<p>无论是内部环境还是外部环境，作为阿里巴巴发家的阿里巴巴国际站正站在新的历史起点欲展翅翱翔，来吧少年，一起鹰击长空。</p>
-<h1 id="我们的技术"><a href="#我们的技术" class="headerlink" title="我们的技术"></a>我们的技术</h1><p>在新技术上无论是Andriod还是iOS，我们积极跟进业内新技术，试验落地。比如：在iWatch产品发布之初便做了适配、遵循Andriod的MD规范、DeepLink、Firebase等；在国际化上自研多语言的实时更新引擎、RTL适配，做到覆盖全球所有主流语种、货币单位等。</p>
-<p>阿里巴巴国际无线技术部出品的Alibaba.com Andriod APP 多次获得Google Play官方推荐，以2017年3月10日为例：我们获得Google Play 104个国家的主页和购物分类的黄金展位。这是我们不断追求卓越，不断提升用户体验，不断创新的结果。由于我们在技术上的精益求精，我们始终和Google保持着非常良好的合作关系。<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/8603c70eae9fb9f962fc0a0bda80f413.png" alt=""></p>
-<p>更多的荣誉：<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/d8f8a426f79f3e77a425bf6a0a1c997d.png" alt=""></p>
-<p>来吧少年，一起码出未来！</p>
-<p><strong>不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！</strong></p>
-<h1 id="我们的团队"><a href="#我们的团队" class="headerlink" title="我们的团队"></a>我们的团队</h1><p>阿里巴巴国际无线技术部现聚集40多名江湖三大名门正派（Andriod, iOS,JAVA）的顶级高手，由江湖人称“小马哥”的带头大哥领导，在这里每一个人都身怀绝技，一起来走进这些可爱的小伙伴吧：</p>
-<h2 id="如果你是终生学习者，如果你对认知科学、商业本质感兴趣，来吧少年！"><a href="#如果你是终生学习者，如果你对认知科学、商业本质感兴趣，来吧少年！" class="headerlink" title="如果你是终生学习者，如果你对认知科学、商业本质感兴趣，来吧少年！"></a>如果你是终生学习者，如果你对认知科学、商业本质感兴趣，来吧少年！</h2><p>“小马哥”之所以称为“小马哥”，不仅仅因为他姓马，也不仅仅他的英文名叫“Jack”，更重要的是有马老师的风采。如果你常年关注“得到APP”，你一定对傅盛、刘润、罗胖、李笑来等等如数家珍，那么来吧少年，在这里近距离感受“小马哥”价值2W的《认知升级》。在这里每一天都是成长！</p>
-<p><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/b537531d13ce08f1463bce9e97ac0acc.png" alt=""></p>
-<h2 id="如果你是IOS的开发者，又常见混迹开源社区，来吧少年！"><a href="#如果你是IOS的开发者，又常见混迹开源社区，来吧少年！" class="headerlink" title="如果你是IOS的开发者，又常见混迹开源社区，来吧少年！"></a>如果你是IOS的开发者，又常见混迹开源社区，来吧少年！</h2><p><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/60ea9f6cad94a3e0ac2e1bb121e8bc86.png" alt=""></p>
-<h2 id="如果你怀有一颗不安分的心，来吧少年！"><a href="#如果你怀有一颗不安分的心，来吧少年！" class="headerlink" title="如果你怀有一颗不安分的心，来吧少年！"></a>如果你怀有一颗不安分的心，来吧少年！</h2><p>我们一起去探索这个世界：<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/6b33d913bad296d6a9284c25cbd25f57.png" alt=""></p>
-<h2 id="如果你精通八大菜系，来吧少年！"><a href="#如果你精通八大菜系，来吧少年！" class="headerlink" title="如果你精通八大菜系，来吧少年！"></a>如果你精通八大菜系，来吧少年！</h2><p>我们一起去吃遍全球：<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/5858ddc3d4ec7baac08fc659ca1fb739.png" alt=""></p>
-<p>如果以上这些都还不够打动你，那么下面一张一定可以<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/e49449564295d68aa2dbe212193b7cf6.png" alt=""></p>
-<h1 id="不要压抑你的天性了！打开邮箱把你的iOS-Android简历发到blackteachinese-gmail-com吧！"><a href="#不要压抑你的天性了！打开邮箱把你的iOS-Android简历发到blackteachinese-gmail-com吧！" class="headerlink" title="不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！"></a>不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！</h1>
+            <p><strong>剪贴板读取</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</div><div class="line">   UIPasteboard *pasteboard = [UIPasteboard generalPasteboard]; </div><div class="line">   if (pasteboard.string.length &gt; 0) &#123;//这个方法会阻塞线程</div><div class="line">      NSString *text = [pasteboard.string copy];</div><div class="line">      [pasteboard setValue:@&quot;&quot; forPasteboardType:UIPasteboardNameGeneral];</div><div class="line">      if (text == nil || [text isEqualToString:@&quot;&quot;]) &#123;</div><div class="line">          return ;</div><div class="line">      &#125;</div><div class="line">      dispatch_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">          [self processShareCode:text];</div><div class="line">      &#125;);</div><div class="line">   &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p><strong>日期格式化</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSDateFormatter *formatter = [[NSDateFormatter alloc] init];</div><div class="line">[formatter setDateStyle:NSDateFormatterShortStyle];</div><div class="line">[formatter setDateFormat:@&quot;yyyy#MM#dd#HH:mm#ss&quot;];</div><div class="line">NSString *result = [formatter stringFromDate:date];</div></pre></td></tr></table></figure>
+<p><strong>文件读取</strong>    </p>
+<p>我们通常会使用NSFileManager来读取文件，但是NSFileManager读取文件并不是性能最好的,推荐使用stat.h里的’int stat(const char <em>, struct stat </em>) __DARWIN_INODE64(stat);’方法。</p>
+<p>NSFileManager<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mach_timebase_info_data_t info;  </div><div class="line">if (mach_timebase_info(&amp;info) != KERN_SUCCESS) return -1.0; </div><div class="line">__darwin_off_t fileSize1 = 0;</div><div class="line">uint64_t start = mach_absolute_time();</div><div class="line">for (NSInteger i = 0; i &lt;= 10000; i++) &#123;</div><div class="line">    NSDictionary&lt;NSFileAttributeKey, id&gt;* attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:imagePath error:nil];</div><div class="line">    fileSize1= [attributes fileSize];</div><div class="line">&#125;</div><div class="line">uint64_t end = mach_absolute_time();</div><div class="line">uint64_t elapsed = end - start;  </div><div class="line">uint64_t nanos1 = elapsed * info.numer / info.denom;</div><div class="line">return (CGFloat)nanos / NSEC_PER_SEC;</div></pre></td></tr></table></figure></p>
+<p>stat<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mach_timebase_info_data_t info;  </div><div class="line"> if (mach_timebase_info(&amp;info) != KERN_SUCCESS) return -1.0; </div><div class="line"> __darwin_off_t fileSize = 0;</div><div class="line"> uint64_t start = mach_absolute_time();</div><div class="line"> for (NSInteger i = 0; i &lt;= 10000; i++) &#123;</div><div class="line">     int rs = stat(filePath, &amp;statBuf);</div><div class="line">     fileSize= statBuf.st_size;</div><div class="line"> &#125;</div><div class="line"> uint64_t end = mach_absolute_time();</div><div class="line"> uint64_t elapsed = end - start;  </div><div class="line"> uint64_t nanos1 = elapsed * info.numer / info.denom;</div><div class="line"> return (CGFloat)nanos / NSEC_PER_SEC;</div></pre></td></tr></table></figure></p>
+<p>在iPhone6S设备10000次循环的测试条件下，stat是性能是NSFileManager的4倍左右</p>
+
           
         
       
@@ -1772,7 +1589,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/12/manage_interview/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/20/iOS_best_performance_safe/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -1794,8 +1611,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/07/12/manage_interview/" itemprop="url">
-                  如何面试一个iOS工程师
+                <a class="post-title-link" href="/2017/09/20/iOS_best_performance_safe/" itemprop="url">
+                  如何编写安全的iOS代码
                 </a>
               
             
@@ -1811,8 +1628,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-12T21:39:27+08:00">
-                2017-07-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-20T22:30:27+08:00">
+                2017-09-20
               </time>
             
 
@@ -1834,8 +1651,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/管理/" itemprop="url" rel="index">
-                    <span itemprop="name">管理</span>
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
                   </a>
                 </span>
 
@@ -1871,54 +1688,213 @@
       
         
           
-            <h1 id="0x1-我们的考察重点是什么？"><a href="#0x1-我们的考察重点是什么？" class="headerlink" title="0x1 我们的考察重点是什么？"></a>0x1 我们的考察重点是什么？</h1><p>对于一个客户端开发工程师我们需要考察的关键能力可以抽象为5个方面。基础能力、专项能力、架构能力、系统分析能力、价值产出能力。</p>
-<p>对于一个客户开发工程师，基础能力都有什么呢？<br>我的定义是，能够支撑这个工程师完成90%开发工作所需要具备的能力。</p>
-<p>什么是专项能力呢？<br>音视频处理、性能优化、网络通信、工程效能、疑难问题排查这些都算。<br>一个工程师是否有专线领域的积累，往往可以看出这个人是否有技术追求、是否有技术深度积累的意识。另外，一个团队也需要具备各种专项能力的人，去解决不同的难题。</p>
-<p>架构能力不是面试架构师才要考察的能力吗？<br>当然不是。处理很复杂的系统，需要架构能力。设计一个简单的模块也需要架构的能力。例如设计一个监控模块、智能图片加载模块、UI组件库。一个大公司的部门设计、组织架构如何安排相当于复杂系统的架构设计。一个项目组如何安排每一个角色的工作职责、协作方式、监督机制、激励与惩罚机制就相当于是一个小模块的架构设计。</p>
-<p>只有具备了系统分析能力，才能对系统内各功能模块进行合理的设计和安排。<br>在实际工作里，你不仅需要考虑技术层面的问题，你还需要考虑业务发展对架构的要求、有多少资源可以用，项目成本和价值产出比的情况等综合因素。而且你还需要考虑这些因素会不断的变化。系统性、综合性的分析能力这个时候就显得十分重要。<br>另外，我认为这也是人类和人工智能最大的区别。人类的大脑实际上在处理复杂问题、综合性问题的能力是远远强与现在的人工智能的。</p>
-<p>最后是价值产出能力。对于一个工程师，价值的产出有许多维度和层次，下面我介绍最常见的3种。<br>第一层，完成项目组布置的日常工作。<br>第二层，通过分析，找到目前项目组存在的问题，主动产出解决这些问题的方案，并推动这些方案的执行。<br>第三层，可以根据业务的现状和发展方，能规划出技术团队各阶段需要储备的基础建设、架构的发展、人员的培养方向，并针对这些规划制定高效、可执行的方案。</p>
-<p>不同公司在不同的阶段，对于一个客户端研发工程师的要求都是不一样的。我们需要针对项目组当前的实际需要和未来的发展趋势、着重对其中几项关键点进行考察。</p>
-<h1 id="0x2-面试的方法论"><a href="#0x2-面试的方法论" class="headerlink" title="0x2 面试的方法论"></a>0x2 面试的方法论</h1><p>面试时我们需要更真实的反馈，我们需要使用STAR（行为面试方法），多问情景问题、开发性问题，挖掘候选者实际情景处理问题的细节，来考察他的能力。<br>STAR的方法有4个关键词，situation(情景)、task（任务）、action（行动）、result（结果）。<br>根据这4个关键词逐层深入问问题。</p>
-<p>1做这个项目前有什么困难？<br>2你是怎么做的？<br>3为什么这样做？<br>4结果怎么样？<br>5再做一次，有什么地方可以改进？</p>
-<h1 id="0x3-基础能力考察"><a href="#0x3-基础能力考察" class="headerlink" title="0x3 基础能力考察"></a>0x3 基础能力考察</h1><p>c语言、oc、swift<br>开发环境、工具<br>UI<br>网络层<br>多线程<br>设计模式<br>….</p>
-<p>这些都是一个iOS开发工程师需要具备的基础能力。基础能力是首要考察点，如果这部分能力有严重的欠缺，说明候选者是不够专业的。<br>对于基础能力的考察，要尽量考察得全面。准备好各项考察点的问题，其中同一个考察点，要准备好3个层次的问题，这样可以更好地定位候选者每个知识点的掌握的深度。</p>
-<ul>
-<li>tableView的delegate、datasource各自复杂哪些事情?</li>
-<li>有什么办法让tableView变得更加流畅？</li>
-<li>如果要自己写一个tableView，介绍一下思路。有哪些关键点要注意的？</li>
-</ul>
-<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fhtzv53jkrj31kw1hk7wh.jpg" alt="附上一个iOS技术树"></p>
-<h1 id="0x4-进阶能力考察"><a href="#0x4-进阶能力考察" class="headerlink" title="0x4 进阶能力考察"></a>0x4 进阶能力考察</h1><p>进阶能力包括前面提到的专线能力、架构能力、系统分析能力、表达能力。这部分能力的考察首先应该结合候选者过往开发的商业项目、开源项目。挖掘对方过往项目里的亮点，使用STAR方法去评估对方各项进阶能力。</p>
-<ul>
-<li>有没有别的方法？</li>
-<li>遇到什么困难，怎么解决？</li>
-<li>怎么保障性能／安全性？</li>
-<li>实际效果怎么样？怎么体现？</li>
-</ul>
-<h1 id="0x5-程序员通用技能"><a href="#0x5-程序员通用技能" class="headerlink" title="0x5 程序员通用技能"></a>0x5 程序员通用技能</h1><ul>
-<li>sql</li>
-<li>正则</li>
-<li>数据结构</li>
-<li>基础算法</li>
-<li>网络编程</li>
-<li>…</li>
-</ul>
-<p>程序员一些通用的技能也是需要考察的。通过这部分内容的考察，可以看出候选者的计算机基础水平掌握的程度。</p>
-<p>一些非科班出生的候选者，往往这部分知识会掌握得较差一些。但他们是否有意识地去补充这部分知识，是很容易问出来。</p>
-<h1 id="0x6-潜力"><a href="#0x6-潜力" class="headerlink" title="0x6 潜力"></a>0x6 潜力</h1><p>什么程序员有潜力？</p>
-<p>我的定义是，在未来可以遇见的3到5年内，进步的空间比同级别的人要大，进步的速度相对要更快。</p>
-<p>很多人可以觉得年轻就有潜力，其实未必。我们应该细化到候选人身上的一些基能力、性格、思维、习惯。下面我列举一些，有潜力的考察点。</p>
-<ul>
-<li>英语水平</li>
-<li>学习习惯</li>
-<li>工作习惯</li>
-<li>耐操性</li>
-<li>总结能力</li>
-<li>说服力</li>
-<li>表现能力</li>
-<li>管理意识</li>
-<li>共情能力</li>
-</ul>
+            <p><strong>遍历集合先Copy</strong></p>
+<p>如果你正在遍历的集合是mutable的,在你遍历的同时，可能另外一个线程对这个集合做了修改，一个Crash将出现.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*** Terminating app due to uncaught exception &apos;NSGenericException&apos;, reason: &apos;*** Collection  was mutated while being enumerated.&apos;</div></pre></td></tr></table></figure>
+<p>如何避免呢？<br>拿到NSArray／NSMutableArray、NSDictionary/NSMutableDictionary都copy一下。</p>
+<p><strong>集合操作要预判</strong><br>提前做好判断，保证key/value不为nil，数组不会越界。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">addObject:</div><div class="line">removeObjectAtIndex:</div><div class="line">insertObjectAtIndex:</div><div class="line">setObject:forKey:</div><div class="line">@[]</div><div class="line">@&#123;&#125;</div></pre></td></tr></table></figure>
+<p><strong>NSKeyedArchiver别常用</strong><br>在iOS8上会抛exception，非要用加上@try{}@catch{}</p>
+<p><strong>KVO成对出现</strong></p>
+<p>有add必要有remove，否则极有可能Crash，可以使用FaceBook的FBKVOController</p>
+<p><strong>tableView的delegate要置空</strong><br>viewController的dealloc把tableView的delegate置空</p>
+<p>iOS8及以前，delegate属性不是weak，不会自动设为nil。否则做异步网络请求，退出页面就容易出现野指针。</p>
+<p><strong>不要在Category覆盖系统方法</strong></p>
+<p>不要坑别人</p>
+<p><strong>Api需要特定线程，记得加断言</strong><br>如果一个api需要在特定线程执行，记得加上断言判断，否则调用方容易在不合适的线程调用，导致Crash</p>
+<p><strong>多线程环境下懒加载变量要加锁</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (id *)pen</div><div class="line">&#123;</div><div class="line">    if (!_pen) &#123;</div><div class="line">        @synchronized(self) &#123; </div><div class="line">            if (!_pen) &#123;</div><div class="line">                _pen = [[BTPen alloc] init];</div><div class="line">                _pen = @&quot;tea&quot;;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return _pen;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>NSNotificationCenter要防止Self为空</strong><br>NSNotificationCenter在iOS 8及更老系统上存在多线程bug，selector执行到一半时可能会因为self销毁而触发crash.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (void)receiveTesNotify:(NSNotification *)notify</div><div class="line">&#123;</div><div class="line">   __weak typeof(self) weakSelf = self;</div><div class="line">   __strong typeof(self) strongSelf = wself;</div><div class="line">   if (! weakSelf) &#123; </div><div class="line">    return; </div><div class="line">   &#125;</div><div class="line">   [strongSelf action];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>使用dispatch_sync要小心</strong></p>
+<p>容易死锁。下面将一个Block同步到主线程的队列里。因为你用同步，必须先让你执行，但你放到主线程队列里，却要等待主线程原来的任务执行完。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)test &#123;</div><div class="line"> dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">  dispatch_block_t block = ^() &#123;</div><div class="line">      NSLog(@&quot;Hello&quot;);</div><div class="line">  &#125;;</div><div class="line">  dispatch_sync(mainQueue, block);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>cancelPreviousPerformRequestsWithTarget要防御</strong></p>
+<p>对receiver使用cancelPreviousPerformRequestsWithTarget，会导致receiver引用计数减1。如果调用前receiver的引用计数就是1，调用完receiver就会被释放。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">__weak typeof(self) weakSelf = self;</div><div class="line">[NSObject cancelPreviousPerformRequestsWithTarget:self];</div><div class="line">if (!weakSelf)</div><div class="line">&#123;</div><div class="line">//self已经被销毁</div><div class="line">    return;</div><div class="line">&#125;</div><div class="line">// 再调用会Crash</div><div class="line">[self action];</div></pre></td></tr></table></figure>
+<p><strong>在dealloc中，不要将self作为参数传递</strong></p>
+<p>如果self在此时被retain住，到下个runloop周期再次释放，则会造成多次释放crash。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-(void)dealloc&#123;</div><div class="line">    [self doSome:self]; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  因为当前已经在self所指向对象的销毁阶段，如果在doSome:中将self放到了autorelease pool中，那么self会被retain住，计划下个runloop周期再进行销毁；但是dealloc运行结束后，self对象的内存空间就直接被回收了，self变成了野指针<br> 当到了下个runloop周期，self指向的对象实际上已经被销毁，会因为非法访问造成crash问题</p>
+<p><strong>使用锁要避免出现特殊逻辑锁没有被回收</strong></p>
+<p>如果某个方法里锁未被回收，下次调用该方法会造成线程死锁</p>
+<p>可能提前出现return,要在return前回收</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (void) doSomething&#123;</div><div class="line">    [self.lock lock];</div><div class="line">    if (type == 1)&#123;</div><div class="line">        .....</div><div class="line">        [self.lock unlock];</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    else if(type == 2)&#123;</div><div class="line">        .....</div><div class="line">        [self.lock unlock];</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    .....</div><div class="line">    [self.lock unlock];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可能出现异常,要在finally回收</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (void) doSomething&#123;</div><div class="line">    [self.lock lock];</div><div class="line">    @try&#123;</div><div class="line">        ...</div><div class="line">    &#125;@catch(NSException* ex)&#123;</div><div class="line">    &#125;@finally&#123;</div><div class="line">        ......</div><div class="line">        [self.lock unlock];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/15/iOS_coding_rule/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/15/iOS_coding_rule/" itemprop="url">
+                  iOS最容易违反的代码规范
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-15T21:39:27+08:00">
+                2017-09-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><p><strong>常量和枚举添加3个（2个是预留给Apple的）大写字符做为前缀</strong></p>
+<p><strong>如果方法返回接收者的某个属性，则以属性名称作为方法名。如果方法没有间接地返回 一个或多个值，您也无须使用”get“这样的单词。</strong></p>
+<p>反例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (CGFloat)itemHeight;</div></pre></td></tr></table></figure></p>
+<p>正例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (CGFloat)getitemHeight;</div></pre></td></tr></table></figure></p>
+<p><strong>不要使用”and“来连接两个表示接受者属性的关键字。<br>虽然下面的例子使用”and“这个词感觉还不错，但是随着创建的方法所带有的关键字越来 越多，这种方式会引起问题</strong></p>
+<p>正例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)getColor:(UIColor *)color count:(int*)count name:(NSString *)name;</div></pre></td></tr></table></figure></p>
+<p>反例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)getColor:(UIColor *)color andCount:(int*)count andName:(NSString *)name;</div></pre></td></tr></table></figure></p>
+<p><strong>只有当方法间接地返回对象或者数值，您才需要在方法名称中使用 get”。这种格式只适 用于需要返回多个数据项的方法。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)getColor:(UIColor *)color count:(int*)count name:(NSString *)name;</div></pre></td></tr></table></figure>
+<p><strong>方法名称的开头应标识出发送消息的对象所属的类</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- (BOOL)tableView:(NSTableView *)tableView didSelectRow:(int)row;</div><div class="line">- (BOOL)application:(NSApplication *)sender openUrl:(NSString</div><div class="line">*)url;</div></pre></td></tr></table></figure>
+<p><strong>要求委托代表其他对象执行某件事，使用“should”</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (BOOL)controllerShouldFetch:(id)sender;</div></pre></td></tr></table></figure>
+<h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><p><strong>NS_ENUM枚举类型定义一群相互关联的整数值常量。枚举项以枚举类型为前缀</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">typedef NS_ENUM(NSInteger,BTPlay) &#123;</div><div class="line">BTPlayBall = 0,</div><div class="line">BTPlayGame = 1</div><div class="line">&#125; ;</div></pre></td></tr></table></figure>
+<p><strong>NS_OPTIONS定义一组相互关联的位移枚举常量。位移枚举常量是可以组合使用的。枚举项以枚举类型为前缀</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">typedef NS_OPTIONS(NSInteger,BTPlay) &#123;</div><div class="line">BTPlayEveryData = 1 &lt;&lt; 0,</div><div class="line">BTPlayMusic = 1 &lt;&lt; 1</div><div class="line">&#125; ;</div></pre></td></tr></table></figure>
+<p><strong>使用 const 来创建浮点值常量。如果某个整数值常量和其他的常量不相关，您也可以使用 const 来创建，否则，则应使用枚举类型。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">const float BTLabelHeight;</div></pre></td></tr></table></figure>
+<p><strong>大写字符表示预处理字符</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#ifdef DEBUG</div></pre></td></tr></table></figure>
+<p><strong>使用常量来代替字符串字面值和数字。常量应该用 static 声明为静态常量，而不要用 #define，除非它明确的作为一个宏来使用。</strong></p>
+<p>正例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">static NSString * const BTBarcelonaNotification = @&quot;BTBarcelonaNotification&quot;;</div><div class="line">static const CGFloat BTBarcelonaHeaderHeight = 20.0f;</div></pre></td></tr></table></figure></p>
+<p>反例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#define BTBarcelonaNotification @&quot;BTBarcelonaNotification&quot;</div><div class="line">#define BTBarcelonaHeaderHeight 50</div></pre></td></tr></table></figure></p>
+<p><strong>在头文件将常量暴露，在实现文件中为它赋值</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">extern NSString *const BTBarcelonaNotification;</div></pre></td></tr></table></figure>
+<p><strong>Notification消息使用全局的 NSString 对象进行标识</strong></p>
+<p>[Name of associated class] + [Did | Will] + [UniquePartOfName] + Notification</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BTWindwowWillBecomeBlackNotification</div></pre></td></tr></table></figure>
+<p><strong>异常使用全局的 NSString 对象来标识</strong><br>[Prefix] + [UniquePartOfName] + Exception</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BTImageCornerDrawException</div></pre></td></tr></table></figure>
+<p><strong>+（void）initialize必须判断class类型或使用dispatch_once防止执行多次</strong></p>
 
           
         
@@ -1957,7 +1933,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2002,7 +1978,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

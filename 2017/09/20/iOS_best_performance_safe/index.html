@@ -107,25 +107,22 @@
 
 
 
-<meta name="description" content="图片使用阴影的正确姿势错误示范：会导致离屏渲染
-imageView.layer.shadowOpacity = 0.5;
-正确做法：通过shadowPath，告诉CoreAnimation你要渲染的形状，减少离屏渲染
-12imageView.layer.shadowOpacity = 0.5;imageView.layer.shadowPath = [[UIBezierPath bezierPat">
+<meta name="description" content="遍历集合先Copy
+如果你正在遍历的集合是mutable的,在你遍历的同时，可能另外一个线程对这个集合做了修改，一个Crash将出现.
+1*** Terminating app due to uncaught exception &amp;apos;NSGenericException&amp;apos;, reason: &amp;apos;*** Collection  was mutated while being">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势">
-<meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_best_performance_rounded_and_shadow/index.html">
+<meta property="og:title" content="如何编写安全的iOS代码">
+<meta property="og:url" content="http://blackteachinese.com/2017/09/20/iOS_best_performance_safe/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="图片使用阴影的正确姿势错误示范：会导致离屏渲染
-imageView.layer.shadowOpacity = 0.5;
-正确做法：通过shadowPath，告诉CoreAnimation你要渲染的形状，减少离屏渲染
-12imageView.layer.shadowOpacity = 0.5;imageView.layer.shadowPath = [[UIBezierPath bezierPat">
-<meta property="og:updated_time" content="2017-09-11T13:52:22.000Z">
+<meta property="og:description" content="遍历集合先Copy
+如果你正在遍历的集合是mutable的,在你遍历的同时，可能另外一个线程对这个集合做了修改，一个Crash将出现.
+1*** Terminating app due to uncaught exception &amp;apos;NSGenericException&amp;apos;, reason: &amp;apos;*** Collection  was mutated while being">
+<meta property="og:updated_time" content="2017-09-22T09:33:43.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势">
-<meta name="twitter:description" content="图片使用阴影的正确姿势错误示范：会导致离屏渲染
-imageView.layer.shadowOpacity = 0.5;
-正确做法：通过shadowPath，告诉CoreAnimation你要渲染的形状，减少离屏渲染
-12imageView.layer.shadowOpacity = 0.5;imageView.layer.shadowPath = [[UIBezierPath bezierPat">
+<meta name="twitter:title" content="如何编写安全的iOS代码">
+<meta name="twitter:description" content="遍历集合先Copy
+如果你正在遍历的集合是mutable的,在你遍历的同时，可能另外一个线程对这个集合做了修改，一个Crash将出现.
+1*** Terminating app due to uncaught exception &amp;apos;NSGenericException&amp;apos;, reason: &amp;apos;*** Collection  was mutated while being">
 
 
 
@@ -153,13 +150,13 @@ imageView.layer.shadowOpacity = 0.5;
 
 
 
-  <link rel="canonical" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_rounded_and_shadow/"/>
+  <link rel="canonical" href="http://blackteachinese.com/2017/09/20/iOS_best_performance_safe/"/>
 
 
 
 
 
-  <title> iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势 | Blacktea's Life </title>
+  <title> 如何编写安全的iOS代码 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -317,7 +314,7 @@ imageView.layer.shadowOpacity = 0.5;
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_rounded_and_shadow/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/20/iOS_best_performance_safe/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -338,7 +335,7 @@ imageView.layer.shadowOpacity = 0.5;
             
             
               
-                iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势
+                如何编写安全的iOS代码
               
             
           </h1>
@@ -353,8 +350,8 @@ imageView.layer.shadowOpacity = 0.5;
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-20T22:30:27+08:00">
+                2017-09-20
               </time>
             
 
@@ -411,17 +408,39 @@ imageView.layer.shadowOpacity = 0.5;
       
 
       
-        <h2 id="图片使用阴影的正确姿势"><a href="#图片使用阴影的正确姿势" class="headerlink" title="图片使用阴影的正确姿势"></a>图片使用阴影的正确姿势</h2><p>错误示范：会导致离屏渲染</p>
-<p><del>imageView.layer.shadowOpacity = 0.5;</del></p>
-<p>正确做法：通过shadowPath，告诉CoreAnimation你要渲染的形状，减少离屏渲染</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">imageView.layer.shadowOpacity = 0.5;</div><div class="line">imageView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:imageView.bounds] CGPath];</div></pre></td></tr></table></figure>
-<h2 id="对图片做圆角处理的正确姿势"><a href="#对图片做圆角处理的正确姿势" class="headerlink" title="对图片做圆角处理的正确姿势"></a>对图片做圆角处理的正确姿势</h2><p>错误示范：<br>给imageView加cornerRadius后用masksToBounds切。因为加masksToBounds后，会触发离屏幕渲染，如果一个Cell里有多个这样的图片，滑动的时候GPU压力会很大，从而导致严重的掉帧。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">UIImage *image = [UIImage imageNamed:@&quot;IMG_6083&quot;];</div><div class="line">imageView.image = image;</div><div class="line">imageView.layer.cornerRadius = CGRectGetWidth(imageView.frame)/ 4.0;</div><div class="line">imageView.layer.masksToBounds = YES;</div></pre></td></tr></table></figure>
-<p>正确做法：<br>通过Core Graphics创建一块位图画布（bitmap graphics context），将图片画到画布，再画Path将图片剪切</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">+ (id)createRoundedRectImage:(UIImage *)image size:(CGSize)size radius:(int)radius &#123;</div><div class="line">    size = CGSizeMake(size.width * image.scale, size.height * image.scale);</div><div class="line">    radius = radius * image.scale;</div><div class="line">    UIImage *img = image;</div><div class="line">    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();</div><div class="line">    CGContextRef context = CGBitmapContextCreate(NULL, size.width, size.height, CGImageGetBitsPerComponent(image.CGImage), 4 * size.width, CGImageGetColorSpace(image.CGImage), kCGImageAlphaPremultipliedFirst);</div><div class="line">    CGRect rect = CGRectMake(0, 0, size.width, size.height);</div><div class="line">    CGContextBeginPath(context);</div><div class="line">    addRoundedRectToPath(context, rect, radius, radius);</div><div class="line">    CGContextClosePath(context);</div><div class="line">    CGContextClip(context);</div><div class="line">    CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), img.CGImage);</div><div class="line">    CGImageRef imageMasked = CGBitmapContextCreateImage(context);</div><div class="line">    img = [UIImage imageWithCGImage:imageMasked];</div><div class="line">    CGContextRelease(context);</div><div class="line">    CGColorSpaceRelease(colorSpace);</div><div class="line">    CGImageRelease(imageMasked);</div><div class="line">    return img;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="给UIButton或UILabel等非图片视图做圆角处理"><a href="#给UIButton或UILabel等非图片视图做圆角处理" class="headerlink" title="给UIButton或UILabel等非图片视图做圆角处理"></a>给UIButton或UILabel等非图片视图做圆角处理</h2><p>视图里如果不需要呈现图片，可以直接在后台线程画一个带圆角的背景图片，做为子视图。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> UIImage *image = [UIImage rounedCornerImage:20 borderWidth:0.5 backgroundColor:[UIColor purpleColor] borderColor:[UIColor clearColor] size:CGSizeMake(CGRectGetWidth(view.frame), CGRectGetHeight(view.frame))];</div><div class="line">UIImageView *imageView = [[UIImageView alloc] initWithImage:image];</div><div class="line">[button insertSubview:imageView atIndex:0];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">+ (UIImage *)rounedCornerImage:(CGFloat)radius</div><div class="line">                   borderWidth:(CGFloat)borderWidth</div><div class="line">               backgroundColor:(UIColor *)backgroundColor</div><div class="line">                   borderColor:(UIColor *)borderColor</div><div class="line">                          size:(CGSize)size&#123;</div><div class="line">    CGSize sizeToFit = CGSizeMake(floor(size.width), floor(size.height));</div><div class="line">    CGFloat halfBorderWidth = (CGFloat)borderWidth / 2.0;</div><div class="line">    UIGraphicsBeginImageContextWithOptions(sizeToFit, false, [[UIScreen mainScreen] scale]);</div><div class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</div><div class="line">    CGContextSetLineWidth(context, borderWidth);</div><div class="line">    CGContextSetStrokeColorWithColor(context, borderColor.CGColor);</div><div class="line">    CGContextSetFillColorWithColor(context, backgroundColor.CGColor);</div><div class="line">    </div><div class="line">    CGFloat width = sizeToFit.width, height = sizeToFit.height;</div><div class="line">    CGContextMoveToPoint(context, width - halfBorderWidth, radius + halfBorderWidth);  // 开始坐标右边开始</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, height - halfBorderWidth, width - radius - halfBorderWidth, height - halfBorderWidth, radius);  // 右下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, height - halfBorderWidth, halfBorderWidth, height - radius - halfBorderWidth, radius); // 左下角角度</div><div class="line">    CGContextAddArcToPoint(context, halfBorderWidth, halfBorderWidth, width - halfBorderWidth, halfBorderWidth, radius); // 左上角</div><div class="line">    CGContextAddArcToPoint(context, width - halfBorderWidth, halfBorderWidth, width - halfBorderWidth, radius + halfBorderWidth, radius); // 右上角</div><div class="line">       CGContextDrawPath(UIGraphicsGetCurrentContext(), kCGPathFillStroke);</div><div class="line">    UIImage *output = UIGraphicsGetImageFromCurrentImageContext();</div><div class="line">    UIGraphicsEndImageContext();</div><div class="line">    return output;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <p><strong>遍历集合先Copy</strong></p>
+<p>如果你正在遍历的集合是mutable的,在你遍历的同时，可能另外一个线程对这个集合做了修改，一个Crash将出现.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*** Terminating app due to uncaught exception &apos;NSGenericException&apos;, reason: &apos;*** Collection  was mutated while being enumerated.&apos;</div></pre></td></tr></table></figure>
+<p>如何避免呢？<br>拿到NSArray／NSMutableArray、NSDictionary/NSMutableDictionary都copy一下。</p>
+<p><strong>集合操作要预判</strong><br>提前做好判断，保证key/value不为nil，数组不会越界。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">addObject:</div><div class="line">removeObjectAtIndex:</div><div class="line">insertObjectAtIndex:</div><div class="line">setObject:forKey:</div><div class="line">@[]</div><div class="line">@&#123;&#125;</div></pre></td></tr></table></figure>
+<p><strong>NSKeyedArchiver别常用</strong><br>在iOS8上会抛exception，非要用加上@try{}@catch{}</p>
+<p><strong>KVO成对出现</strong></p>
+<p>有add必要有remove，否则极有可能Crash，可以使用FaceBook的FBKVOController</p>
+<p><strong>tableView的delegate要置空</strong><br>viewController的dealloc把tableView的delegate置空</p>
+<p>iOS8及以前，delegate属性不是weak，不会自动设为nil。否则做异步网络请求，退出页面就容易出现野指针。</p>
+<p><strong>不要在Category覆盖系统方法</strong></p>
+<p>不要坑别人</p>
+<p><strong>Api需要特定线程，记得加断言</strong><br>如果一个api需要在特定线程执行，记得加上断言判断，否则调用方容易在不合适的线程调用，导致Crash</p>
+<p><strong>多线程环境下懒加载变量要加锁</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (id *)pen</div><div class="line">&#123;</div><div class="line">    if (!_pen) &#123;</div><div class="line">        @synchronized(self) &#123; </div><div class="line">            if (!_pen) &#123;</div><div class="line">                _pen = [[BTPen alloc] init];</div><div class="line">                _pen = @&quot;tea&quot;;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return _pen;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>NSNotificationCenter要防止Self为空</strong><br>NSNotificationCenter在iOS 8及更老系统上存在多线程bug，selector执行到一半时可能会因为self销毁而触发crash.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (void)receiveTesNotify:(NSNotification *)notify</div><div class="line">&#123;</div><div class="line">   __weak typeof(self) weakSelf = self;</div><div class="line">   __strong typeof(self) strongSelf = wself;</div><div class="line">   if (! weakSelf) &#123; </div><div class="line">    return; </div><div class="line">   &#125;</div><div class="line">   [strongSelf action];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>使用dispatch_sync要小心</strong></p>
+<p>容易死锁。下面将一个Block同步到主线程的队列里。因为你用同步，必须先让你执行，但你放到主线程队列里，却要等待主线程原来的任务执行完。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)test &#123;</div><div class="line"> dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">  dispatch_block_t block = ^() &#123;</div><div class="line">      NSLog(@&quot;Hello&quot;);</div><div class="line">  &#125;;</div><div class="line">  dispatch_sync(mainQueue, block);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>cancelPreviousPerformRequestsWithTarget要防御</strong></p>
+<p>对receiver使用cancelPreviousPerformRequestsWithTarget，会导致receiver引用计数减1。如果调用前receiver的引用计数就是1，调用完receiver就会被释放。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">__weak typeof(self) weakSelf = self;</div><div class="line">[NSObject cancelPreviousPerformRequestsWithTarget:self];</div><div class="line">if (!weakSelf)</div><div class="line">&#123;</div><div class="line">//self已经被销毁</div><div class="line">    return;</div><div class="line">&#125;</div><div class="line">// 再调用会Crash</div><div class="line">[self action];</div></pre></td></tr></table></figure>
+<p><strong>在dealloc中，不要将self作为参数传递</strong></p>
+<p>如果self在此时被retain住，到下个runloop周期再次释放，则会造成多次释放crash。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-(void)dealloc&#123;</div><div class="line">    [self doSome:self]; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  因为当前已经在self所指向对象的销毁阶段，如果在doSome:中将self放到了autorelease pool中，那么self会被retain住，计划下个runloop周期再进行销毁；但是dealloc运行结束后，self对象的内存空间就直接被回收了，self变成了野指针<br> 当到了下个runloop周期，self指向的对象实际上已经被销毁，会因为非法访问造成crash问题</p>
+<p><strong>使用锁要避免出现特殊逻辑锁没有被回收</strong></p>
+<p>如果某个方法里锁未被回收，下次调用该方法会造成线程死锁</p>
+<p>可能提前出现return,要在return前回收</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (void) doSomething&#123;</div><div class="line">    [self.lock lock];</div><div class="line">    if (type == 1)&#123;</div><div class="line">        .....</div><div class="line">        [self.lock unlock];</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    else if(type == 2)&#123;</div><div class="line">        .....</div><div class="line">        [self.lock unlock];</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    .....</div><div class="line">    [self.lock unlock];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可能出现异常,要在finally回收</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (void) doSomething&#123;</div><div class="line">    [self.lock lock];</div><div class="line">    @try&#123;</div><div class="line">        ...</div><div class="line">    &#125;@catch(NSException* ex)&#123;</div><div class="line">    &#125;@finally&#123;</div><div class="line">        ......</div><div class="line">        [self.lock unlock];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -490,8 +509,8 @@ imageView.layer.shadowOpacity = 0.5;
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/03/iOS_best_performance_collection_enumeration/" rel="next" title="iOS开发性能最佳实践系列之——集合遍历">
-                <i class="fa fa-chevron-left"></i> iOS开发性能最佳实践系列之——集合遍历
+              <a href="/2017/09/15/iOS_coding_rule/" rel="next" title="iOS最容易违反的代码规范">
+                <i class="fa fa-chevron-left"></i> iOS最容易违反的代码规范
               </a>
             
           </div>
@@ -500,8 +519,8 @@ imageView.layer.shadowOpacity = 0.5;
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/09/03/iOS_business_developer_value/" rel="prev" title="业务开发人员的价值是什么？">
-                业务开发人员的价值是什么？ <i class="fa fa-chevron-right"></i>
+              <a href="/2017/09/22/iOS_best_performance_easyBlock/" rel="prev" title="iOS开发性能最佳实践之——容易出现耗时阻塞的检查清单(持续更新)">
+                iOS开发性能最佳实践之——容易出现耗时阻塞的检查清单(持续更新) <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -549,17 +568,8 @@ imageView.layer.shadowOpacity = 0.5;
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.JPG"
@@ -574,7 +584,7 @@ imageView.layer.shadowOpacity = 0.5;
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -666,22 +676,6 @@ imageView.layer.shadowOpacity = 0.5;
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#图片使用阴影的正确姿势"><span class="nav-number">1.</span> <span class="nav-text">图片使用阴影的正确姿势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对图片做圆角处理的正确姿势"><span class="nav-number">2.</span> <span class="nav-text">对图片做圆角处理的正确姿势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#给UIButton或UILabel等非图片视图做圆角处理"><span class="nav-number">3.</span> <span class="nav-text">给UIButton或UILabel等非图片视图做圆角处理</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

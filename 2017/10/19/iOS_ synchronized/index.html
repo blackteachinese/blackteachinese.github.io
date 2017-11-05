@@ -1,0 +1,865 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blacktea's Life" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="synchronized的死锁我们已经习惯了使用synchronized来做同步锁，但在实际开发中发现，写得不好容易出现死锁的坑。比如像下面这样的代码有两个个锁被公用，在多线程的情况下就容易导致死锁。
+123456789101112131415161718192021222324252627282930313233#import &amp;quot;BTSynchronizedObjectA.h&amp;quot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS里synchronized的死锁、性能、实效">
+<meta property="og:url" content="http://blackteachinese.com/2017/10/19/iOS_ synchronized/index.html">
+<meta property="og:site_name" content="Blacktea's Life">
+<meta property="og:description" content="synchronized的死锁我们已经习惯了使用synchronized来做同步锁，但在实际开发中发现，写得不好容易出现死锁的坑。比如像下面这样的代码有两个个锁被公用，在多线程的情况下就容易导致死锁。
+123456789101112131415161718192021222324252627282930313233#import &amp;quot;BTSynchronizedObjectA.h&amp;quot">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fknih8473kj30f20doad4.jpg">
+<meta property="og:updated_time" content="2017-10-19T06:27:04.791Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS里synchronized的死锁、性能、实效">
+<meta name="twitter:description" content="synchronized的死锁我们已经习惯了使用synchronized来做同步锁，但在实际开发中发现，写得不好容易出现死锁的坑。比如像下面这样的代码有两个个锁被公用，在多线程的情况下就容易导致死锁。
+123456789101112131415161718192021222324252627282930313233#import &amp;quot;BTSynchronizedObjectA.h&amp;quot">
+<meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNc79gy1fknih8473kj30f20doad4.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blackteachinese.com/2017/10/19/iOS_ synchronized/"/>
+
+
+
+
+
+  <title> iOS里synchronized的死锁、性能、实效 | Blacktea's Life </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63129529";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blacktea's Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">A programmer who love music and football</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/19/iOS_ synchronized/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS里synchronized的死锁、性能、实效
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-19T10:39:00+08:00">
+                2017-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="synchronized的死锁"><a href="#synchronized的死锁" class="headerlink" title="synchronized的死锁"></a>synchronized的死锁</h2><p>我们已经习惯了使用synchronized来做同步锁，但在实际开发中发现，写得不好容易出现死锁的坑。比如像下面这样的代码有两个个锁被公用，在多线程的情况下就容易导致死锁。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">#import &quot;BTSynchronizedObjectA.h&quot;</div><div class="line"></div><div class="line">@implementation BTSynchronizedObjectA</div><div class="line">- (void)dosomethingInA &#123;</div><div class="line">    @synchronized(self)&#123;</div><div class="line">        NSLog(@&quot;dosomethingInA&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">#import &quot;BTSynchronizedObjectB.h&quot;</div><div class="line"></div><div class="line">@implementation BTSynchronizedObjectB</div><div class="line"></div><div class="line">- (void)callA &#123;</div><div class="line">    NSLog(@&quot;call A begin&quot;);</div><div class="line">    [self.shareLock lock];</div><div class="line">    [self.synchronizedObjectA dosomethingInA];</div><div class="line">    [self.shareLock unlock];</div><div class="line">    NSLog(@&quot;call A end&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)dosomethingInB &#123;</div><div class="line">    NSLog(@&quot;dosomethingInB begin&quot;);</div><div class="line">        @synchronized(self.synchronizedObjectA) &#123;</div><div class="line">            [self.shareLock lock];</div><div class="line">            NSLog(@&quot;dosomethingInB&quot;);</div><div class="line">            [self.shareLock unlock];</div><div class="line">        &#125;</div><div class="line">    NSLog(@&quot;dosomethingInB begin&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>怎么写可以避免这种情况出现呢?改写的方法是在用到synchronized时传入一个内部NSObject成员变量，外部不能获取到这个变量，就不会形成交替死锁。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">#import &quot;BTSynchronizedObjectA.h&quot;</div><div class="line"></div><div class="line">@implementation BTSynchronizedObjectA</div><div class="line">- (void)dosomethingInA &#123;</div><div class="line">    @synchronized(self.tokenA)&#123;</div><div class="line">        NSLog(@&quot;dosomethingInA&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<h2 id="synchronized的性能"><a href="#synchronized的性能" class="headerlink" title="synchronized的性能"></a>synchronized的性能</h2><p>synchronized锁本身性能是会比其他锁要慢，有人对此做过测试。但是在实际使用中，锁本身的性能差异几乎可以忽略不计。<br>那为什么有人会抱怨用synchronized性能不好呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (void)testPerformance &#123;</div><div class="line">    @synchronized(self.token) &#123;</div><div class="line">        // do some thing</div><div class="line">        [self dosomethingelse];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>像上面这段被加锁的代码里，通过[self dosomethingelse]再调用别的方法。dosomethingelse方法的开发者，很可能并不知道自己的方法被锁同步的，他又可能调用别的函数，这样一层一层调用就可能变得更慢。<br>所以使用synchronized时一定要注意，尽量减少锁的范围和粒度。</p>
+<p>不同数据使用不同锁，控制最小的粒度<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">@synchronized (tokenA) &#123;</div><div class="line">    // do some thing</div><div class="line">&#125;</div><div class="line"></div><div class="line">@synchronized (tokenB) &#123;</div><div class="line">    // do some thing</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>减小加锁的范围，不必要加锁的代码放到外面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@synchronized (tokenA) &#123;</div><div class="line">    // do some thing need locked</div><div class="line">&#125;</div><div class="line">    // do some thing else</div><div class="line">   [self dosomethingelse];</div><div class="line">   ...</div></pre></td></tr></table></figure>
+<h2 id="synchronized的失效"><a href="#synchronized的失效" class="headerlink" title="synchronized的失效"></a>synchronized的失效</h2><p>用synchronized时需要传入一个object,你有没有想过如果你传入的是nil会怎么样呢？<br>根据汇编代码可以发现，synchronized实现里会调用objc_sync_enter和objc_sync_exit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  @synchronized(self) &#123;</div><div class="line">    return [[myString retain] autorelease];</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>转换为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  objc_sync_enter(self)</div><div class="line">    id retVal = [[myString retain] autorelease];</div><div class="line">  objc_sync_exit(self);</div><div class="line">  return retVal;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>objc_sync_enter和objc_sync_exit函数定义在<objc objc-sync.h=""><br>其中objc_sync_enter函数的实现里，正常的情况obj不为nil时，会根据obj内存地址的哈希值查找合适的SyncData然后使用递归mutex加锁recursive_mutex_lock。到了objc_sync_exit时同样通过obj的内存地址的哈希值查找合适的SyncData，然后将其解锁recursive_mutex_unlock。</objc></p>
+<p>But,当执行objc_sync_enter函数时，如果传入的obj为nil，那并不会加锁，直接走到objc_sync_nil。也就是说，如果使用@synchronized时传入的obj为nil,那将不会加锁也就是失去了同步的效果。所以一定要保证obj不在执行期间被设置被nil。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">int objc_sync_enter(id obj)</div><div class="line">&#123;</div><div class="line">    int result = OBJC_SYNC_SUCCESS;</div><div class="line"></div><div class="line">    if (obj) &#123;</div><div class="line">        SyncData* data = id2data(obj, ACQUIRE);</div><div class="line">        require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_INITIALIZED, &quot;id2data failed&quot;);</div><div class="line">	</div><div class="line">        result = recursive_mutex_lock(&amp;data-&gt;mutex);</div><div class="line">        require_noerr_string(result, done, &quot;mutex_lock failed&quot;);</div><div class="line">    &#125; else &#123;</div><div class="line">        // @synchronized(nil) does nothing</div><div class="line">        if (DebugNilSync) &#123;</div><div class="line">            _objc_inform(&quot;NIL SYNC DEBUG: @synchronized(nil); set a breakpoint on objc_sync_nil to debug&quot;);</div><div class="line">        &#125;</div><div class="line">        objc_sync_nil();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">done: </div><div class="line">    return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">int objc_sync_exit(id obj)</div><div class="line">&#123;</div><div class="line">    int result = OBJC_SYNC_SUCCESS;</div><div class="line">    </div><div class="line">    if (obj) &#123;</div><div class="line">        SyncData* data = id2data(obj, RELEASE); </div><div class="line">        require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR, &quot;id2data failed&quot;);</div><div class="line">        </div><div class="line">        result = recursive_mutex_unlock(&amp;data-&gt;mutex);</div><div class="line">        require_noerr_string(result, done, &quot;mutex_unlock failed&quot;);</div><div class="line">    &#125; else &#123;</div><div class="line">        // @synchronized(nil) does nothing</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">done:</div><div class="line">    if ( result == RECURSIVE_MUTEX_NOT_LOCKED )</div><div class="line">         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;</div><div class="line"></div><div class="line">    return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在工程里，将obj设置为nil，给objc_sync_nil加个断点，会看到确实走到objc_sync_nil函数<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fknih8473kj30f20doad4.jpg" alt=""></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://stackoverflow.com/questions/1215330/how-does-synchronized-lock-unlock-in-objective-c/6047218#6047218" target="_blank" rel="external">synchronized的实现</a><br><a href="https://opensource.apple.com/source/objc4/objc4-646/runtime/objc-sync.mm" target="_blank" rel="external">objc-sync源码</a><br><a href="http://yulingtianxia.com/blog/2015/11/01/More-than-you-want-to-know-about-synchronized/" target="_blank" rel="external">关于 @synchronized，这儿比你想知道的还要多</a><br><a href="http://mrpeak.cn/blog/synchronized/" target="_blank" rel="external">正确使用多线程同步锁@synchronized()</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ww2.sinaimg.cn/large/006tNbRwgy1feav9se587j30kw0r2adr.jpg" alt="Blacktea wechat" style="width: 200px; max-width: 100%;"/>
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>记录生活于感悟，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="https://ww4.sinaimg.cn/large/006tNbRwgy1feav9e683oj30yi1e6q7b.jpg" alt="Blacktea WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="https://ww3.sinaimg.cn/large/006tNbRwgy1feav9mjqarj30p011iq6c.jpg" alt="Blacktea Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/28/target_how_to_make_target/" rel="next" title="明确的目标的反效果">
+                <i class="fa fa-chevron-left"></i> 明确的目标的反效果
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/24/iOS_device_pixel/" rel="prev" title="iPhone的屏幕像素">
+                iPhone的屏幕像素 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="Blacktea" />
+          <p class="site-author-name" itemprop="name">Blacktea</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/blackteachinese" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/your-user-name" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/your-user-name" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/your-user-name" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronized的死锁"><span class="nav-number">1.</span> <span class="nav-text">synchronized的死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronized的性能"><span class="nav-number">2.</span> <span class="nav-text">synchronized的性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronized的失效"><span class="nav-number">3.</span> <span class="nav-text">synchronized的失效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Blacktea</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

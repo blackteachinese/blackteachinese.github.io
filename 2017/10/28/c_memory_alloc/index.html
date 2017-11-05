@@ -107,16 +107,25 @@
 
 
 
-<meta name="description" content="产品经理的核心价值是">
+<meta name="description" content="内存对齐原则什么是内存对齐计算机的内存都是按byte来划分的，计算机在范围不同数据类型变量时会按照特定的内存地址访问，所以各种数据类型会按照一定规则在内存空间上排列，而不是顺序地一个一个排列，这就是内存对齐
+有什么用各平台对数据类型的读取会按特定的地址开始存取，访问不对齐的内存处理器需要做两次处理，访问对齐的内存处理器只需要做一次处理
+对齐算法
+1 数据类型以自身需要占用的字节数做为内存对齐值。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="业务开发人员的价值是什么？">
-<meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_business_developer_value/index.html">
+<meta property="og:title" content="计算机的内存分配问题">
+<meta property="og:url" content="http://blackteachinese.com/2017/10/28/c_memory_alloc/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="产品经理的核心价值是">
-<meta property="og:updated_time" content="2017-09-07T01:41:13.000Z">
+<meta property="og:description" content="内存对齐原则什么是内存对齐计算机的内存都是按byte来划分的，计算机在范围不同数据类型变量时会按照特定的内存地址访问，所以各种数据类型会按照一定规则在内存空间上排列，而不是顺序地一个一个排列，这就是内存对齐
+有什么用各平台对数据类型的读取会按特定的地址开始存取，访问不对齐的内存处理器需要做两次处理，访问对齐的内存处理器只需要做一次处理
+对齐算法
+1 数据类型以自身需要占用的字节数做为内存对齐值。">
+<meta property="og:updated_time" content="2017-10-30T06:37:48.786Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="业务开发人员的价值是什么？">
-<meta name="twitter:description" content="产品经理的核心价值是">
+<meta name="twitter:title" content="计算机的内存分配问题">
+<meta name="twitter:description" content="内存对齐原则什么是内存对齐计算机的内存都是按byte来划分的，计算机在范围不同数据类型变量时会按照特定的内存地址访问，所以各种数据类型会按照一定规则在内存空间上排列，而不是顺序地一个一个排列，这就是内存对齐
+有什么用各平台对数据类型的读取会按特定的地址开始存取，访问不对齐的内存处理器需要做两次处理，访问对齐的内存处理器只需要做一次处理
+对齐算法
+1 数据类型以自身需要占用的字节数做为内存对齐值。">
 
 
 
@@ -144,13 +153,13 @@
 
 
 
-  <link rel="canonical" href="http://blackteachinese.com/2017/09/03/iOS_business_developer_value/"/>
+  <link rel="canonical" href="http://blackteachinese.com/2017/10/28/c_memory_alloc/"/>
 
 
 
 
 
-  <title> 业务开发人员的价值是什么？ | Blacktea's Life </title>
+  <title> 计算机的内存分配问题 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -308,7 +317,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_business_developer_value/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/28/c_memory_alloc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -329,7 +338,7 @@
             
             
               
-                业务开发人员的价值是什么？
+                计算机的内存分配问题
               
             
           </h1>
@@ -344,8 +353,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-28T18:21:31+08:00">
+                2017-10-28
               </time>
             
 
@@ -402,7 +411,19 @@
       
 
       
-        <p>产品经理的核心价值是</p>
+        <h2 id="内存对齐原则"><a href="#内存对齐原则" class="headerlink" title="内存对齐原则"></a>内存对齐原则</h2><p><strong>什么是内存对齐</strong><br>计算机的内存都是按byte来划分的，计算机在范围不同数据类型变量时会按照特定的内存地址访问，所以各种数据类型会按照一定规则在内存空间上排列，而不是顺序地一个一个排列，这就是内存对齐</p>
+<p><strong>有什么用</strong><br>各平台对数据类型的读取会按特定的地址开始存取，访问不对齐的内存处理器需要做两次处理，访问对齐的内存处理器只需要做一次处理</p>
+<p><strong>对齐算法</strong></p>
+<p>1 数据类型以自身需要占用的字节数做为内存对齐值。</p>
+<p>对于char型数据，其自身对齐值为1，对于short型为2，对于int,float型，其自身对齐值为4，对于double型，其自身对齐值为8，单位字节。</p>
+<p>例如：int变量所分配的内存地址必须能够被4整除，double则必须能倍8整除</p>
+<p>2 结构体或类自身的对齐值和自身成员变量对齐值最大的那个保持一致。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">例如：</div><div class="line"></div><div class="line">struct D &#123;</div><div class="line">    char a;</div><div class="line">    int b;</div><div class="line">    double c;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>结构D的成员变量里c的对齐值最大为8，所以结构D的对齐值就是8</p>
+<p>3 指定对齐值，使用#pragma pack (value）可以指定对齐值为Value</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">例如：</div><div class="line">#pragma pack (1) // 指定对齐值为1</div><div class="line">struct D &#123;</div><div class="line">    char a;</div><div class="line">    int b;</div><div class="line">    double c;</div><div class="line">&#125;</div><div class="line">#pragma pack () // 取消指定对齐，恢复默认的对齐方式</div></pre></td></tr></table></figure>
+<p>4 当数据成员、结构体、类处于指定对齐区间时，真实的有效对齐值是自身对齐值和指定对齐值两个中更小的那个。</p>
+<p><a href="https://baike.baidu.com/item/内存对齐/9537460?fr=aladdin" target="_blank" rel="external">内存对齐百科</a></p>
 
       
     </div>
@@ -471,8 +492,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/03/iOS_best_performance_rounded_and_shadow/" rel="next" title="iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势">
-                <i class="fa fa-chevron-left"></i> iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势
+              <a href="/2017/10/25/ios_urlencode/" rel="next" title="一个多层嵌套URL引发的URLEncode血案">
+                <i class="fa fa-chevron-left"></i> 一个多层嵌套URL引发的URLEncode血案
               </a>
             
           </div>
@@ -481,8 +502,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/09/03/iOS_best_performance_pageSlide/" rel="prev" title="iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单">
-                iOS开发性能最佳实践系列之——列表页面滑动流畅的性能检查清单 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/30/iOS_multithreading/" rel="prev" title="iOS开发性能最佳实践之——如何找到多线程技术合适的应用场景">
+                iOS开发性能最佳实践之——如何找到多线程技术合适的应用场景 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -530,8 +551,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.JPG"
@@ -546,7 +576,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -638,6 +668,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存对齐原则"><span class="nav-number">1.</span> <span class="nav-text">内存对齐原则</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

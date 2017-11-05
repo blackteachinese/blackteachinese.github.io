@@ -107,43 +107,45 @@
 
 
 
-<meta name="description" content="场景一场景条件
+<meta name="description" content="iPhone设备的尺寸分辨率表
+分辨率分辨率就是屏幕上横、纵的总象素点数
+物理分辨率
+单位px
+上图physic pixel都是物理分辨率
 
-需要按顺序
-同步执行
+逻辑分辨率
+单位pt
 
-使用建议：
-
-for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
-
-推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for">
+iPhone 6+除了iPhone 6+，其他所有iPhone的PPI都是326，用@2x的素材。而6+的PPI是401，理论上应该用401/326*@2=@2.46的素材。但是这个比例很难切图，所以苹果让6+用@3x的素材，然后再将">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS开发性能最佳实践系列之——集合遍历">
-<meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_best_performance_collection_enumeration/index.html">
+<meta property="og:title" content="iPhone的屏幕像素">
+<meta property="og:url" content="http://blackteachinese.com/2017/10/24/iOS_device_pixel/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="场景一场景条件
+<meta property="og:description" content="iPhone设备的尺寸分辨率表
+分辨率分辨率就是屏幕上横、纵的总象素点数
+物理分辨率
+单位px
+上图physic pixel都是物理分辨率
 
-需要按顺序
-同步执行
+逻辑分辨率
+单位pt
 
-使用建议：
-
-for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
-
-推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for">
-<meta property="og:updated_time" content="2017-09-11T14:18:12.000Z">
+iPhone 6+除了iPhone 6+，其他所有iPhone的PPI都是326，用@2x的素材。而6+的PPI是401，理论上应该用401/326*@2=@2.46的素材。但是这个比例很难切图，所以苹果让6+用@3x的素材，然后再将">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNbRwgy1fktgi7tz7zj30ey05ogm4.jpg">
+<meta property="og:updated_time" content="2017-11-02T06:55:49.281Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS开发性能最佳实践系列之——集合遍历">
-<meta name="twitter:description" content="场景一场景条件
+<meta name="twitter:title" content="iPhone的屏幕像素">
+<meta name="twitter:description" content="iPhone设备的尺寸分辨率表
+分辨率分辨率就是屏幕上横、纵的总象素点数
+物理分辨率
+单位px
+上图physic pixel都是物理分辨率
 
-需要按顺序
-同步执行
+逻辑分辨率
+单位pt
 
-使用建议：
-
-for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
-
-推荐原因：在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for">
+iPhone 6+除了iPhone 6+，其他所有iPhone的PPI都是326，用@2x的素材。而6+的PPI是401，理论上应该用401/326*@2=@2.46的素材。但是这个比例很难切图，所以苹果让6+用@3x的素材，然后再将">
+<meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tNbRwgy1fktgi7tz7zj30ey05ogm4.jpg">
 
 
 
@@ -171,13 +173,13 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
 
 
 
-  <link rel="canonical" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_collection_enumeration/"/>
+  <link rel="canonical" href="http://blackteachinese.com/2017/10/24/iOS_device_pixel/"/>
 
 
 
 
 
-  <title> iOS开发性能最佳实践系列之——集合遍历 | Blacktea's Life </title>
+  <title> iPhone的屏幕像素 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -335,7 +337,7 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_collection_enumeration/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/24/iOS_device_pixel/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -356,7 +358,7 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
             
             
               
-                iOS开发性能最佳实践系列之——集合遍历
+                iPhone的屏幕像素
               
             
           </h1>
@@ -371,8 +373,8 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-24T17:11:00+08:00">
+                2017-10-24
               </time>
             
 
@@ -429,49 +431,33 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
       
 
       
-        <h2 id="场景一"><a href="#场景一" class="headerlink" title="场景一"></a>场景一</h2><p>场景条件</p>
+        <h2 id="iPhone设备的尺寸分辨率表"><a href="#iPhone设备的尺寸分辨率表" class="headerlink" title="iPhone设备的尺寸分辨率表"></a>iPhone设备的尺寸分辨率表</h2><p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fktgi7tz7zj30ey05ogm4.jpg" alt=""></p>
+<h3 id="分辨率"><a href="#分辨率" class="headerlink" title="分辨率"></a>分辨率</h3><p>分辨率就是屏幕上横、纵的总象素点数</p>
+<h3 id="物理分辨率"><a href="#物理分辨率" class="headerlink" title="物理分辨率"></a>物理分辨率</h3><ul>
+<li>单位px</li>
+<li>上图physic pixel都是物理分辨率</li>
+</ul>
+<h3 id="逻辑分辨率"><a href="#逻辑分辨率" class="headerlink" title="逻辑分辨率"></a>逻辑分辨率</h3><ul>
+<li>单位pt</li>
+</ul>
+<h2 id="iPhone-6"><a href="#iPhone-6" class="headerlink" title="iPhone 6+"></a>iPhone 6+</h2><p>除了iPhone 6+，其他所有iPhone的PPI都是326，用@2x的素材。而6+的PPI是401，理论上应该用401/326*@2=@2.46的素材。但是这个比例很难切图，所以苹果让6+用@3x的素材，然后再将@3x缩放87%到@2.46。<br>按照这个逻辑，物理分辨率/虚拟分辨率=87%。</p>
+<p>虚拟分辨率高度= 1920/0.87 = 2208<br>虚拟分辨率宽度= 1080/0.87 = 1242</p>
+<p>这样开发的时候针对6+就准备@3x的素材就好了</p>
+<h2 id="基本单位"><a href="#基本单位" class="headerlink" title="基本单位"></a>基本单位</h2><p><strong>英寸</strong><br>1 inch = 2.54cm = 25.4mm<br><strong>屏幕尺寸</strong><br>我们通常所说的iPhone5屏幕尺寸为4英寸、iPhone6屏幕尺寸为4.7英寸，指的是显示屏对角线的长度（diagonal）。<br><strong>像素密度PPI</strong><br>PPI（Pixel Per Inch by diagonal）：表示沿着对角线，每英寸所拥有的像素（Pixel）数目。<br>PPI数值越高，代表显示屏能够以越高的密度显示图像，即通常所说的分辨率越高、颗粒感越弱。<br><strong>缩放因子Scale</strong></p>
+<p>Scale的起源</p>
 <ul>
-<li>需要按顺序</li>
-<li>同步执行</li>
+<li>早期的iPhone3GS的屏幕分辨率是320*480（PPI=163），iOS绘制图形（CGPoint/CGSize/CGRect）均以point为单位（measured in points）：</li>
 </ul>
-<p>使用建议：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1 point = 1 pixel（Point Per Inch=Pixel Per Inch=PPI）</div></pre></td></tr></table></figure>
 <ul>
-<li>for..in （NSFastEnumeration）<br><del>* enumerateObjectsUsingBlock</del><br><del>* 经典for循环</del></li>
+<li>后来在iPhone4中，同样大小（3.5 inch）的屏幕采用了Retina显示技术，横、纵向方向像素密度都被放大到2倍，像素分辨率提高到(320x2)x(480x2) = 960x640，PPI从163提升2倍到326（PPI=326），显像分辨率提升至iPhone3GS的4倍（1个Point被渲染成1个2x2的像素矩阵）。<br>  但是对于开发者来说，iOS绘制图形的API依然沿袭point(pt，注意区分印刷行业的“磅”)为单位。在同样的逻辑坐标系下（320x480）：</li>
 </ul>
-<p>推荐原因：<br>在集合元素“1000000”量级上，for in效率比经典for循环要高50倍。集合内元素较少时，经典for循环效率比forin要高1倍。但for in代码可读性和安全性更高，综合考虑建议使用用for in.</p>
-<h2 id="场景二"><a href="#场景二" class="headerlink" title="场景二"></a>场景二</h2><p>场景条件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1 point = scale*pixel</div><div class="line">（在iPhone4~6中，缩放因子scale=2；在iPhone6+中，缩放因子scale=3）。</div></pre></td></tr></table></figure>
 <ul>
-<li>需要按顺序</li>
-<li>同时需要key和value</li>
+<li>scale计算公式：</li>
 </ul>
-<p>按顺序优先考虑下列方法<br><del>* enumerateKeysAndObjectsUsingBlock</del><br><del>* 经典for循环</del></p>
-<p>推荐原因：<br>在集合元素”100“量级和“1000000”量级时，enumerateKeysAndObjectsUsingBlock的效率都比“经典for循环”要高，而且不会出现“off-by-one errors”错误。建议需要key、vlaue时使用enumerateKeysAndObjectsUsingBlock</p>
-<h2 id="场景三"><a href="#场景三" class="headerlink" title="场景三"></a>场景三</h2><p>场景条件</p>
-<ul>
-<li>处理比较耗时</li>
-<li>不需要按顺序</li>
-</ul>
-<p>按顺序优先考虑下列方法</p>
-<ul>
-<li>enumerateObjectsWithOptions （NSEnumerationConcurrent）<br><del>* dispatch_apply(Concurrent)</del></li>
-</ul>
-<p>推荐原因：<br>enumerateObjectsWithOptions和dispatch_apply(Concurrent)各种场景的效率都差不多，但是enumerateObjectsWithOptions可读性更强，特性也更多。建议使用enumerateObjectsWithOptions。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[array enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) &#123;</div><div class="line">    [sark doSomethingSlow];</div><div class="line">&#125;];</div></pre></td></tr></table></figure></p>
-<h2 id="场景四"><a href="#场景四" class="headerlink" title="场景四"></a>场景四</h2><p>场景条件</p>
-<ul>
-<li>倒序遍历</li>
-</ul>
-<p>按顺序优先考虑下列方法</p>
-<ul>
-<li>enumerateObjectsWithOptions:NSEnumerationReverse</li>
-<li>reverseObjectEnumerator</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSArray *strings = @[@&quot;1&quot;, @&quot;2&quot;, @&quot;3&quot;];</div><div class="line">for (NSString *string in [strings reverseObjectEnumerator]) &#123;</div><div class="line">    NSLog(@&quot;%@&quot;, string);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) &#123;</div><div class="line">    [sark doSomething];</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
-<p>推荐原因：<br>enumerateObjectsWithOptions和reverseObjectEnumerator在各量级的效率表现相似，两个方法均可使用</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
-<li><a href="http://blog.sunnyxx.com/2014/04/30/ios_iterator/" target="_blank" rel="external">iOS遍历方法实验数据</a></li>
-<li><a href="http://nshipster.com/enumerators/" target="_blank" rel="external">Enumerators</a></li>
-</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scale=绝对长度比（point/pixel）=单位长度内的数量比（pixel/point）</div></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://zhuanlan.zhihu.com/zhezhexiong/19565895" target="_blank" rel="external">dp、sp、px傻傻分不清楚</a></p>
 
       
     </div>
@@ -540,8 +526,8 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/03/iOS_best_performance_pageLoad/" rel="next" title="iOS开发性能最佳实践系列之——页面加载快的性能检查清单">
-                <i class="fa fa-chevron-left"></i> iOS开发性能最佳实践系列之——页面加载快的性能检查清单
+              <a href="/2017/10/19/iOS_ synchronized/" rel="next" title="iOS里synchronized的死锁、性能、实效">
+                <i class="fa fa-chevron-left"></i> iOS里synchronized的死锁、性能、实效
               </a>
             
           </div>
@@ -550,8 +536,8 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/09/03/iOS_best_performance_rounded_and_shadow/" rel="prev" title="iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势">
-                iOS开发性能最佳实践系列之——圆角和阴影的正确使用姿势 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/25/ios_urlencode/" rel="prev" title="一个多层嵌套URL引发的URLEncode血案">
+                一个多层嵌套URL引发的URLEncode血案 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -624,7 +610,7 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -726,7 +712,7 @@ for..in （NSFastEnumeration）* enumerateObjectsUsingBlock* 经典for循环
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#场景一"><span class="nav-number">1.</span> <span class="nav-text">场景一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#场景二"><span class="nav-number">2.</span> <span class="nav-text">场景二</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#场景三"><span class="nav-number">3.</span> <span class="nav-text">场景三</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#场景四"><span class="nav-number">4.</span> <span class="nav-text">场景四</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#iPhone设备的尺寸分辨率表"><span class="nav-number">1.</span> <span class="nav-text">iPhone设备的尺寸分辨率表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分辨率"><span class="nav-number">1.1.</span> <span class="nav-text">分辨率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#物理分辨率"><span class="nav-number">1.2.</span> <span class="nav-text">物理分辨率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑分辨率"><span class="nav-number">1.3.</span> <span class="nav-text">逻辑分辨率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iPhone-6"><span class="nav-number">2.</span> <span class="nav-text">iPhone 6+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本单位"><span class="nav-number">3.</span> <span class="nav-text">基本单位</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></div>
             
 
           </div>
