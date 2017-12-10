@@ -499,6 +499,178 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/12/arm64/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/07/12/arm64/" itemprop="url">
+                  10分钟入门arm64汇编
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-12T21:39:27+08:00">
+                2017-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/default/" itemprop="url" rel="index">
+                    <span itemprop="name">default</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="什么是栈？"><a href="#什么是栈？" class="headerlink" title="什么是栈？"></a>什么是栈？</h2><p>堆栈严格来说应该叫做栈，栈(Stack)是限定仅在一端进行插入或删除操作的线性表。因此，对栈来说，可以进行插入或删除操作的一端端称为栈顶(top)，相应地，另一端称为栈底(bottom)。由于堆栈只允许在一端进行操作，因而按照后进先出（LIFO-Last In First Out）的原理运作。</p>
+<h2 id="会变化的栈顶"><a href="#会变化的栈顶" class="headerlink" title="会变化的栈顶"></a>会变化的栈顶</h2><p>从栈顶的定义来看，栈顶的位置是可变的。空栈时，栈顶和栈底重合；满栈时，栈顶离栈底最远。ARM为堆栈提供了硬件支持，它使用一个专门的寄存器（堆栈指针）指向堆栈的栈顶。</p>
+<h2 id="两种存储器堆栈"><a href="#两种存储器堆栈" class="headerlink" title="两种存储器堆栈"></a>两种存储器堆栈</h2><p>递增堆栈：向上生长：向高地址方向生长<br>递减堆栈：向下生长：向低地址方向生长<br><img src="https://ws4.sinaimg.cn/large/006tNc79gy1fhlu7dlg1cj30go0750sv.jpg" alt=""></p>
+<h2 id="ARM堆栈的生长方向"><a href="#ARM堆栈的生长方向" class="headerlink" title="ARM堆栈的生长方向"></a>ARM堆栈的生长方向</h2><p>虽然ARM处理器核对于两种生长方式的堆栈均支持，但ADS的C语言编译器仅支持一种方式，即从上往下长，并且必须是满递减堆栈。所以STMFD等指令用的最多。</p>
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>寄存器是用来存储CPU在计算过程中临时数据的, arm64有32个通用寄存器(这里不对浮点数/向量寄存器等做说明):<br>x0-x31, 这些寄存器可以直接在汇编代码里面使用, 也是最经常被使用到的寄存器.</p>
+<ul>
+<li>SP寄存器, Stack Pointer, 指向栈低的指针. 它是一个隐含的寄存器, 可以在内存操作指令中通过x31寄存器来访问.</li>
+<li>PC寄存器, Program Counter, 记录当前执行的代码的地址. 它是一个隐含的寄存器, 无法被直接访问, 只能被特定的指令隐含访问.</li>
+<li>LR寄存器, Link Register, 指向返回地址, 即return时回到的地址. 它就是x30, 可以随意访问读写, 意味着程序可以随意改变方法的返回地址.</li>
+<li>FP寄存器, Frame Pointer, 指向上一次方法调用的frame的最高位地址, frame位于栈上. 它就是x29, 可以随意访问读写.</li>
+</ul>
+<p>FP是指向frame的最高位地址, frame位于栈上, 那frame是什么呢?<br>frame其实就是一个按照方法调用顺序, 从栈的高地址向低地址依次存放的一组数据, 用于存放上一次方法调用的关键信息. 数据可以参考下图:<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fhluegxwbnj30or0jv3zr.jpg" alt=""></p>
+<h2 id="寻址方式"><a href="#寻址方式" class="headerlink" title="寻址方式"></a>寻址方式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">add x0,x0,#1            ;x0 &lt;==x0+1 ,把x0的内容加1。</div><div class="line">add x0,x0,#0x30         ;x0 &lt;==x0+0x30,把x0的内容加 0x30。</div><div class="line">add x0,x1,x3            ;x0 &lt;==x1+x3, 把x1的内容加上x3的内容放入x0</div><div class="line">add x0,x1,x3,lsl #3     ;x0 &lt;==x0+x3*8 ,x3的值左移3位就是乘以8，结果与x1的值相, 放入x0.</div><div class="line">add x0,x1,[x2]          ;x0 &lt;==x1+[x2], 把x1的内容加上x2的内容作为地址取内存内容放入x0</div><div class="line">ldr x0,[x1]             ;x0 &lt;==[x1], 把x1的内容作为地址取内存内容放入x0</div><div class="line">str x0,[x1]             ;[x1] &lt;== x0, 把x0的内容放入x1的内容作为地址的内存中</div><div class="line">ldr x0,[x1,#4]          ;x0 &lt;==[x1+4], 把x1的内容加上4, 作为内存地址, 取其内容放入x0</div><div class="line">ldr x0,[x1,#4]!         ;x0 &lt;==[x1+4]、 x1&lt;==x1+4, 把x1的内容加上4, 作为内存地址, 取其内容放入x0, 然后把x1的内容加上4放入x1</div><div class="line">ldr x0,[x1],#4          ;x0 &lt;==[x1] 、x1 &lt;==x1+4, 把x1的内容作为内存地址取内存内容放入x0, 并把x1的内容加上4放入x1</div><div class="line">ldr x0,[x1,x2]          ;x0 &lt;==[x1+x2], 把x1和x2的内容相加, 作为内存地址取内存内容放入x0</div></pre></td></tr></table></figure>
+<h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h2><p>b 跳转到地址（无返回）, 不会改变LR寄存器的值<br>bl 跳转到地址（有返回）, 会改变LR寄存器的值为返回地址<br>ldr/ldur 地址对应的内容加载到寄存器<br>str/stur 寄存器内容存储到内存地址<br>ldp/stp 取/存一对数据(2个)<br>cbz/cbnz 为零跳转到地址/不为零跳转到<br>add 加法运算<br>mov 寄存器之间内容移动<br>ldp/stp 从栈取/存数据<br>adrp, 用来定位数据段中的数据用, 因为aslr会导致代码及数据的地址随机化, 用adrp来根据pc做辅助定位</p>
+<h2 id="案例解析"><a href="#案例解析" class="headerlink" title="案例解析"></a>案例解析</h2><p><code>main函数汇编解析</code></p>
+<ul>
+<li>设置Debug-&gt;Debug Workflow-&gt;Always Show Disassembly</li>
+<li>打断点到callMe函数。PS：callMe调用别的方法才会被保存frame</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">void callYou() &#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">void callMe(int a, int b) &#123;</div><div class="line">    callYou();</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(int argc, char * argv[]) &#123;</div><div class="line">    int a = 4;</div><div class="line">    int b = 10;</div><div class="line">    callMe(a, b);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这段代码编译结果如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">libdyld.dylib`start:</div><div class="line">    0x18aad55b4 &lt;+0&gt;: nop    </div><div class="line">    0x18aad55b8 &lt;+4&gt;: bl     0x18ab05378               ; exit</div><div class="line">    0x18aad55bc &lt;+8&gt;: brk    #0x3</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Arm64`main:</div><div class="line">    0x100026c24 &lt;+0&gt;:  sub    sp, sp, #0x30             ; =0x30 ;编译器计算到此次方法调用要48bit的栈,把栈底减48bit留出空位存临时变量</div><div class="line">    0x100026c28 &lt;+4&gt;:  stp    x29, x30, [sp, #0x20] ;将fp和lr存入栈的sp+32的地址</div><div class="line">    0x100026c2c &lt;+8&gt;:  add    x29, sp, #0x20            ; =0x20 ;sp+32后存入x29，fp此时的位置就是sp+32</div><div class="line">    0x100026c30 &lt;+12&gt;: mov    w8, #0xa ;将10存到寄存器w8</div><div class="line">    0x100026c34 &lt;+16&gt;: orr    w9, wzr, #0x4 ;将4与wzr进行或运算，存到寄存器W9</div><div class="line">    0x100026c38 &lt;+20&gt;: stur   w0, [x29, #-0x4] ;把w0(main方法的第一个参数, argc),存入x29减4的位置</div><div class="line">    0x100026c3c &lt;+24&gt;: str    x1, [sp, #0x10] ;将x1(main方法的第二个参数*argv[])，存入sp-16的位置</div><div class="line">    0x100026c40 &lt;+28&gt;: str    w9, [sp, #0xc] ;将w9的值，存入到sp+12的位置</div><div class="line">    0x100026c44 &lt;+32&gt;: str    w8, [sp, #0x8] ;将w8的值，存入到sp+8的位置</div><div class="line">    0x100026c48 &lt;+36&gt;: ldr    w0, [sp, #0xc] ;将sp+12地址对应的内容加载到寄存器w0</div><div class="line">    0x100026c4c &lt;+40&gt;: ldr    w1, [sp, #0x8] ;将sp+8地址对应的内容加载到寄存器w1</div><div class="line">    0x100026c50 &lt;+44&gt;: bl     0x100026c00               ; callMe at main.m:16 ;调用callMe方法,将w0、w1作为参数</div><div class="line">-&gt;  0x100026c54 &lt;+48&gt;: mov    w8, #0x0 ;将0存到w8</div><div class="line">    0x100026c58 &lt;+52&gt;: mov    x0, x8 ;将0存到x0</div><div class="line">    0x100026c5c &lt;+56&gt;: ldp    x29, x30, [sp, #0x20] ;从栈里把最开始保存的fp和lr还原回来</div><div class="line">    0x100026c60 &lt;+60&gt;: add    sp, sp, #0x30             ; =0x30 ;sp+48后,存到sp(跳到下一个frame的位置)</div><div class="line">    0x100026c64 &lt;+64&gt;: ret ;返回</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Arm64`callMe:</div><div class="line">    0x100026c00 &lt;+0&gt;:  sub    sp, sp, #0x20             ; =0x20 ;编译器计算到此次方法调用要用到32bit的栈，把栈底减32bit留出空位存临时变量</div><div class="line">    0x100026c04 &lt;+4&gt;:  stp    x29, x30, [sp, #0x10] ;将fp和lr寄存器存入到sp+16的位置</div><div class="line">    0x100026c08 &lt;+8&gt;:  add    x29, sp, #0x10            ; =0x10 ; 将sp+16后，存入到x29</div><div class="line">    0x100026c0c &lt;+12&gt;: stur   w0, [x29, #-0x4] ; 将w0（第一个参数）存入到x29 -4的位置</div><div class="line">    0x100026c10 &lt;+16&gt;: str    w1, [sp, #0x8] ;将w1(第二个参数) 存入到sp+8的位置</div><div class="line">-&gt;  0x100026c14 &lt;+20&gt;: bl     0x100026bfc               ; callYou at main.m:14 ; 调用callYou方法</div><div class="line">    0x100026c18 &lt;+24&gt;: ldp    x29, x30, [sp, #0x10] ;从栈里把最开始保存的fp和lr还原回来</div><div class="line">    0x100026c1c &lt;+28&gt;: add    sp, sp, #0x20             ; =0x20 ;sp+32后，存入到sp(跳到下一个frame的位置)</div><div class="line">    0x100026c20 &lt;+32&gt;: ret</div></pre></td></tr></table></figure>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79gy1fhlu8cthldj30yk04uabc.jpg" alt="从start-&gt;main-&gt;callme-&gt;callYou有3个frame"></p>
+<h2 id="sp的正负偏移"><a href="#sp的正负偏移" class="headerlink" title="sp的正负偏移"></a>sp的正负偏移</h2><p>sp存取的时候有的偏移量是正数, 有的是负数, 这有什么区别呢?<br>在stack里面, sp指针之下(负数偏移量)的数据是不保证安全的, 可能被覆盖, 而sp指针之上(正数偏移量)的数据是安全的. 放到负数偏移量一般都是临时存一下数据, 需要被整个方法用到的数据一般放到sp的正数偏移位置.</p>
+<h2 id="git地址"><a href="#git地址" class="headerlink" title="git地址"></a>git地址</h2><p><a href="https://github.com/blackteachinese/arm64Example" target="_blank" rel="external">demo传送门</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.element14.com/community/servlet/JiveServlet/previewBody/41836-102-1-229511/ARM.Reference_Manual.pdf" target="_blank" rel="external">ARM Reference Manual: https://www.element14.com/community/servlet/JiveServlet/previewBody/41836-102-1-229511/ARM.Reference_Manual.pdf</a></p>
+<p><a href="https://developer.apple.com/library/content/documentation/Xcode/Conceptual/iPhoneOSABIReference/Articles/ARM64FunctionCallingConventions.html" target="_blank" rel="external">ARM64 Function Calling Conventions: https://developer.apple.com/library/content/documentation/Xcode/Conceptual/iPhoneOSABIReference/Articles/ARM64FunctionCallingConventions.html</a></p>
+<p><a href="http://blog.chinaunix.net/uid-25871104-id-2938389.html" target="_blank" rel="external">FP寄存器及frame pointer介绍: http://blog.chinaunix.net/uid-25871104-id-2938389.html</a><br><a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0204ic/Babbfdih.html" target="_blank" rel="external">RealView 编译工具 《汇编器指南》</a><br><a href="https://www.hopperapp.com" target="_blank" rel="external">Hopper Disassembler</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/10/thought-to-be-lovely-man/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1956,151 +2128,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/01/15/other-craftsman/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/15/other-craftsman/" itemprop="url">
-                  匠人精神的重要性
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-15T15:43:51+08:00">
-                2017-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/default/" itemprop="url" rel="index">
-                    <span itemprop="name">default</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近常听到“匠人精神”这个词。难道资本寒冬的来临，让大家突然醒悟，光靠包装、概念就轻松能拿到融资创业的时机已经过去了？</p>
-<p>什么是匠人精神？</p>
-<p>  第一次听说这个词汇，我脑海里浮现的是一个打铁匠的老师傅。一个勤勤恳恳、认真、古板的手艺人。这应该是很少的一部分人吧。直到最近看了晓松奇谈关于“探寻匠人精神”的节目，才对匠人精神有了新的体会。<br>  一位炸了50多年天妇罗的“早乙女哲哉”说了一句话：”我觉得日本这几十年好像没有什么变化“。要知道这几十年日本可是经历过七八十年代经济腾飞、到1990经济泡沫后的一蹶不振。难道他对外界的感知能力这么弱吗？这有一定关系，但除此之外还和早乙女哲哉对生活和工作的专注有关系。他是一个专注于做好一件事的人，这几十年一直致力于炸天妇罗，不受经济环境的变动，不受身旁人们的价值观的影响，不去关心最近股票的走势，房价是不是又涨了、谁家做了什么生意又发财了、什么行业现在在风口。这放在当今的中国，就是一个稳重、古板的手艺人，不懂得变通，不懂人情世故、不懂理财的人。这绝不是国内老百姓们希望成为的人。<br>  这是一种专注的精神，专注得来还很有安全感，让你安心去专注，不受外界影响。这确实很不容易，这是我一直比较缺乏的精神，也是我们缺乏的精神。我从小到大是一个懒散、随便的人。做很多事情都不追求细致、完美，一直不知道自己喜欢什么，很难专注认定一件事去做坚持一直做。<br>  除了专注精神，我还能体会到一种叫“精进”的精神。“幸村”开了一家小的料理店，从默默无名到米其林1星，再到米其林3星，竟然菜单一直没有换过。那这么多年，这家店难道一直不思进取、没有进步吗？在我北京各种有名的餐厅，几个月就得换菜单，而客户也很乐于去品尝新菜。而幸村说到：“多年来我们没有改变菜单，不是说我们就没有去创新、没有去思考和尝试如何变得更好，而是我们一直在研究我们原有的料理如何做得更好，我们一直在改进我们的菜品”。我认为这就是一种“精进”的精神，我们不满足于好，还可以不断继续做得更好，而不一定非得做各种新的事情，去证明自己什么都好。<br>  专注、精进的精神看似和创新精神有矛盾，其实不然。最近一直很流行的”1万小时“理论告诉我们，专注在一个领域里足够长的时机，人人都能成为专家。如果我们能在同一个领域里，积极去思考也能相处很多有创意的想法，当然我们不能所有新想法都去尝试。我们可以在这些新想法里，选择自己最认可的一个想法，坚持一段时间（比如1个月）去做，如果达到预期，我们再坚持更长的时间”精进“地去做。切忌同时多点开发，一件事情没做到阶段性的时间，看到别的事情有机会就换了。<br>  是的，创新对于世界的发展异常重要，但对于我们个人而言，在自己有限的时间里，做好选择并专注地去做，不断得精进自己的专项技能更重要。想一想，人人都有自己所专注和精进的领域做深、做细，这个社会便有很多不同领域的事业在专注、精进地发展。也许很多人会说，不可能，你必须什么技能都懂，你才能把事业做大。这有一定的道理，补助性的技能我们也需要投入一定时间去学习，比如制作PPT能力、外语能力、基本的社交能力、协作能力等等。但得主次分明，不能搞不清楚自己的专项领域。要相信现在的分工越来越细、只要各种专项的技能能够合理协作，都能干成足够大的事业。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2150,7 +2177,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

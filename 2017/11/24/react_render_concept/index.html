@@ -1,0 +1,987 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blacktea's Life" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="React Render Mechanism 渲染机制Render  analyseRender DOM implement analyse1234DOM example:var element = React.createElement(&amp;apos;div&amp;apos;,&amp;#123;id:&amp;apos;test&amp;apos;,onclick:hello&amp;#125;,&amp;apos;click me&amp;apo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React源码的秘密">
+<meta property="og:url" content="http://blackteachinese.com/2017/11/24/react_render_concept/index.html">
+<meta property="og:site_name" content="Blacktea's Life">
+<meta property="og:description" content="React Render Mechanism 渲染机制Render  analyseRender DOM implement analyse1234DOM example:var element = React.createElement(&amp;apos;div&amp;apos;,&amp;#123;id:&amp;apos;test&amp;apos;,onclick:hello&amp;#125;,&amp;apos;click me&amp;apo">
+<meta property="og:updated_time" content="2017-12-10T16:56:09.609Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React源码的秘密">
+<meta name="twitter:description" content="React Render Mechanism 渲染机制Render  analyseRender DOM implement analyse1234DOM example:var element = React.createElement(&amp;apos;div&amp;apos;,&amp;#123;id:&amp;apos;test&amp;apos;,onclick:hello&amp;#125;,&amp;apos;click me&amp;apo">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blackteachinese.com/2017/11/24/react_render_concept/"/>
+
+
+
+
+
+  <title> React源码的秘密 | Blacktea's Life </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63129529";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blacktea's Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">A programmer who love music and football</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/11/24/react_render_concept/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                React源码的秘密
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-24T20:35:00+08:00">
+                2017-11-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="React-Render-Mechanism-渲染机制"><a href="#React-Render-Mechanism-渲染机制" class="headerlink" title="React Render Mechanism 渲染机制"></a>React Render Mechanism 渲染机制</h2><h3 id="Render-analyse"><a href="#Render-analyse" class="headerlink" title="Render  analyse"></a>Render  analyse</h3><h4 id="Render-DOM-implement-analyse"><a href="#Render-DOM-implement-analyse" class="headerlink" title="Render DOM implement analyse"></a>Render DOM implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOM example:</div><div class="line"></div><div class="line">var element = React.createElement(&apos;div&apos;,&#123;id:&apos;test&apos;,onclick:hello&#125;,&apos;click me&apos;)</div><div class="line">React.render(element,document.getElementById(&quot;container&quot;))</div></pre></td></tr></table></figure>
+<p>React.createElement:</p>
+<p>use createElement function to create a virtual dom -&gt; React.createElement</p>
+<ul>
+<li>keep the key to identify element</li>
+<li>copy the config(attributes) to the props</li>
+<li>copy the children to the props.children</li>
+<li>call ReactElement function and send ‘type’,’key’,’props’ for initial a element object</li>
+</ul>
+<p>React.render:</p>
+<ul>
+<li>instantiateReactComponent<ul>
+<li>init component instance </li>
+</ul>
+</li>
+<li>mountComponent<ul>
+<li>render component instance to html content</li>
+</ul>
+</li>
+</ul>
+<p>instantiateReactComponent:</p>
+<ul>
+<li>return ReactDOMTextComponent <ul>
+<li>if(typeof node === ‘string’ || typeof node === ‘number’) </li>
+</ul>
+</li>
+<li>return ReactDOMComponent<ul>
+<li>if(typeof node === ‘object’ &amp;&amp; typeof node.type === ‘string’)</li>
+</ul>
+</li>
+<li>return new ReactCompositeComponent <ul>
+<li>if(typeof node === ‘object’ &amp;&amp; typeof node.type === ‘function’)</li>
+</ul>
+</li>
+</ul>
+<p>ReactDOMComponent.prototype.mountComponent: 浏览器默认元素</p>
+<ul>
+<li>assign type : tagOpen = ‘&lt;’ + ‘dic’</li>
+<li>add props : tagOpen += propKey + props[propKey]</li>
+<li>recursive child node to be content : each(content += childComponentInstance.mountComponent)</li>
+<li>result : tagOpen + ‘&gt;’ + content + tagClose</li>
+</ul>
+<h4 id="Render-Composite-implement-analyse"><a href="#Render-Composite-implement-analyse" class="headerlink" title="Render Composite implement analyse"></a>Render Composite implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">var HelloMessage = React.createClass(&#123;</div><div class="line">  getInitialState: function() &#123;</div><div class="line">    return &#123;type: &apos;say:&apos;&#125;;</div><div class="line">  &#125;,</div><div class="line">  componentWillMount: function() &#123;</div><div class="line">    console.log(&apos;我就要开始渲染了。。。&apos;)</div><div class="line">  &#125;,</div><div class="line">  componentDidMount: function() &#123;</div><div class="line">    console.log(&apos;我已经渲染好了。。。&apos;)</div><div class="line">  &#125;,</div><div class="line">  render: function() &#123;</div><div class="line">    return React.createElement(&quot;div&quot;, null,this.state.type, &quot;Hello &quot;, this.props.name);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"></div><div class="line">React.render(React.createElement(HelloMessage, &#123;name: &quot;John&quot;&#125;), document.getElementById(&quot;container&quot;));</div></pre></td></tr></table></figure>
+<p>React.createClass</p>
+<ul>
+<li>Constructor a child class</li>
+<li>inserit to ReactClasss <ul>
+<li>Constructor.prototype = new ReactClass();</li>
+</ul>
+</li>
+<li>extend Constructor.prototype,spec</li>
+</ul>
+<p>ReactCompositeComponent.prototype.mountComponent</p>
+<ul>
+<li>initialize public class  by ‘ReactClass’ function <ul>
+<li>var inst = new ReactClass(publicProps);</li>
+</ul>
+</li>
+<li>life cycle callback <ul>
+<li>inst.componentWillMount()</li>
+</ul>
+</li>
+<li>call render to instance a  element<ul>
+<li>renderedElement = inst.render() 返回的可能是一个DOM element</li>
+</ul>
+</li>
+<li>getting component instance<ul>
+<li>renderedComponentInstance = instantiateReactComponent(renderedElement)</li>
+</ul>
+</li>
+<li>get rendered result by renderedComponentInstance<ul>
+<li>renderedComponentInstance.mountComponent</li>
+</ul>
+</li>
+<li>life cycle callback<ul>
+<li>inst.componentDidMount()</li>
+</ul>
+</li>
+</ul>
+<h2 id="React-Native-ReRender-mechanism-重新渲染机制"><a href="#React-Native-ReRender-mechanism-重新渲染机制" class="headerlink" title="React Native ReRender mechanism 重新渲染机制"></a>React Native ReRender mechanism 重新渲染机制</h2><p>ReactClass.prototype.setState</p>
+<ul>
+<li>call ‘this._reactInternalInstance.receiveComponent(null, newState);’</li>
+</ul>
+<h3 id="All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update"><a href="#All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update" class="headerlink" title="All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update."></a>All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update.</h3><p>ReactCompositeComponent.prototype.receiveComponent</p>
+<ul>
+<li>update element 更新element对象</li>
+<li>bind the new state and props 生成心的state和props</li>
+<li>judge whether update or reRender the element by type and key</li>
+</ul>
+<p>ReactDOMTextComponent.prototype.receiveComponent </p>
+<ul>
+<li>if the text string is change, update content of the node 如果text的内容有变化，刷新节点</li>
+</ul>
+<p>ReactDOMComponent.prototype.receiveComponent</p>
+<ul>
+<li>update element 更新element对象</li>
+<li>updateDOMProperties 更新属性</li>
+<li>updateDOMChildren 更新子节点</li>
+</ul>
+<h3 id="implementation-of-DomComponent-RecevieComponent"><a href="#implementation-of-DomComponent-RecevieComponent" class="headerlink" title="implementation of DomComponent RecevieComponent"></a>implementation of DomComponent RecevieComponent</h3><p>ReactDOMComponent.prototype._updateDOMProperties</p>
+<ul>
+<li>remove the old attribute</li>
+<li>remove the event monitor</li>
+<li>add the new attribute</li>
+<li>add the new event monitor</li>
+</ul>
+<p>ReactDOMComponent.prototype._updateDOMChildren</p>
+<ul>
+<li>diff<ul>
+<li>user diff algorithm the find out diffrence and add the diffrence to the diffQueue</li>
+</ul>
+</li>
+<li>patch<ul>
+<li>traversal diffQueue for removing the changed node ， inserting the new note and inserting the modified node</li>
+</ul>
+</li>
+</ul>
+<h3 id="analyse-diff-and-patch"><a href="#analyse-diff-and-patch" class="headerlink" title="analyse diff and patch"></a>analyse diff and patch</h3><p>ReactDOMComponent.prototype._diff</p>
+<ul>
+<li>getting the previous component of childrend</li>
+<li>generating the next component of childrend</li>
+<li>assign the new children</li>
+<li>compare the previous and next components<ul>
+<li>previous Child handle <ul>
+<li>if these is the same component and element , move it (MOVE_EXISTING)</li>
+<li>if these is the same component but not the same element, remove element (REMOVE_NODE)<ul>
+<li>remove event monitor of previous child</li>
+</ul>
+</li>
+<li>if a previous child which was not exist in nest queue, delete the component</li>
+</ul>
+</li>
+<li>next child handle<ul>
+<li>add the new node (INSERT_MARKUP)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>ReactDOMComponent.prototype._patch</p>
+<ul>
+<li>delete REMOVE_NODE nodes</li>
+<li>delete MOVE_EXISTING nodes</li>
+<li>insert INSERT_MARKUP nodes</li>
+<li>insert MOVE_EXISTING nodes</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_one/" target="_blank" rel="external">reactjs源码分析-上篇</a><br><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_two/" target="_blank" rel="external">reactjs源码分析-下篇（更新机制实现原理）</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ww2.sinaimg.cn/large/006tNbRwgy1feav9se587j30kw0r2adr.jpg" alt="Blacktea wechat" style="width: 200px; max-width: 100%;"/>
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>记录生活于感悟，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="https://ww4.sinaimg.cn/large/006tNbRwgy1feav9e683oj30yi1e6q7b.jpg" alt="Blacktea WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="https://ww3.sinaimg.cn/large/006tNbRwgy1feav9mjqarj30p011iq6c.jpg" alt="Blacktea Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/02/ios_iOS11_iphoneX_problem/" rel="next" title="iOS布局技术的演变和iPhoneX适配">
+                <i class="fa fa-chevron-left"></i> iOS布局技术的演变和iPhoneX适配
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/26/react_native_ios_source_code/" rel="prev" title="ReactNative到底做了什么？">
+                ReactNative到底做了什么？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="Blacktea" />
+          <p class="site-author-name" itemprop="name">Blacktea</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/blackteachinese" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/your-user-name" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/your-user-name" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/your-user-name" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Render-Mechanism-渲染机制"><span class="nav-number">1.</span> <span class="nav-text">React Render Mechanism 渲染机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Render-analyse"><span class="nav-number">1.1.</span> <span class="nav-text">Render  analyse</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Render-DOM-implement-analyse"><span class="nav-number">1.1.1.</span> <span class="nav-text">Render DOM implement analyse</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Render-Composite-implement-analyse"><span class="nav-number">1.1.2.</span> <span class="nav-text">Render Composite implement analyse</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native-ReRender-mechanism-重新渲染机制"><span class="nav-number">2.</span> <span class="nav-text">React Native ReRender mechanism 重新渲染机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update"><span class="nav-number">2.1.</span> <span class="nav-text">All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation-of-DomComponent-RecevieComponent"><span class="nav-number">2.2.</span> <span class="nav-text">implementation of DomComponent RecevieComponent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#analyse-diff-and-patch"><span class="nav-number">2.3.</span> <span class="nav-text">analyse diff and patch</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Blacktea</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

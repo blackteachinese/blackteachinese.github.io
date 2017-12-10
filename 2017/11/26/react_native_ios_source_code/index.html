@@ -1,0 +1,929 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blacktea's Life" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="React Native 是什么react.js是一个流行的前端开发框架，相信大家都有了解，它用了flexbox布局技术、jsx等语法糖的技术，这让前端同学能象喝茶一样轻松地开发H5页面。React本来是用来开发h5页面，facebook的工程师们，希望做一套能同时运行在iOS和Android的高性能开发框架，就将React render()方法渲染出来的js代码通过JSbridge加载到nati">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ReactNative到底做了什么？">
+<meta property="og:url" content="http://blackteachinese.com/2017/11/26/react_native_ios_source_code/index.html">
+<meta property="og:site_name" content="Blacktea's Life">
+<meta property="og:description" content="React Native 是什么react.js是一个流行的前端开发框架，相信大家都有了解，它用了flexbox布局技术、jsx等语法糖的技术，这让前端同学能象喝茶一样轻松地开发H5页面。React本来是用来开发h5页面，facebook的工程师们，希望做一套能同时运行在iOS和Android的高性能开发框架，就将React render()方法渲染出来的js代码通过JSbridge加载到nati">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fmacuj6ha9j31f412uwk4.jpg">
+<meta property="og:updated_time" content="2017-12-10T16:54:55.757Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ReactNative到底做了什么？">
+<meta name="twitter:description" content="React Native 是什么react.js是一个流行的前端开发框架，相信大家都有了解，它用了flexbox布局技术、jsx等语法糖的技术，这让前端同学能象喝茶一样轻松地开发H5页面。React本来是用来开发h5页面，facebook的工程师们，希望做一套能同时运行在iOS和Android的高性能开发框架，就将React render()方法渲染出来的js代码通过JSbridge加载到nati">
+<meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fmacuj6ha9j31f412uwk4.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blackteachinese.com/2017/11/26/react_native_ios_source_code/"/>
+
+
+
+
+
+  <title> ReactNative到底做了什么？ | Blacktea's Life </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63129529";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blacktea's Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">A programmer who love music and football</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/11/26/react_native_ios_source_code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ReactNative到底做了什么？
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-26T12:35:00+08:00">
+                2017-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="React-Native-是什么"><a href="#React-Native-是什么" class="headerlink" title="React Native 是什么"></a>React Native 是什么</h2><p>react.js是一个流行的前端开发框架，相信大家都有了解，它用了flexbox布局技术、jsx等语法糖的技术，这让前端同学能象喝茶一样轻松地开发H5页面。React本来是用来开发h5页面，facebook的工程师们，希望做一套能同时运行在iOS和Android的高性能开发框架，就将React render()方法渲染出来的js代码通过JSbridge加载到native，native再通过JSCore和V8这两个js解析引擎，解析为native的页面。</p>
+<h2 id="React-Native-的组成"><a href="#React-Native-的组成" class="headerlink" title="React Native 的组成"></a>React Native 的组成</h2><p>ReactNative功能结构可以分为两部分，JS模块和Native模块。JS模块和Native模块都有Bridge组件，两端的Bridge遵守一套通信协议、通信机制，从而实现了js和native的无缝连接。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmacuj6ha9j31f412uwk4.jpg" alt=""></p>
+<h3 id="JS模块"><a href="#JS模块" class="headerlink" title="JS模块"></a>JS模块</h3><p>JS模块主要由React.js框架和JSBridge两部分组成，React.js是开发UI逻辑的框架，而JSBridge包含管理NativeModel配置的NativeModules和管理js、native双向通信的MessageQueue。</p>
+<h4 id="JSBridge如何匹配和调用Native提供的能力"><a href="#JSBridge如何匹配和调用Native提供的能力" class="headerlink" title="JSBridge如何匹配和调用Native提供的能力"></a>JSBridge如何匹配和调用Native提供的能力</h4><p>Nativebridge初始化时会把Native能提供给JS的所有能力Module按约定好的方式序列化为一个对象‘__fbBatchedBridgeConfig’，设置到JS的全局对象global里。</p>
+<p>JSBridge封装了NativeModules对象，NativeModules会读取__fbBatchedBridgeConfig的bridgep配置，组装成方便js调用的映射对象.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">let NativeModules : &#123;[moduleName: string]: Object&#125; = &#123;&#125;;</div><div class="line">const bridgeConfig = global.__fbBatchedBridgeConfig;</div><div class="line">(bridgeConfig.remoteModuleConfig || []).forEach((config: ModuleConfig, moduleID: number) =&gt; &#123;</div><div class="line">    // configuration of the module will be lazily loaded.</div><div class="line">    const info = genModule(config, moduleID);</div><div class="line">    if (info.module) &#123;</div><div class="line">      NativeModules[info.name] = info.module;</div><div class="line">    &#125;</div><div class="line">    // If there&apos;s no module config, define a lazy getter</div><div class="line">    else &#123;</div><div class="line">      defineLazyObjectProperty(NativeModules, info.name, &#123;</div><div class="line">        get: () =&gt; loadModule(info.name, moduleID)</div><div class="line">      &#125;);</div><div class="line">    &#125;</div><div class="line">  &#125;);</div></pre></td></tr></table></figure>
+<p>js组件通过methodName可以调用Native提供的各项能力。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NativeModules.DialogManagerAndroid.showAlert();</div></pre></td></tr></table></figure>
+<h4 id="MessageQueue实现了Native-call-JS的Api和js-call-native的机制"><a href="#MessageQueue实现了Native-call-JS的Api和js-call-native的机制" class="headerlink" title="MessageQueue实现了Native call JS的Api和js call native的机制"></a>MessageQueue实现了Native call JS的Api和js call native的机制</h4><p>MessageQueue里有4个暴露给Native调用的API<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">flushedQueue()</div><div class="line">invokeCallbackAndReturnFlushedQueue(cbID: number, args: any[])</div><div class="line">callFunctionReturnFlushedQueue(module: string, method: string, args: any[])</div><div class="line">callFunctionReturnResultAndFlushedQueue(module: string,method: string,args: any[],)</div></pre></td></tr></table></figure></p>
+<p><strong>Native想要调用JS的方法</strong><br>JS也会通过Module封装提供给Native调用的组件和方法，当native需要主动调用时就会call”callFunctionReturnFlushedQueue”和“callFunctionReturnResultAndFlushedQueue”，并传递module、method做为找到对应方法的钥匙。</p>
+<p><strong>JS想要调用Native的方法</strong><br>事实上JS不能直接调用Native的方法，RN里设置了被动调用的机制来实现相同的功能。<br>当JS要调用Native的方法时，会通过enqueueNativeCall把moduleID和methodID放到队列this._queue里，调用成功和失败的Callback放到this._successCallbacks和this._failureCallbacks里。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">enqueueNativeCall(moduleID: number,methodID: number,params: any[],onFail: ?Function,onSucc: ?Function,)</div></pre></td></tr></table></figure>
+<p>每次Native调用JS时，都会把this._queue的消息通过返回值传递给Native,Native拿到消息队列后就会执行MessageQueue里对应的Native方法。</p>
+<p>TODO: js要调用Native时方法注入queue的时机？</p>
+<p><strong>调用Native方法执行后的回调</strong><br>native暴露给js调用的方法，可以使用RCTResponseSenderBlock对象做为参数实现回调的功能。RCTResponseSenderBlock执行最后会调用到invokeCallbackAndReturnFlushedQueue方法,回调MessageQueue里成功或失败的回调。</p>
+<p><strong>JS消息队列超过5ms还未被调用</strong><br>当JS通过enqueueNativeCall注入需要被Native调用的方法时，需要等待native来拉去消息队列。如果native一直不过来拉消息怎么办呢？在enqueueNativeCall注入时有一个保障机制，如果距离上次消息队列被拉去超过5ms，就会调用‘global.nativeFlushQueueImmediate(queue)’方法，启用JS强制让Native拉去的机制。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">if (global.nativeFlushQueueImmediate &amp;&amp; (now - this._lastFlush &gt;= MIN_TIME_BETWEEN_FLUSHES_MS || this._inCall === 0)</div><div class="line">  ) &#123;</div><div class="line">    var queue = this._queue;</div><div class="line">    this._queue = [[], [], [], this._callID];</div><div class="line">    this._lastFlush = now;</div><div class="line">    global.nativeFlushQueueImmediate(queue);</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<h3 id="Native部分-OC"><a href="#Native部分-OC" class="headerlink" title="Native部分(OC)"></a>Native部分(OC)</h3><p>native部分可分为OC bridge和一系列基础Module和自定义的扩展Module.</p>
+<p><strong>Module</strong><br>每一个Module都会根据约定的协议去注册，Bridge初始化时就会读取Navtive所有的Module，序列化为配置表，并将这部分配置信息传递到JS模块，JS也会生成一一对应配置表，这样无论是js想调用native的api,还是native想调用js的api都可以找到。</p>
+<p><strong>NativeBridge</strong><br>Nativebridge需要做很多事情，它包含了JSbundle加载、初始化缓存Module组件、管控js和oc之间消息传递的分发。</p>
+<p>下面是NativeBridge初始化的过程</p>
+<ul>
+<li>RCTRootView 根视图<ul>
+<li>RCTBridge 桥的抽象类。持有BatchBridge，将核心逻辑转发给BatchBridge实现<ul>
+<li>RCTBatchBridge 负责主要核心功能的初始化<ul>
+<li>RCTJavaScriptLoader 加载JSBundle</li>
+<li>RCTDisplayLink 提供屏幕渲染频率的回调，为timer和桢动画等组件提供支持</li>
+<li>RCTModuleData 所有的RN组件UI或Api，都是RCTModuleData<ul>
+<li>RCTJSCExecutor 一个特殊的RCTModuleData，维护一个独立线程处理JS代码执行和js回调，是bridge的核心通道</li>
+<li>RCTEventDispatcher UIModule触发点击事件后先通过EventDispatcher的api进行事件分发，再传到JSCExecutor找到JS模块的回调函数，最后通知js进行处理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Module配置表生成流程解析"><a href="#Module配置表生成流程解析" class="headerlink" title="Module配置表生成流程解析"></a>Module配置表生成流程解析</h4><p>RCTModuleData是组装native的功能模块，提供给JS调用</p>
+<p><em>native导出注册的Modules给JS</em></p>
+<p>RCTRootView初始化流程</p>
+<ul>
+<li>初始化Module</li>
+<li>生成Module配置表</li>
+<li>将Module配置表注入到JS里</li>
+<li>JS读取Module配置</li>
+</ul>
+<p>初始化Module<br>从RCTModuleClasses拿到所有Moduled的Class,各自创建RCTModuleData，并将创建后的module保存到moduleClassesByID、moduleDataByID、moduleDataByName三个集合进行缓存</p>
+<p>生成Module配置表<br>RCTBatchBridge会循环moduleDataByID数组表，把每一个APIModule的name都写进数组，然后写进key为remoteModuleConfig的字典，最后序列化成JS</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;remoteModuleConfig&quot;:[[&quot;VKAlertModule&quot;],</div><div class="line">[&quot;RCTFileRequestHandler&quot;],</div><div class="line">[&quot;RCTDataRequestHandler&quot;],</div><div class="line">...]&#125;</div></pre></td></tr></table></figure>
+<p>moduleConfigInject</p>
+<p>将所有module名注入到__fbBatchedBridgeConfig<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;remoteModuleConfig&quot;:[[&quot;JSCExecutor&quot;],[&quot;AccessibilityManager&quot;],[&quot;ViewManager&quot;],[&quot;ActivityIndicatorViewManager&quot;],[&quot;AlertManager&quot;],[&quot;AppState&quot;],[&quot;AsyncLocalStorage&quot;],[&quot;BlobModule&quot;],[&quot;Clipboard&quot;],[&quot;DataRequestHandler&quot;],[&quot;DatePickerManager&quot;],[&quot;DeviceInfo&quot;],[&quot;DevLoadingView&quot;],[&quot;DevMenu&quot;],[&quot;DevSettings&quot;],[&quot;EventDispatcher&quot;],[&quot;ExceptionsManager&quot;],[&quot;FileRequestHandler&quot;],[&quot;HTTPRequestHandler&quot;],[&quot;I18nManager&quot;],[&quot;JSCSamplingProfiler&quot;],[&quot;KeyboardObserver&quot;],[&quot;MaskedViewManager&quot;],[&quot;ModalHostViewManager&quot;],[&quot;ModalManager&quot;],[&quot;NavigatorManager&quot;],[&quot;NavItemManager&quot;],[&quot;NetInfo&quot;],[&quot;Networking&quot;],[&quot;PerfMonitor&quot;],[&quot;PickerManager&quot;],[&quot;PlatformConstants&quot;],[&quot;ProgressViewManager&quot;],[&quot;RawTextManager&quot;],[&quot;RedBox&quot;],[&quot;RefreshControlManager&quot;],[&quot;SafeAreaViewManager&quot;],[&quot;ScrollContentViewManager&quot;],[&quot;ScrollViewManager&quot;],[&quot;SegmentedControlManager&quot;],[&quot;SliderManager&quot;],[&quot;SourceCode&quot;],[&quot;StatusBarManager&quot;],[&quot;SwitchManager&quot;],[&quot;TabBarItemManager&quot;],[&quot;TabBarManager&quot;],[&quot;TextFieldManager&quot;],[&quot;TextManager&quot;],[&quot;TextViewManager&quot;],[&quot;Timing&quot;],[&quot;TVNavigationEventEmitter&quot;],[&quot;UIManager&quot;],[&quot;WebSocketExecutor&quot;],[&quot;WebSocketModule&quot;],[&quot;WebViewManager&quot;]]&#125;</div></pre></td></tr></table></figure></p>
+<p>遍历所有Module,将每个Module被注册的method配置，注入到JSContext的nativeRequireModuleConfig里。的block注入到js的global全局对象里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">context[@&quot;nativeRequireModuleConfig&quot;] = ^NSArray *(NSString *moduleName) &#123;</div><div class="line">      RCTJSCExecutor *strongSelf = weakSelf;</div><div class="line">      NSArray *result = [strongSelf-&gt;_bridge configForModuleName:moduleName];</div><div class="line">      return RCTNullIfNil(result);</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<p>JS读取Module配置</p>
+<p>JS加载时NativeModules.js会执行一段脚本，先通过global.__fbBatchedBridgeConfig获取Native所有Module的列表，再通过’global.nativeRequireModuleConfig’方法拿到Native所有Module的配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">const bridgeConfig = global.__fbBatchedBridgeConfig;</div><div class="line">  invariant(bridgeConfig, &apos;__fbBatchedBridgeConfig is not set, cannot invoke native modules&apos;);</div><div class="line"></div><div class="line">  const defineLazyObjectProperty = require(&apos;defineLazyObjectProperty&apos;);</div><div class="line">  (bridgeConfig.remoteModuleConfig || []).forEach((config: ModuleConfig, moduleID: number) =&gt; &#123;</div><div class="line">    const info = genModule(config, moduleID);</div><div class="line">    defineLazyObjectProperty(NativeModules, info.name, &#123;</div><div class="line">        get: () =&gt; loadModule(info.name, moduleID)</div><div class="line">      &#125;);</div><div class="line">  &#125;);</div></pre></td></tr></table></figure>
+<p><em>注册Module</em></p>
+<p>  RCT_EXPORT_MODULE()</p>
+<p><em>导出方法</em></p>
+<p>  RCT_EXPORT_METHOD() </p>
+<h4 id="ReactNativeUI渲染解析"><a href="#ReactNativeUI渲染解析" class="headerlink" title="ReactNativeUI渲染解析"></a>ReactNativeUI渲染解析</h4><p>React开发的页面，最终都会解析回原生的JS标签,最终组装成JSBundle，Native初始化后会加载JSBundle，并将UI逻辑一一解析成Native的原生控件，整个页面会拼装为一个Native的RootView。<br>这个过程需要解析JS的UI逻辑，于是RN定一个一个Module专门用来做UI解析，它就是UIManage,在JS是UIManager.js，在Native时RCTUIManager和RCTComponentData。<br>RCTComponentData组装Native各种视图控件，将所有视图组件的配置信息提供给JS，js根据native提供的配置信息，创建Native视图。</p>
+<p><strong>UIModule的组成</strong><br>UIModule包含RCTView和RCTViewManage,每个UIModule还对应一个RCTComponentData。RCTViewManage相当于Controller了，决定如何绘制RCTView。</p>
+<p><strong>管理UI组件生命周期的RCTUIManager和RCTComponentData</strong><br>RCTUIManager是一个ApiModule,所以他是被RCTModuleData管理，并被RCTBatchBridge持有。</p>
+<p>RCTUIManager在初始化的时候setBridge方法会被调用，在setBridge里会遍历所有的Module,找到所有继承自RCTViewModule的对象，然后以ModuleName为key缓存到_componentDataByName里</p>
+<p><strong>UI的创建和修改</strong><br>React.js里UI组件由各个component组成，component使用flexbox进行布局，最后会转换成绝对的位置、样式。<br>Native里会对React的每个组件都实现对应的一个View，每一个View会继承RCTViewManager，并通过RCT_EXPORT_MODULE注册成为一个module，我们可以称他们为UIModule。<br>当一个JS Component对象需要创建/改变自己的样式时，React会把需要渲染的所有component生成对应的JS Component配置，Native根据配置找到对应的RCTView,根据配置信息初始化Native的UI组件。</p>
+<p><strong>RN一个页面的渲染流程</strong></p>
+<p>1.[RCTRootView runApplication:bridge]<br>通知JS准备好可以开始渲染</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (void)runApplication:(RCTBridge *)bridge</div><div class="line">&#123;</div><div class="line">  NSString *moduleName = _moduleName ?: @&quot;&quot;;</div><div class="line">  NSDictionary *appParameters = @&#123;</div><div class="line">    @&quot;rootTag&quot;: _contentView.reactTag,</div><div class="line">    @&quot;initialProps&quot;: _appProperties ?: @&#123;&#125;,</div><div class="line">  &#125;;</div><div class="line">  [bridge enqueueJSCall:@&quot;AppRegistry&quot;</div><div class="line">                 method:@&quot;runApplication&quot;</div><div class="line">                   args:@[moduleName, appParameters]</div><div class="line">             completion:NULL];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>2.由JS调用createView方法创建每一个Native的View，这个方法里会根据viewName找到对应的RCTComponentData。<br>调用RCTComponentData的createShadowViewWithTag创建shadow view，缓存到_shadowViewRegistry里。<br>调用RCTComponentData的createViewWithTag创建view，缓存到_viewRegistry里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_METHOD(createView:(nonnull NSNumber *)reactTag</div><div class="line">                  viewName:(NSString *)viewName</div><div class="line">                  rootTag:(nonnull NSNumber *)rootTag</div><div class="line">                  props:(NSDictionary *)props)&#123;</div><div class="line">RCTComponentData *componentData = _componentDataByName[viewName];</div><div class="line">  // Register shadow view</div><div class="line">  RCTShadowView *shadowView = [componentData createShadowViewWithTag:reactTag];</div><div class="line">  if (shadowView) &#123;</div><div class="line">    [componentData setProps:props forShadowView:shadowView];</div><div class="line">    _shadowViewRegistry[reactTag] = shadowView;</div><div class="line">    RCTShadowView *rootView = _shadowViewRegistry[rootTag];</div><div class="line">    shadowView.rootView = (RCTRootShadowView *)rootView;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">    __weak RCTUIManager *weakManager = self;</div><div class="line">  RCTExecuteOnMainQueue(^&#123;</div><div class="line">    RCTUIManager *uiManager = weakManager;</div><div class="line">    UIView *view = [componentData createViewWithTag:reactTag];</div><div class="line">    if (view) &#123;</div><div class="line">      [componentData setProps:props forView:view]; // Must be done before bgColor to prevent wrong default</div><div class="line">      uiManager-&gt;_viewRegistry[reactTag] = view;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>3.调用_layoutAndMount对RCTRootView及其子视图进行布局。<br>在RCTUIManage-&gt;uiBlockWithLayoutUpdateForRootView-&gt;collectViewsWithUpdatedFrames，将flexbox布局协议解析为绝对布局的Frame,将每个视图的frame设置到对应的shaowView里。</p>
+<p>4.根据组件视图关系，由JS调用“setChildren”给每个View设置子Views。<br>其中创建一个View都会对应创建一个RCTShadowView，RCTShadowView保存View的布局关系和属性，管理View的加载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_METHOD(setChildren:(nonnull NSNumber *)containerTag</div><div class="line">                  reactTags:(NSArray&lt;NSNumber *&gt; *)reactTags)</div></pre></td></tr></table></figure></p>
+<p>5.通过RCTShadowView的processUpdatedProperties，调用每个View的didUpdateReactSubviews方法，添加各自的子视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (void)didUpdateReactSubviews</div><div class="line">&#123;</div><div class="line">  for (UIView *subview in self.reactSubviews) &#123;</div><div class="line">    [self addSubview:subview];</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>布局计算核心算法</strong><br>我们写React时使用的是flex布局或绝对布局，这部分布局代码会随着jsbundle通过Native的JS引擎加载。但Native是识别不了Flex布局协议，所以需要通过facebook的yoga开源库来解析flex布局协议成为绝对Native可以识别的绝对布局。</p>
+<ul>
+<li>YGNodeCalculateLayout<ul>
+<li>YGLayoutNodeInternal</li>
+<li>YGNodelayoutImpl<ul>
+<li>YGNodeWithMeasureFuncSetMeasuredDimensions 计算size</li>
+<li>YGNodeComputeFlexBasisForChild 计算child的布局</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>UI组件事件响应</strong><br>当RCTView组件触发了点击、滑动等触摸事件时，会通过bridge找倒自己的JSComponent,根据预先缓存的js callback函数，将参数传递给对应的React组件进行响应。</p>
+<p><strong>自定义UIModule组件</strong><br>1 创建RCTViewManager子类<br>a注册Module,使用RCT_EXPORT_MODULE注册宏<br>b实现视图创建的方法，’-(UIView *)view’<br>cJS层导入Native原生组件。在js模块的requireNativeComponent.js里操作UIManage导入。<br>2 创建属性<br>注册属性，使用RCT_EXPORT_VIEW_PROPERTY或RCT_CUSTOM_VIEW_PROPERTY<br>3 创建事件<br>注册事件，也是通过RCT_EXPORT_VIEW_PROPERTY，注册type为RCTBubblingEventBlock的事件属性<br>4 创建常量<br>a.native通过constantsToExport方法return一个NSDictionary注册常量<br>b.js通过UIManager.XXUIModule.Constants拿到注册的常量</p>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="https://github.com/facebook/react-native" target="_blank" rel="external">react-native</a><br><a href="http://blog.cnbang.net/tech/2698/" target="_blank" rel="external">React Native通信机制详解</a><br><a href="https://github.com/facebook/yoga" target="_blank" rel="external">yoga</a><br><a href="http://awhisper.github.io/2016/06/24/ReactNative流程源码分析/" target="_blank" rel="external">ReactNative源码分析</a><a href="http://www.cocoachina.com/programmer/20170505/19189.html" target="_blank" rel="external">从源码一步一步解析它的实现原理</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ww2.sinaimg.cn/large/006tNbRwgy1feav9se587j30kw0r2adr.jpg" alt="Blacktea wechat" style="width: 200px; max-width: 100%;"/>
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>记录生活于感悟，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="https://ww4.sinaimg.cn/large/006tNbRwgy1feav9e683oj30yi1e6q7b.jpg" alt="Blacktea WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="https://ww3.sinaimg.cn/large/006tNbRwgy1feav9mjqarj30p011iq6c.jpg" alt="Blacktea Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/24/react_render_concept/" rel="next" title="React源码的秘密">
+                <i class="fa fa-chevron-left"></i> React源码的秘密
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="Blacktea" />
+          <p class="site-author-name" itemprop="name">Blacktea</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/blackteachinese" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/your-user-name" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/your-user-name" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/your-user-name" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native-是什么"><span class="nav-number">1.</span> <span class="nav-text">React Native 是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native-的组成"><span class="nav-number">2.</span> <span class="nav-text">React Native 的组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JS模块"><span class="nav-number">2.1.</span> <span class="nav-text">JS模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JSBridge如何匹配和调用Native提供的能力"><span class="nav-number">2.1.1.</span> <span class="nav-text">JSBridge如何匹配和调用Native提供的能力</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MessageQueue实现了Native-call-JS的Api和js-call-native的机制"><span class="nav-number">2.1.2.</span> <span class="nav-text">MessageQueue实现了Native call JS的Api和js call native的机制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Native部分-OC"><span class="nav-number">2.2.</span> <span class="nav-text">Native部分(OC)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Module配置表生成流程解析"><span class="nav-number">2.2.1.</span> <span class="nav-text">Module配置表生成流程解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReactNativeUI渲染解析"><span class="nav-number">2.2.2.</span> <span class="nav-text">ReactNativeUI渲染解析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-number">3.</span> <span class="nav-text">Ref</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Blacktea</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

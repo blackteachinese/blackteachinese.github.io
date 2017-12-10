@@ -309,6 +309,528 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/11/26/react_native_ios_source_code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/26/react_native_ios_source_code/" itemprop="url">
+                  ReactNative到底做了什么？
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-26T12:35:00+08:00">
+                2017-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="React-Native-是什么"><a href="#React-Native-是什么" class="headerlink" title="React Native 是什么"></a>React Native 是什么</h2><p>react.js是一个流行的前端开发框架，相信大家都有了解，它用了flexbox布局技术、jsx等语法糖的技术，这让前端同学能象喝茶一样轻松地开发H5页面。React本来是用来开发h5页面，facebook的工程师们，希望做一套能同时运行在iOS和Android的高性能开发框架，就将React render()方法渲染出来的js代码通过JSbridge加载到native，native再通过JSCore和V8这两个js解析引擎，解析为native的页面。</p>
+<h2 id="React-Native-的组成"><a href="#React-Native-的组成" class="headerlink" title="React Native 的组成"></a>React Native 的组成</h2><p>ReactNative功能结构可以分为两部分，JS模块和Native模块。JS模块和Native模块都有Bridge组件，两端的Bridge遵守一套通信协议、通信机制，从而实现了js和native的无缝连接。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmacuj6ha9j31f412uwk4.jpg" alt=""></p>
+<h3 id="JS模块"><a href="#JS模块" class="headerlink" title="JS模块"></a>JS模块</h3><p>JS模块主要由React.js框架和JSBridge两部分组成，React.js是开发UI逻辑的框架，而JSBridge包含管理NativeModel配置的NativeModules和管理js、native双向通信的MessageQueue。</p>
+<h4 id="JSBridge如何匹配和调用Native提供的能力"><a href="#JSBridge如何匹配和调用Native提供的能力" class="headerlink" title="JSBridge如何匹配和调用Native提供的能力"></a>JSBridge如何匹配和调用Native提供的能力</h4><p>Nativebridge初始化时会把Native能提供给JS的所有能力Module按约定好的方式序列化为一个对象‘__fbBatchedBridgeConfig’，设置到JS的全局对象global里。</p>
+<p>JSBridge封装了NativeModules对象，NativeModules会读取__fbBatchedBridgeConfig的bridgep配置，组装成方便js调用的映射对象.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">let NativeModules : &#123;[moduleName: string]: Object&#125; = &#123;&#125;;</div><div class="line">const bridgeConfig = global.__fbBatchedBridgeConfig;</div><div class="line">(bridgeConfig.remoteModuleConfig || []).forEach((config: ModuleConfig, moduleID: number) =&gt; &#123;</div><div class="line">    // configuration of the module will be lazily loaded.</div><div class="line">    const info = genModule(config, moduleID);</div><div class="line">    if (info.module) &#123;</div><div class="line">      NativeModules[info.name] = info.module;</div><div class="line">    &#125;</div><div class="line">    // If there&apos;s no module config, define a lazy getter</div><div class="line">    else &#123;</div><div class="line">      defineLazyObjectProperty(NativeModules, info.name, &#123;</div><div class="line">        get: () =&gt; loadModule(info.name, moduleID)</div><div class="line">      &#125;);</div><div class="line">    &#125;</div><div class="line">  &#125;);</div></pre></td></tr></table></figure>
+<p>js组件通过methodName可以调用Native提供的各项能力。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NativeModules.DialogManagerAndroid.showAlert();</div></pre></td></tr></table></figure>
+<h4 id="MessageQueue实现了Native-call-JS的Api和js-call-native的机制"><a href="#MessageQueue实现了Native-call-JS的Api和js-call-native的机制" class="headerlink" title="MessageQueue实现了Native call JS的Api和js call native的机制"></a>MessageQueue实现了Native call JS的Api和js call native的机制</h4><p>MessageQueue里有4个暴露给Native调用的API<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">flushedQueue()</div><div class="line">invokeCallbackAndReturnFlushedQueue(cbID: number, args: any[])</div><div class="line">callFunctionReturnFlushedQueue(module: string, method: string, args: any[])</div><div class="line">callFunctionReturnResultAndFlushedQueue(module: string,method: string,args: any[],)</div></pre></td></tr></table></figure></p>
+<p><strong>Native想要调用JS的方法</strong><br>JS也会通过Module封装提供给Native调用的组件和方法，当native需要主动调用时就会call”callFunctionReturnFlushedQueue”和“callFunctionReturnResultAndFlushedQueue”，并传递module、method做为找到对应方法的钥匙。</p>
+<p><strong>JS想要调用Native的方法</strong><br>事实上JS不能直接调用Native的方法，RN里设置了被动调用的机制来实现相同的功能。<br>当JS要调用Native的方法时，会通过enqueueNativeCall把moduleID和methodID放到队列this._queue里，调用成功和失败的Callback放到this._successCallbacks和this._failureCallbacks里。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">enqueueNativeCall(moduleID: number,methodID: number,params: any[],onFail: ?Function,onSucc: ?Function,)</div></pre></td></tr></table></figure>
+<p>每次Native调用JS时，都会把this._queue的消息通过返回值传递给Native,Native拿到消息队列后就会执行MessageQueue里对应的Native方法。</p>
+<p>TODO: js要调用Native时方法注入queue的时机？</p>
+<p><strong>调用Native方法执行后的回调</strong><br>native暴露给js调用的方法，可以使用RCTResponseSenderBlock对象做为参数实现回调的功能。RCTResponseSenderBlock执行最后会调用到invokeCallbackAndReturnFlushedQueue方法,回调MessageQueue里成功或失败的回调。</p>
+<p><strong>JS消息队列超过5ms还未被调用</strong><br>当JS通过enqueueNativeCall注入需要被Native调用的方法时，需要等待native来拉去消息队列。如果native一直不过来拉消息怎么办呢？在enqueueNativeCall注入时有一个保障机制，如果距离上次消息队列被拉去超过5ms，就会调用‘global.nativeFlushQueueImmediate(queue)’方法，启用JS强制让Native拉去的机制。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">if (global.nativeFlushQueueImmediate &amp;&amp; (now - this._lastFlush &gt;= MIN_TIME_BETWEEN_FLUSHES_MS || this._inCall === 0)</div><div class="line">  ) &#123;</div><div class="line">    var queue = this._queue;</div><div class="line">    this._queue = [[], [], [], this._callID];</div><div class="line">    this._lastFlush = now;</div><div class="line">    global.nativeFlushQueueImmediate(queue);</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<h3 id="Native部分-OC"><a href="#Native部分-OC" class="headerlink" title="Native部分(OC)"></a>Native部分(OC)</h3><p>native部分可分为OC bridge和一系列基础Module和自定义的扩展Module.</p>
+<p><strong>Module</strong><br>每一个Module都会根据约定的协议去注册，Bridge初始化时就会读取Navtive所有的Module，序列化为配置表，并将这部分配置信息传递到JS模块，JS也会生成一一对应配置表，这样无论是js想调用native的api,还是native想调用js的api都可以找到。</p>
+<p><strong>NativeBridge</strong><br>Nativebridge需要做很多事情，它包含了JSbundle加载、初始化缓存Module组件、管控js和oc之间消息传递的分发。</p>
+<p>下面是NativeBridge初始化的过程</p>
+<ul>
+<li>RCTRootView 根视图<ul>
+<li>RCTBridge 桥的抽象类。持有BatchBridge，将核心逻辑转发给BatchBridge实现<ul>
+<li>RCTBatchBridge 负责主要核心功能的初始化<ul>
+<li>RCTJavaScriptLoader 加载JSBundle</li>
+<li>RCTDisplayLink 提供屏幕渲染频率的回调，为timer和桢动画等组件提供支持</li>
+<li>RCTModuleData 所有的RN组件UI或Api，都是RCTModuleData<ul>
+<li>RCTJSCExecutor 一个特殊的RCTModuleData，维护一个独立线程处理JS代码执行和js回调，是bridge的核心通道</li>
+<li>RCTEventDispatcher UIModule触发点击事件后先通过EventDispatcher的api进行事件分发，再传到JSCExecutor找到JS模块的回调函数，最后通知js进行处理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Module配置表生成流程解析"><a href="#Module配置表生成流程解析" class="headerlink" title="Module配置表生成流程解析"></a>Module配置表生成流程解析</h4><p>RCTModuleData是组装native的功能模块，提供给JS调用</p>
+<p><em>native导出注册的Modules给JS</em></p>
+<p>RCTRootView初始化流程</p>
+<ul>
+<li>初始化Module</li>
+<li>生成Module配置表</li>
+<li>将Module配置表注入到JS里</li>
+<li>JS读取Module配置</li>
+</ul>
+<p>初始化Module<br>从RCTModuleClasses拿到所有Moduled的Class,各自创建RCTModuleData，并将创建后的module保存到moduleClassesByID、moduleDataByID、moduleDataByName三个集合进行缓存</p>
+<p>生成Module配置表<br>RCTBatchBridge会循环moduleDataByID数组表，把每一个APIModule的name都写进数组，然后写进key为remoteModuleConfig的字典，最后序列化成JS</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;remoteModuleConfig&quot;:[[&quot;VKAlertModule&quot;],</div><div class="line">[&quot;RCTFileRequestHandler&quot;],</div><div class="line">[&quot;RCTDataRequestHandler&quot;],</div><div class="line">...]&#125;</div></pre></td></tr></table></figure>
+<p>moduleConfigInject</p>
+<p>将所有module名注入到__fbBatchedBridgeConfig<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;remoteModuleConfig&quot;:[[&quot;JSCExecutor&quot;],[&quot;AccessibilityManager&quot;],[&quot;ViewManager&quot;],[&quot;ActivityIndicatorViewManager&quot;],[&quot;AlertManager&quot;],[&quot;AppState&quot;],[&quot;AsyncLocalStorage&quot;],[&quot;BlobModule&quot;],[&quot;Clipboard&quot;],[&quot;DataRequestHandler&quot;],[&quot;DatePickerManager&quot;],[&quot;DeviceInfo&quot;],[&quot;DevLoadingView&quot;],[&quot;DevMenu&quot;],[&quot;DevSettings&quot;],[&quot;EventDispatcher&quot;],[&quot;ExceptionsManager&quot;],[&quot;FileRequestHandler&quot;],[&quot;HTTPRequestHandler&quot;],[&quot;I18nManager&quot;],[&quot;JSCSamplingProfiler&quot;],[&quot;KeyboardObserver&quot;],[&quot;MaskedViewManager&quot;],[&quot;ModalHostViewManager&quot;],[&quot;ModalManager&quot;],[&quot;NavigatorManager&quot;],[&quot;NavItemManager&quot;],[&quot;NetInfo&quot;],[&quot;Networking&quot;],[&quot;PerfMonitor&quot;],[&quot;PickerManager&quot;],[&quot;PlatformConstants&quot;],[&quot;ProgressViewManager&quot;],[&quot;RawTextManager&quot;],[&quot;RedBox&quot;],[&quot;RefreshControlManager&quot;],[&quot;SafeAreaViewManager&quot;],[&quot;ScrollContentViewManager&quot;],[&quot;ScrollViewManager&quot;],[&quot;SegmentedControlManager&quot;],[&quot;SliderManager&quot;],[&quot;SourceCode&quot;],[&quot;StatusBarManager&quot;],[&quot;SwitchManager&quot;],[&quot;TabBarItemManager&quot;],[&quot;TabBarManager&quot;],[&quot;TextFieldManager&quot;],[&quot;TextManager&quot;],[&quot;TextViewManager&quot;],[&quot;Timing&quot;],[&quot;TVNavigationEventEmitter&quot;],[&quot;UIManager&quot;],[&quot;WebSocketExecutor&quot;],[&quot;WebSocketModule&quot;],[&quot;WebViewManager&quot;]]&#125;</div></pre></td></tr></table></figure></p>
+<p>遍历所有Module,将每个Module被注册的method配置，注入到JSContext的nativeRequireModuleConfig里。的block注入到js的global全局对象里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">context[@&quot;nativeRequireModuleConfig&quot;] = ^NSArray *(NSString *moduleName) &#123;</div><div class="line">      RCTJSCExecutor *strongSelf = weakSelf;</div><div class="line">      NSArray *result = [strongSelf-&gt;_bridge configForModuleName:moduleName];</div><div class="line">      return RCTNullIfNil(result);</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<p>JS读取Module配置</p>
+<p>JS加载时NativeModules.js会执行一段脚本，先通过global.__fbBatchedBridgeConfig获取Native所有Module的列表，再通过’global.nativeRequireModuleConfig’方法拿到Native所有Module的配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">const bridgeConfig = global.__fbBatchedBridgeConfig;</div><div class="line">  invariant(bridgeConfig, &apos;__fbBatchedBridgeConfig is not set, cannot invoke native modules&apos;);</div><div class="line"></div><div class="line">  const defineLazyObjectProperty = require(&apos;defineLazyObjectProperty&apos;);</div><div class="line">  (bridgeConfig.remoteModuleConfig || []).forEach((config: ModuleConfig, moduleID: number) =&gt; &#123;</div><div class="line">    const info = genModule(config, moduleID);</div><div class="line">    defineLazyObjectProperty(NativeModules, info.name, &#123;</div><div class="line">        get: () =&gt; loadModule(info.name, moduleID)</div><div class="line">      &#125;);</div><div class="line">  &#125;);</div></pre></td></tr></table></figure>
+<p><em>注册Module</em></p>
+<p>  RCT_EXPORT_MODULE()</p>
+<p><em>导出方法</em></p>
+<p>  RCT_EXPORT_METHOD() </p>
+<h4 id="ReactNativeUI渲染解析"><a href="#ReactNativeUI渲染解析" class="headerlink" title="ReactNativeUI渲染解析"></a>ReactNativeUI渲染解析</h4><p>React开发的页面，最终都会解析回原生的JS标签,最终组装成JSBundle，Native初始化后会加载JSBundle，并将UI逻辑一一解析成Native的原生控件，整个页面会拼装为一个Native的RootView。<br>这个过程需要解析JS的UI逻辑，于是RN定一个一个Module专门用来做UI解析，它就是UIManage,在JS是UIManager.js，在Native时RCTUIManager和RCTComponentData。<br>RCTComponentData组装Native各种视图控件，将所有视图组件的配置信息提供给JS，js根据native提供的配置信息，创建Native视图。</p>
+<p><strong>UIModule的组成</strong><br>UIModule包含RCTView和RCTViewManage,每个UIModule还对应一个RCTComponentData。RCTViewManage相当于Controller了，决定如何绘制RCTView。</p>
+<p><strong>管理UI组件生命周期的RCTUIManager和RCTComponentData</strong><br>RCTUIManager是一个ApiModule,所以他是被RCTModuleData管理，并被RCTBatchBridge持有。</p>
+<p>RCTUIManager在初始化的时候setBridge方法会被调用，在setBridge里会遍历所有的Module,找到所有继承自RCTViewModule的对象，然后以ModuleName为key缓存到_componentDataByName里</p>
+<p><strong>UI的创建和修改</strong><br>React.js里UI组件由各个component组成，component使用flexbox进行布局，最后会转换成绝对的位置、样式。<br>Native里会对React的每个组件都实现对应的一个View，每一个View会继承RCTViewManager，并通过RCT_EXPORT_MODULE注册成为一个module，我们可以称他们为UIModule。<br>当一个JS Component对象需要创建/改变自己的样式时，React会把需要渲染的所有component生成对应的JS Component配置，Native根据配置找到对应的RCTView,根据配置信息初始化Native的UI组件。</p>
+<p><strong>RN一个页面的渲染流程</strong></p>
+<p>1.[RCTRootView runApplication:bridge]<br>通知JS准备好可以开始渲染</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (void)runApplication:(RCTBridge *)bridge</div><div class="line">&#123;</div><div class="line">  NSString *moduleName = _moduleName ?: @&quot;&quot;;</div><div class="line">  NSDictionary *appParameters = @&#123;</div><div class="line">    @&quot;rootTag&quot;: _contentView.reactTag,</div><div class="line">    @&quot;initialProps&quot;: _appProperties ?: @&#123;&#125;,</div><div class="line">  &#125;;</div><div class="line">  [bridge enqueueJSCall:@&quot;AppRegistry&quot;</div><div class="line">                 method:@&quot;runApplication&quot;</div><div class="line">                   args:@[moduleName, appParameters]</div><div class="line">             completion:NULL];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>2.由JS调用createView方法创建每一个Native的View，这个方法里会根据viewName找到对应的RCTComponentData。<br>调用RCTComponentData的createShadowViewWithTag创建shadow view，缓存到_shadowViewRegistry里。<br>调用RCTComponentData的createViewWithTag创建view，缓存到_viewRegistry里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_METHOD(createView:(nonnull NSNumber *)reactTag</div><div class="line">                  viewName:(NSString *)viewName</div><div class="line">                  rootTag:(nonnull NSNumber *)rootTag</div><div class="line">                  props:(NSDictionary *)props)&#123;</div><div class="line">RCTComponentData *componentData = _componentDataByName[viewName];</div><div class="line">  // Register shadow view</div><div class="line">  RCTShadowView *shadowView = [componentData createShadowViewWithTag:reactTag];</div><div class="line">  if (shadowView) &#123;</div><div class="line">    [componentData setProps:props forShadowView:shadowView];</div><div class="line">    _shadowViewRegistry[reactTag] = shadowView;</div><div class="line">    RCTShadowView *rootView = _shadowViewRegistry[rootTag];</div><div class="line">    shadowView.rootView = (RCTRootShadowView *)rootView;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">    __weak RCTUIManager *weakManager = self;</div><div class="line">  RCTExecuteOnMainQueue(^&#123;</div><div class="line">    RCTUIManager *uiManager = weakManager;</div><div class="line">    UIView *view = [componentData createViewWithTag:reactTag];</div><div class="line">    if (view) &#123;</div><div class="line">      [componentData setProps:props forView:view]; // Must be done before bgColor to prevent wrong default</div><div class="line">      uiManager-&gt;_viewRegistry[reactTag] = view;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>3.调用_layoutAndMount对RCTRootView及其子视图进行布局。<br>在RCTUIManage-&gt;uiBlockWithLayoutUpdateForRootView-&gt;collectViewsWithUpdatedFrames，将flexbox布局协议解析为绝对布局的Frame,将每个视图的frame设置到对应的shaowView里。</p>
+<p>4.根据组件视图关系，由JS调用“setChildren”给每个View设置子Views。<br>其中创建一个View都会对应创建一个RCTShadowView，RCTShadowView保存View的布局关系和属性，管理View的加载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RCT_EXPORT_METHOD(setChildren:(nonnull NSNumber *)containerTag</div><div class="line">                  reactTags:(NSArray&lt;NSNumber *&gt; *)reactTags)</div></pre></td></tr></table></figure></p>
+<p>5.通过RCTShadowView的processUpdatedProperties，调用每个View的didUpdateReactSubviews方法，添加各自的子视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (void)didUpdateReactSubviews</div><div class="line">&#123;</div><div class="line">  for (UIView *subview in self.reactSubviews) &#123;</div><div class="line">    [self addSubview:subview];</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>布局计算核心算法</strong><br>我们写React时使用的是flex布局或绝对布局，这部分布局代码会随着jsbundle通过Native的JS引擎加载。但Native是识别不了Flex布局协议，所以需要通过facebook的yoga开源库来解析flex布局协议成为绝对Native可以识别的绝对布局。</p>
+<ul>
+<li>YGNodeCalculateLayout<ul>
+<li>YGLayoutNodeInternal</li>
+<li>YGNodelayoutImpl<ul>
+<li>YGNodeWithMeasureFuncSetMeasuredDimensions 计算size</li>
+<li>YGNodeComputeFlexBasisForChild 计算child的布局</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>UI组件事件响应</strong><br>当RCTView组件触发了点击、滑动等触摸事件时，会通过bridge找倒自己的JSComponent,根据预先缓存的js callback函数，将参数传递给对应的React组件进行响应。</p>
+<p><strong>自定义UIModule组件</strong><br>1 创建RCTViewManager子类<br>a注册Module,使用RCT_EXPORT_MODULE注册宏<br>b实现视图创建的方法，’-(UIView *)view’<br>cJS层导入Native原生组件。在js模块的requireNativeComponent.js里操作UIManage导入。<br>2 创建属性<br>注册属性，使用RCT_EXPORT_VIEW_PROPERTY或RCT_CUSTOM_VIEW_PROPERTY<br>3 创建事件<br>注册事件，也是通过RCT_EXPORT_VIEW_PROPERTY，注册type为RCTBubblingEventBlock的事件属性<br>4 创建常量<br>a.native通过constantsToExport方法return一个NSDictionary注册常量<br>b.js通过UIManager.XXUIModule.Constants拿到注册的常量</p>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="https://github.com/facebook/react-native" target="_blank" rel="external">react-native</a><br><a href="http://blog.cnbang.net/tech/2698/" target="_blank" rel="external">React Native通信机制详解</a><br><a href="https://github.com/facebook/yoga" target="_blank" rel="external">yoga</a><br><a href="http://awhisper.github.io/2016/06/24/ReactNative流程源码分析/" target="_blank" rel="external">ReactNative源码分析</a><a href="http://www.cocoachina.com/programmer/20170505/19189.html" target="_blank" rel="external">从源码一步一步解析它的实现原理</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/11/24/react_render_concept/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/24/react_render_concept/" itemprop="url">
+                  React源码的秘密
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-24T20:35:00+08:00">
+                2017-11-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="React-Render-Mechanism-渲染机制"><a href="#React-Render-Mechanism-渲染机制" class="headerlink" title="React Render Mechanism 渲染机制"></a>React Render Mechanism 渲染机制</h2><h3 id="Render-analyse"><a href="#Render-analyse" class="headerlink" title="Render  analyse"></a>Render  analyse</h3><h4 id="Render-DOM-implement-analyse"><a href="#Render-DOM-implement-analyse" class="headerlink" title="Render DOM implement analyse"></a>Render DOM implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOM example:</div><div class="line"></div><div class="line">var element = React.createElement(&apos;div&apos;,&#123;id:&apos;test&apos;,onclick:hello&#125;,&apos;click me&apos;)</div><div class="line">React.render(element,document.getElementById(&quot;container&quot;))</div></pre></td></tr></table></figure>
+<p>React.createElement:</p>
+<p>use createElement function to create a virtual dom -&gt; React.createElement</p>
+<ul>
+<li>keep the key to identify element</li>
+<li>copy the config(attributes) to the props</li>
+<li>copy the children to the props.children</li>
+<li>call ReactElement function and send ‘type’,’key’,’props’ for initial a element object</li>
+</ul>
+<p>React.render:</p>
+<ul>
+<li>instantiateReactComponent<ul>
+<li>init component instance </li>
+</ul>
+</li>
+<li>mountComponent<ul>
+<li>render component instance to html content</li>
+</ul>
+</li>
+</ul>
+<p>instantiateReactComponent:</p>
+<ul>
+<li>return ReactDOMTextComponent <ul>
+<li>if(typeof node === ‘string’ || typeof node === ‘number’) </li>
+</ul>
+</li>
+<li>return ReactDOMComponent<ul>
+<li>if(typeof node === ‘object’ &amp;&amp; typeof node.type === ‘string’)</li>
+</ul>
+</li>
+<li>return new ReactCompositeComponent <ul>
+<li>if(typeof node === ‘object’ &amp;&amp; typeof node.type === ‘function’)</li>
+</ul>
+</li>
+</ul>
+<p>ReactDOMComponent.prototype.mountComponent: 浏览器默认元素</p>
+<ul>
+<li>assign type : tagOpen = ‘&lt;’ + ‘dic’</li>
+<li>add props : tagOpen += propKey + props[propKey]</li>
+<li>recursive child node to be content : each(content += childComponentInstance.mountComponent)</li>
+<li>result : tagOpen + ‘&gt;’ + content + tagClose</li>
+</ul>
+<h4 id="Render-Composite-implement-analyse"><a href="#Render-Composite-implement-analyse" class="headerlink" title="Render Composite implement analyse"></a>Render Composite implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">var HelloMessage = React.createClass(&#123;</div><div class="line">  getInitialState: function() &#123;</div><div class="line">    return &#123;type: &apos;say:&apos;&#125;;</div><div class="line">  &#125;,</div><div class="line">  componentWillMount: function() &#123;</div><div class="line">    console.log(&apos;我就要开始渲染了。。。&apos;)</div><div class="line">  &#125;,</div><div class="line">  componentDidMount: function() &#123;</div><div class="line">    console.log(&apos;我已经渲染好了。。。&apos;)</div><div class="line">  &#125;,</div><div class="line">  render: function() &#123;</div><div class="line">    return React.createElement(&quot;div&quot;, null,this.state.type, &quot;Hello &quot;, this.props.name);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"></div><div class="line">React.render(React.createElement(HelloMessage, &#123;name: &quot;John&quot;&#125;), document.getElementById(&quot;container&quot;));</div></pre></td></tr></table></figure>
+<p>React.createClass</p>
+<ul>
+<li>Constructor a child class</li>
+<li>inserit to ReactClasss <ul>
+<li>Constructor.prototype = new ReactClass();</li>
+</ul>
+</li>
+<li>extend Constructor.prototype,spec</li>
+</ul>
+<p>ReactCompositeComponent.prototype.mountComponent</p>
+<ul>
+<li>initialize public class  by ‘ReactClass’ function <ul>
+<li>var inst = new ReactClass(publicProps);</li>
+</ul>
+</li>
+<li>life cycle callback <ul>
+<li>inst.componentWillMount()</li>
+</ul>
+</li>
+<li>call render to instance a  element<ul>
+<li>renderedElement = inst.render() 返回的可能是一个DOM element</li>
+</ul>
+</li>
+<li>getting component instance<ul>
+<li>renderedComponentInstance = instantiateReactComponent(renderedElement)</li>
+</ul>
+</li>
+<li>get rendered result by renderedComponentInstance<ul>
+<li>renderedComponentInstance.mountComponent</li>
+</ul>
+</li>
+<li>life cycle callback<ul>
+<li>inst.componentDidMount()</li>
+</ul>
+</li>
+</ul>
+<h2 id="React-Native-ReRender-mechanism-重新渲染机制"><a href="#React-Native-ReRender-mechanism-重新渲染机制" class="headerlink" title="React Native ReRender mechanism 重新渲染机制"></a>React Native ReRender mechanism 重新渲染机制</h2><p>ReactClass.prototype.setState</p>
+<ul>
+<li>call ‘this._reactInternalInstance.receiveComponent(null, newState);’</li>
+</ul>
+<h3 id="All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update"><a href="#All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update" class="headerlink" title="All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update."></a>All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update.</h3><p>ReactCompositeComponent.prototype.receiveComponent</p>
+<ul>
+<li>update element 更新element对象</li>
+<li>bind the new state and props 生成心的state和props</li>
+<li>judge whether update or reRender the element by type and key</li>
+</ul>
+<p>ReactDOMTextComponent.prototype.receiveComponent </p>
+<ul>
+<li>if the text string is change, update content of the node 如果text的内容有变化，刷新节点</li>
+</ul>
+<p>ReactDOMComponent.prototype.receiveComponent</p>
+<ul>
+<li>update element 更新element对象</li>
+<li>updateDOMProperties 更新属性</li>
+<li>updateDOMChildren 更新子节点</li>
+</ul>
+<h3 id="implementation-of-DomComponent-RecevieComponent"><a href="#implementation-of-DomComponent-RecevieComponent" class="headerlink" title="implementation of DomComponent RecevieComponent"></a>implementation of DomComponent RecevieComponent</h3><p>ReactDOMComponent.prototype._updateDOMProperties</p>
+<ul>
+<li>remove the old attribute</li>
+<li>remove the event monitor</li>
+<li>add the new attribute</li>
+<li>add the new event monitor</li>
+</ul>
+<p>ReactDOMComponent.prototype._updateDOMChildren</p>
+<ul>
+<li>diff<ul>
+<li>user diff algorithm the find out diffrence and add the diffrence to the diffQueue</li>
+</ul>
+</li>
+<li>patch<ul>
+<li>traversal diffQueue for removing the changed node ， inserting the new note and inserting the modified node</li>
+</ul>
+</li>
+</ul>
+<h3 id="analyse-diff-and-patch"><a href="#analyse-diff-and-patch" class="headerlink" title="analyse diff and patch"></a>analyse diff and patch</h3><p>ReactDOMComponent.prototype._diff</p>
+<ul>
+<li>getting the previous component of childrend</li>
+<li>generating the next component of childrend</li>
+<li>assign the new children</li>
+<li>compare the previous and next components<ul>
+<li>previous Child handle <ul>
+<li>if these is the same component and element , move it (MOVE_EXISTING)</li>
+<li>if these is the same component but not the same element, remove element (REMOVE_NODE)<ul>
+<li>remove event monitor of previous child</li>
+</ul>
+</li>
+<li>if a previous child which was not exist in nest queue, delete the component</li>
+</ul>
+</li>
+<li>next child handle<ul>
+<li>add the new node (INSERT_MARKUP)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>ReactDOMComponent.prototype._patch</p>
+<ul>
+<li>delete REMOVE_NODE nodes</li>
+<li>delete MOVE_EXISTING nodes</li>
+<li>insert INSERT_MARKUP nodes</li>
+<li>insert MOVE_EXISTING nodes</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_one/" target="_blank" rel="external">reactjs源码分析-上篇</a><br><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_two/" target="_blank" rel="external">reactjs源码分析-下篇（更新机制实现原理）</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/11/02/ios_iOS11_iphoneX_problem/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -576,7 +1098,8 @@
       
         
           
-            <p>iOS常用的多线程技术有NSThread、GCD、pthread、NSOperation几种技术。之前看过一些开发者对这几种技术做过实验测试，得出具体的数据比较。但仅仅统计一定数量级别的运行效率对实际应用没有太大的指导性意义，最好是能模拟实际场景的线程环境来做测试。</p>
+            <p>我们在衡量某项技术、开源组件的性能时经常会设计一些对比实验来做验证。这种对比实验就像田径比赛，几个人一起赛跑，谁跑得快就是冠军。我们开发的功能可以跑在不同的硬件条件的设备，一般我们会选择条件最差的设备，或者我们业务应该支持的最差设备来做实验。但软件功能所承载的业务场景通常也比较多变，就像一个运动员要跑100米、800米、3000米，设计单一的条件最后做出来的实验结果可能没有太大意义。比如做iOS多线程技术性能的对比实验时，如果这样设计初始条件“控制线程数为20个、1000次线程任务循环次数“，最终得到的实验结果对工程开发的指导意义就不够。不同业务场景条件差别其实很大，比如IM、位置实时更新、抢订单属于高频率、低任务耗时，而数据库等IO操作属于低频率、高任务耗时。所以我们需要归纳各种多线程场景，使用多因素设计，设计多个自变量。还是回到多线程性能实验的例子。自变量：线程数、任务耗时、任务数。自变量的条件要能覆盖常用的业务场景，线程数：5～15～30，任务数：1000～10000～100000，任务耗时：1～5～10毫秒。最终得出来的实验结果也可以较准确得命中各种实际使用场景。</p>
+<p>iOS常用的多线程技术有NSThread、GCD、pthread、NSOperation几种技术。之前看过一些开发者对这几种技术做过实验测试，得出具体的数据比较。但仅仅统计一定数量级别的运行效率对实际应用没有太大的指导性意义，最好是能模拟实际场景的线程环境来做测试。</p>
 <p>那不同场景的因子有什么呢？<br>并发频率高低、任务耗时长短、稳定性</p>
 <p>对应的测试关注点是什么？<br>并发频率高低：统计多个线程并发运行，最后全部运行完成的耗时长短<br>任务耗时长短：统计单个线程里不同耗时任务的完成时间<br>稳定性：进行多次实验，统计数据的变动区间</p>
 <p>分析出上面测试关注点后，我们可以开始来设计实验了。</p>
@@ -918,175 +1441,6 @@
 <h2 id="UrlEncode编码原理"><a href="#UrlEncode编码原理" class="headerlink" title="UrlEncode编码原理"></a>UrlEncode编码原理</h2><p>编码原理：<br>将需要转码的字符转为16进制，然后从右到左，取4位(不足4位直接处理)，每2位做一位，前面加上%，编码成%XY格式。</p>
 <p>比如：<br>空格ASCII码是32，对应16进制是20，那么urlencode编码结果是:%20<br>比如：<br>中ASCII码是-10544，对应的16进制是FFFFFFFFFFFFD6D0，那么urlencode编码结果是:%D6%D0</p>
 <p>URI统一资源标识符里允许的所有字符里，分为保留字符和非保留字符。百分号编码(Percent-encoding)会把保留字符转义为特殊字符序列。<br><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1fkvva3w5xnj30k60er76g.jpg" alt=""><br><a href="https://baike.baidu.com/item/urlencode" target="_blank" rel="external">百度百科urlencode</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/10/24/iOS_device_pixel/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/24/iOS_device_pixel/" itemprop="url">
-                  iPhone的屏幕像素
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-24T17:11:00+08:00">
-                2017-10-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="iPhone设备的尺寸分辨率表"><a href="#iPhone设备的尺寸分辨率表" class="headerlink" title="iPhone设备的尺寸分辨率表"></a>iPhone设备的尺寸分辨率表</h2><p><img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fktgi7tz7zj30ey05ogm4.jpg" alt=""></p>
-<h3 id="分辨率"><a href="#分辨率" class="headerlink" title="分辨率"></a>分辨率</h3><p>分辨率就是屏幕上横、纵的总象素点数</p>
-<h3 id="物理分辨率"><a href="#物理分辨率" class="headerlink" title="物理分辨率"></a>物理分辨率</h3><ul>
-<li>单位px</li>
-<li>上图physic pixel都是物理分辨率</li>
-</ul>
-<h3 id="逻辑分辨率"><a href="#逻辑分辨率" class="headerlink" title="逻辑分辨率"></a>逻辑分辨率</h3><ul>
-<li>单位pt</li>
-</ul>
-<h2 id="iPhone-6"><a href="#iPhone-6" class="headerlink" title="iPhone 6+"></a>iPhone 6+</h2><p>除了iPhone 6+，其他所有iPhone的PPI都是326，用@2x的素材。而6+的PPI是401，理论上应该用401/326*@2=@2.46的素材。但是这个比例很难切图，所以苹果让6+用@3x的素材，然后再将@3x缩放87%到@2.46。<br>按照这个逻辑，物理分辨率/虚拟分辨率=87%。</p>
-<p>虚拟分辨率高度= 1920/0.87 = 2208<br>虚拟分辨率宽度= 1080/0.87 = 1242</p>
-<p>这样开发的时候针对6+就准备@3x的素材就好了</p>
-<h2 id="基本单位"><a href="#基本单位" class="headerlink" title="基本单位"></a>基本单位</h2><p><strong>英寸</strong><br>1 inch = 2.54cm = 25.4mm<br><strong>屏幕尺寸</strong><br>我们通常所说的iPhone5屏幕尺寸为4英寸、iPhone6屏幕尺寸为4.7英寸，指的是显示屏对角线的长度（diagonal）。<br><strong>像素密度PPI</strong><br>PPI（Pixel Per Inch by diagonal）：表示沿着对角线，每英寸所拥有的像素（Pixel）数目。<br>PPI数值越高，代表显示屏能够以越高的密度显示图像，即通常所说的分辨率越高、颗粒感越弱。<br><strong>缩放因子Scale</strong></p>
-<p>Scale的起源</p>
-<ul>
-<li>早期的iPhone3GS的屏幕分辨率是320*480（PPI=163），iOS绘制图形（CGPoint/CGSize/CGRect）均以point为单位（measured in points）：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">1 point = 1 pixel（Point Per Inch=Pixel Per Inch=PPI）</div></pre></td></tr></table></figure>
-<ul>
-<li>后来在iPhone4中，同样大小（3.5 inch）的屏幕采用了Retina显示技术，横、纵向方向像素密度都被放大到2倍，像素分辨率提高到(320x2)x(480x2) = 960x640，PPI从163提升2倍到326（PPI=326），显像分辨率提升至iPhone3GS的4倍（1个Point被渲染成1个2x2的像素矩阵）。<br>  但是对于开发者来说，iOS绘制图形的API依然沿袭point(pt，注意区分印刷行业的“磅”)为单位。在同样的逻辑坐标系下（320x480）：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1 point = scale*pixel</div><div class="line">（在iPhone4~6中，缩放因子scale=2；在iPhone6+中，缩放因子scale=3）。</div></pre></td></tr></table></figure>
-<ul>
-<li>scale计算公式：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scale=绝对长度比（point/pixel）=单位长度内的数量比（pixel/point）</div></pre></td></tr></table></figure>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://zhuanlan.zhihu.com/zhezhexiong/19565895" target="_blank" rel="external">dp、sp、px傻傻分不清楚</a></p>
 
           
         
@@ -1755,180 +2109,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/15/iOS_coding_rule/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/09/15/iOS_coding_rule/" itemprop="url">
-                  iOS最容易违反的代码规范
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-15T21:39:27+08:00">
-                2017-09-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><p><strong>常量和枚举添加3个（2个是预留给Apple的）大写字符做为前缀</strong></p>
-<p><strong>如果方法返回接收者的某个属性，则以属性名称作为方法名。如果方法没有间接地返回 一个或多个值，您也无须使用”get“这样的单词。</strong></p>
-<p>反例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (CGFloat)itemHeight;</div></pre></td></tr></table></figure></p>
-<p>正例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (CGFloat)getitemHeight;</div></pre></td></tr></table></figure></p>
-<p><strong>不要使用”and“来连接两个表示接受者属性的关键字。<br>虽然下面的例子使用”and“这个词感觉还不错，但是随着创建的方法所带有的关键字越来 越多，这种方式会引起问题</strong></p>
-<p>正例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)getColor:(UIColor *)color count:(int*)count name:(NSString *)name;</div></pre></td></tr></table></figure></p>
-<p>反例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)getColor:(UIColor *)color andCount:(int*)count andName:(NSString *)name;</div></pre></td></tr></table></figure></p>
-<p><strong>只有当方法间接地返回对象或者数值，您才需要在方法名称中使用 get”。这种格式只适 用于需要返回多个数据项的方法。</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)getColor:(UIColor *)color count:(int*)count name:(NSString *)name;</div></pre></td></tr></table></figure>
-<p><strong>方法名称的开头应标识出发送消息的对象所属的类</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- (BOOL)tableView:(NSTableView *)tableView didSelectRow:(int)row;</div><div class="line">- (BOOL)application:(NSApplication *)sender openUrl:(NSString</div><div class="line">*)url;</div></pre></td></tr></table></figure>
-<p><strong>要求委托代表其他对象执行某件事，使用“should”</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (BOOL)controllerShouldFetch:(id)sender;</div></pre></td></tr></table></figure>
-<h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><p><strong>NS_ENUM枚举类型定义一群相互关联的整数值常量。枚举项以枚举类型为前缀</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">typedef NS_ENUM(NSInteger,BTPlay) &#123;</div><div class="line">BTPlayBall = 0,</div><div class="line">BTPlayGame = 1</div><div class="line">&#125; ;</div></pre></td></tr></table></figure>
-<p><strong>NS_OPTIONS定义一组相互关联的位移枚举常量。位移枚举常量是可以组合使用的。枚举项以枚举类型为前缀</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">typedef NS_OPTIONS(NSInteger,BTPlay) &#123;</div><div class="line">BTPlayEveryData = 1 &lt;&lt; 0,</div><div class="line">BTPlayMusic = 1 &lt;&lt; 1</div><div class="line">&#125; ;</div></pre></td></tr></table></figure>
-<p><strong>使用 const 来创建浮点值常量。如果某个整数值常量和其他的常量不相关，您也可以使用 const 来创建，否则，则应使用枚举类型。</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">const float BTLabelHeight;</div></pre></td></tr></table></figure>
-<p><strong>大写字符表示预处理字符</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#ifdef DEBUG</div></pre></td></tr></table></figure>
-<p><strong>使用常量来代替字符串字面值和数字。常量应该用 static 声明为静态常量，而不要用 #define，除非它明确的作为一个宏来使用。</strong></p>
-<p>正例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">static NSString * const BTBarcelonaNotification = @&quot;BTBarcelonaNotification&quot;;</div><div class="line">static const CGFloat BTBarcelonaHeaderHeight = 20.0f;</div></pre></td></tr></table></figure></p>
-<p>反例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#define BTBarcelonaNotification @&quot;BTBarcelonaNotification&quot;</div><div class="line">#define BTBarcelonaHeaderHeight 50</div></pre></td></tr></table></figure></p>
-<p><strong>在头文件将常量暴露，在实现文件中为它赋值</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">extern NSString *const BTBarcelonaNotification;</div></pre></td></tr></table></figure>
-<p><strong>Notification消息使用全局的 NSString 对象进行标识</strong></p>
-<p>[Name of associated class] + [Did | Will] + [UniquePartOfName] + Notification</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BTWindwowWillBecomeBlackNotification</div></pre></td></tr></table></figure>
-<p><strong>异常使用全局的 NSString 对象来标识</strong><br>[Prefix] + [UniquePartOfName] + Exception</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BTImageCornerDrawException</div></pre></td></tr></table></figure>
-<p><strong>+（void）initialize必须判断class类型或使用dispatch_once防止执行多次</strong></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1978,7 +2158,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
