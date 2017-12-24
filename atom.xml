@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blackteachinese.com/"/>
-  <updated>2017-12-24T05:34:28.046Z</updated>
+  <updated>2017-12-24T06:28:07.301Z</updated>
   <id>http://blackteachinese.com/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>React到UIKit完整渲染过程</title>
-    <link href="http://blackteachinese.com/2017/12/24/2017-12-15/"/>
-    <id>http://blackteachinese.com/2017/12/24/2017-12-15/</id>
+    <title>从React到UIView渲染过程解析</title>
+    <link href="http://blackteachinese.com/2017/12/24/ios_reactnative_render_process/"/>
+    <id>http://blackteachinese.com/2017/12/24/ios_reactnative_render_process/</id>
     <published>2017-12-24T05:33:01.000Z</published>
-    <updated>2017-12-24T05:34:28.046Z</updated>
+    <updated>2017-12-24T06:28:07.301Z</updated>
     
     <content type="html"><![CDATA[<h1 id="React-渲染过程"><a href="#React-渲染过程" class="headerlink" title="React 渲染过程"></a>React 渲染过程</h1><p>HelloWorld Component：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var HelloWorld = React.createClass(&#123;</div><div class="line">  getInitialState: function() &#123;</div><div class="line">    return &#123;type: &apos;say:&apos;&#125;;</div><div class="line">  &#125;,</div><div class="line">  render: function() &#123;</div><div class="line">    return React.createElement(&quot;div&quot;, null,this.state.type, &quot;Hello &quot;, this.props.name);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">React.render(React.createElement(HelloWorld, &#123;name: &quot;John&quot;&#125;), document.getElementById(&quot;container&quot;));</div></pre></td></tr></table></figure></p>
 <p>JS Dom:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;div data-reactid=&quot;0&quot;&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.0&quot;&gt;say:&lt;/span&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.1&quot;&gt;Hello &lt;/span&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.2&quot;&gt;John&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
@@ -1002,6 +1002,47 @@
   </entry>
   
   <entry>
+    <title>结构化思考——完美应对电梯30秒的思考模型</title>
+    <link href="http://blackteachinese.com/2017/09/03/thought_structure_thinking/"/>
+    <id>http://blackteachinese.com/2017/09/03/thought_structure_thinking/</id>
+    <published>2017-09-03T13:39:27.000Z</published>
+    <updated>2017-09-06T05:23:37.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="为什么你的想法总是不能很好地表达？"><a href="#为什么你的想法总是不能很好地表达？" class="headerlink" title="为什么你的想法总是不能很好地表达？"></a>为什么你的想法总是不能很好地表达？</h1><p>如果你的工作内容是技术型的（程序员），你很可能对自己日常工作中的语言表达不太满意。你可能专业知识很丰满，对事情的看法也很独到，但就是讲不好。</p>
+<p>你也许还不觉得这是个很大的问题，因为大家会给某种职业贴标签：“XXX就是不善于表达”。这样的说法你听多了，可能会真的接受这种观点，但事实并不是如此。</p>
+<p>讲得不好主要有三个因素影响，思考能力、语言能力、心态。<br>思考能力决定你的表达内容的质量，思路是否清晰、重点是否突出、观点是否独到。<br>语言能力决定你的表达的内容形式是否丰富、有没有文采，有没有类比、举例帮组听众理解更深刻等。<br>心态决定你能不能正常发挥自己的水平。</p>
+<p>也许你已经可以看出来，思考能力决定你表达的核心内容。因为在日常工作中，工作中的交流是趋于理性的，大家更看重的是你的思路和观点。</p>
+<h1 id="为什么是结构力思考？"><a href="#为什么是结构力思考？" class="headerlink" title="为什么是结构力思考？"></a>为什么是结构力思考？</h1><p>在工作中我们遇到各种问题时，大脑会习惯性依据经验来思考。这样思考的结果，观点通常是散状的，类似现在微信文章的清单体。散状的观点，重点不突出，各个观点间没有清晰的逻辑联系。这样不能形成严密的逻辑关系，不利于让听众了解你表达的重点，观点之间有可能相互重复、甚至冲突。而在工作中，我们讨论解决方案时，最终是需要团队协作去执行的。这需要方案重点突出、逻辑严密，既能够统一思想又具有指导意义。</p>
+<p>因此，我们需要结构化思考的意识。</p>
+<h1 id="4个策略助你进行结构化思考"><a href="#4个策略助你进行结构化思考" class="headerlink" title="4个策略助你进行结构化思考"></a>4个策略助你进行结构化思考</h1><h2 id="结论先行"><a href="#结论先行" class="headerlink" title="结论先行"></a>结论先行</h2><p>将结论（核心观点／内容）作为树形结构的父节点。</p>
+<h2 id="以下呼上"><a href="#以下呼上" class="headerlink" title="以下呼上"></a>以下呼上</h2><p>树形结构里，子节点要呼应／支持父节点的内容。</p>
+<h2 id="合理归类"><a href="#合理归类" class="headerlink" title="合理归类"></a>合理归类</h2><p>通过合理地归纳分类，让一个复杂地问题逐步细化，成为可理解、可执行的观点／指南。</p>
+<h2 id="逻辑递进"><a href="#逻辑递进" class="headerlink" title="逻辑递进"></a>逻辑递进</h2><p>如果能形成时间、重要程度、结构顺序，这几种逻辑顺序，能让人更容易理解和记忆。</p>
+<p>先看一个清单体：“如何帮孩子缓解入园焦虑、快速融入幼儿园生活”。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1. 最开始上幼儿园时，大部分孩子会感到压力和不适应。作为家长，不要觉得孩子小题大做，而要认真对待。</div><div class="line">2. 提前在家帮孩子调整作息，尽量跟幼儿园保持一致。比如早晨7:30起床吃早饭、中午12点左右午睡。同步作息时间，能让孩子快速适应幼儿园的节奏。</div><div class="line">3. 不要在平时借幼儿园抱怨孩子。“还不会自己吃饭，上了幼儿园怎么办”……这只会增加孩子对它的恐惧。</div><div class="line">4. 提前带孩子熟悉幼儿园环境。试着坐坐小椅子，上个卫生间，在校园里散散步。熟悉了环境，孩子会更有安全感。</div><div class="line">5. 尽快让孩子和老师熟悉起来——和孩子一起与老师聊聊天、当孩子的面夸夸老师，都会增加他对老师的信任。如果有机会提前让孩子和老师接触，那就更好了。</div><div class="line">6. 让孩子挑选一件熟悉的物件陪他上学，比如一块手绢、一辆玩具车或一块午睡毯。一件熟悉的物品，能缓解孩子对陌生环境的不适。</div><div class="line">7. 不要用欺骗的方式把孩子骗到幼儿园，更不要偷偷溜走，鼓励孩子主动跟你说“再见”。</div><div class="line">8. 跟孩子约定时间时，要说他能理解的话。不要说“妈妈5点来接你”，孩子没有“5点”的概念，应该说“你在幼儿园乖乖吃完晚餐，妈妈就来接你”。且一定要说话算数，否则会失去孩子的信任。</div><div class="line">9. 让孩子练习表达自己的感受，鼓励他说出需求。不妨引导他多说说学校的事情。习惯于表达需求后，孩子更敢于向老师求助。</div><div class="line">10. 分离焦虑，很大程度上是父母的焦虑。你的情绪会传染给孩子，一定要控制好。孩子哭闹时，不要跟他一起难过；一旦约定分别，就安心上班，不要在边上偷看，被孩子看到反而会激起他刚平复的心情。</div><div class="line">11. 孩子哭诉时，告诉他幼儿园的好是没用的，要用“共情”的方式沟通——“宝宝，妈妈也想念你”。向孩子表达你和他有同样的感受，这样孩子才会觉得你和他是一个“阵营”的。</div><div class="line">12. 不要觉得孩子在幼儿园受了委屈，就在家里加倍补偿。那反而会让孩子觉得“家里这么舒服，还是不要去幼儿园了”。</div><div class="line">13. 最后，从入园第一天，你的态度就要一以贯之，不要昨天去了，今天孩子哭得厉害就不去了。相信幼儿园和老师，他们比你有经验。</div></pre></td></tr></table></figure>
+<p>下面看看，如果使用结构化进行思考会怎么样。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fj6g5b0w07j31ee0us19w.jpg" alt=""></p>
+<h2 id="合理选择结构化思考的表达层次"><a href="#合理选择结构化思考的表达层次" class="headerlink" title="合理选择结构化思考的表达层次"></a>合理选择结构化思考的表达层次</h2><p>在工作中我们以下有几种场景会发表观点：</p>
+<p>临时汇报（电梯30秒）<br>只有一句话时间，就说第一层。</p>
+<p>会议发言（1分钟）<br>说到第二层。</p>
+<p>工作总结（3到5分钟）<br>讲到第三层。</p>
+<p>主题分享／培训 （30分钟）<br>抓住一个故事／案例展开来，深入浅出地阐述</p>
+<p>根据不同场景和时间限制，合理地把握表达的层次和深度，无论是电梯30秒、会议发表观点、主题分享、培训、还是述职答辩都能应对自如。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;为什么你的想法总是不能很好地表达？&quot;&gt;&lt;a href=&quot;#为什么你的想法总是不能很好地表达？&quot; class=&quot;headerlink&quot; title=&quot;为什么你的想法总是不能很好地表达？&quot;&gt;&lt;/a&gt;为什么你的想法总是不能很好地表达？&lt;/h1&gt;&lt;p&gt;如果你的工作内容是技
+    
+    </summary>
+    
+      <category term="thought" scheme="http://blackteachinese.com/categories/thought/"/>
+    
+    
+      <category term="thought" scheme="http://blackteachinese.com/tags/thought/"/>
+    
+  </entry>
+  
+  <entry>
     <title>iOS性能最佳实践系列之--加快页面加载的检查清单</title>
     <link href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/"/>
     <id>http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/</id>
@@ -1050,47 +1091,6 @@
     
     
       <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>结构化思考——完美应对电梯30秒的思考模型</title>
-    <link href="http://blackteachinese.com/2017/09/03/thought_structure_thinking/"/>
-    <id>http://blackteachinese.com/2017/09/03/thought_structure_thinking/</id>
-    <published>2017-09-03T13:39:27.000Z</published>
-    <updated>2017-09-06T05:23:37.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="为什么你的想法总是不能很好地表达？"><a href="#为什么你的想法总是不能很好地表达？" class="headerlink" title="为什么你的想法总是不能很好地表达？"></a>为什么你的想法总是不能很好地表达？</h1><p>如果你的工作内容是技术型的（程序员），你很可能对自己日常工作中的语言表达不太满意。你可能专业知识很丰满，对事情的看法也很独到，但就是讲不好。</p>
-<p>你也许还不觉得这是个很大的问题，因为大家会给某种职业贴标签：“XXX就是不善于表达”。这样的说法你听多了，可能会真的接受这种观点，但事实并不是如此。</p>
-<p>讲得不好主要有三个因素影响，思考能力、语言能力、心态。<br>思考能力决定你的表达内容的质量，思路是否清晰、重点是否突出、观点是否独到。<br>语言能力决定你的表达的内容形式是否丰富、有没有文采，有没有类比、举例帮组听众理解更深刻等。<br>心态决定你能不能正常发挥自己的水平。</p>
-<p>也许你已经可以看出来，思考能力决定你表达的核心内容。因为在日常工作中，工作中的交流是趋于理性的，大家更看重的是你的思路和观点。</p>
-<h1 id="为什么是结构力思考？"><a href="#为什么是结构力思考？" class="headerlink" title="为什么是结构力思考？"></a>为什么是结构力思考？</h1><p>在工作中我们遇到各种问题时，大脑会习惯性依据经验来思考。这样思考的结果，观点通常是散状的，类似现在微信文章的清单体。散状的观点，重点不突出，各个观点间没有清晰的逻辑联系。这样不能形成严密的逻辑关系，不利于让听众了解你表达的重点，观点之间有可能相互重复、甚至冲突。而在工作中，我们讨论解决方案时，最终是需要团队协作去执行的。这需要方案重点突出、逻辑严密，既能够统一思想又具有指导意义。</p>
-<p>因此，我们需要结构化思考的意识。</p>
-<h1 id="4个策略助你进行结构化思考"><a href="#4个策略助你进行结构化思考" class="headerlink" title="4个策略助你进行结构化思考"></a>4个策略助你进行结构化思考</h1><h2 id="结论先行"><a href="#结论先行" class="headerlink" title="结论先行"></a>结论先行</h2><p>将结论（核心观点／内容）作为树形结构的父节点。</p>
-<h2 id="以下呼上"><a href="#以下呼上" class="headerlink" title="以下呼上"></a>以下呼上</h2><p>树形结构里，子节点要呼应／支持父节点的内容。</p>
-<h2 id="合理归类"><a href="#合理归类" class="headerlink" title="合理归类"></a>合理归类</h2><p>通过合理地归纳分类，让一个复杂地问题逐步细化，成为可理解、可执行的观点／指南。</p>
-<h2 id="逻辑递进"><a href="#逻辑递进" class="headerlink" title="逻辑递进"></a>逻辑递进</h2><p>如果能形成时间、重要程度、结构顺序，这几种逻辑顺序，能让人更容易理解和记忆。</p>
-<p>先看一个清单体：“如何帮孩子缓解入园焦虑、快速融入幼儿园生活”。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1. 最开始上幼儿园时，大部分孩子会感到压力和不适应。作为家长，不要觉得孩子小题大做，而要认真对待。</div><div class="line">2. 提前在家帮孩子调整作息，尽量跟幼儿园保持一致。比如早晨7:30起床吃早饭、中午12点左右午睡。同步作息时间，能让孩子快速适应幼儿园的节奏。</div><div class="line">3. 不要在平时借幼儿园抱怨孩子。“还不会自己吃饭，上了幼儿园怎么办”……这只会增加孩子对它的恐惧。</div><div class="line">4. 提前带孩子熟悉幼儿园环境。试着坐坐小椅子，上个卫生间，在校园里散散步。熟悉了环境，孩子会更有安全感。</div><div class="line">5. 尽快让孩子和老师熟悉起来——和孩子一起与老师聊聊天、当孩子的面夸夸老师，都会增加他对老师的信任。如果有机会提前让孩子和老师接触，那就更好了。</div><div class="line">6. 让孩子挑选一件熟悉的物件陪他上学，比如一块手绢、一辆玩具车或一块午睡毯。一件熟悉的物品，能缓解孩子对陌生环境的不适。</div><div class="line">7. 不要用欺骗的方式把孩子骗到幼儿园，更不要偷偷溜走，鼓励孩子主动跟你说“再见”。</div><div class="line">8. 跟孩子约定时间时，要说他能理解的话。不要说“妈妈5点来接你”，孩子没有“5点”的概念，应该说“你在幼儿园乖乖吃完晚餐，妈妈就来接你”。且一定要说话算数，否则会失去孩子的信任。</div><div class="line">9. 让孩子练习表达自己的感受，鼓励他说出需求。不妨引导他多说说学校的事情。习惯于表达需求后，孩子更敢于向老师求助。</div><div class="line">10. 分离焦虑，很大程度上是父母的焦虑。你的情绪会传染给孩子，一定要控制好。孩子哭闹时，不要跟他一起难过；一旦约定分别，就安心上班，不要在边上偷看，被孩子看到反而会激起他刚平复的心情。</div><div class="line">11. 孩子哭诉时，告诉他幼儿园的好是没用的，要用“共情”的方式沟通——“宝宝，妈妈也想念你”。向孩子表达你和他有同样的感受，这样孩子才会觉得你和他是一个“阵营”的。</div><div class="line">12. 不要觉得孩子在幼儿园受了委屈，就在家里加倍补偿。那反而会让孩子觉得“家里这么舒服，还是不要去幼儿园了”。</div><div class="line">13. 最后，从入园第一天，你的态度就要一以贯之，不要昨天去了，今天孩子哭得厉害就不去了。相信幼儿园和老师，他们比你有经验。</div></pre></td></tr></table></figure>
-<p>下面看看，如果使用结构化进行思考会怎么样。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fj6g5b0w07j31ee0us19w.jpg" alt=""></p>
-<h2 id="合理选择结构化思考的表达层次"><a href="#合理选择结构化思考的表达层次" class="headerlink" title="合理选择结构化思考的表达层次"></a>合理选择结构化思考的表达层次</h2><p>在工作中我们以下有几种场景会发表观点：</p>
-<p>临时汇报（电梯30秒）<br>只有一句话时间，就说第一层。</p>
-<p>会议发言（1分钟）<br>说到第二层。</p>
-<p>工作总结（3到5分钟）<br>讲到第三层。</p>
-<p>主题分享／培训 （30分钟）<br>抓住一个故事／案例展开来，深入浅出地阐述</p>
-<p>根据不同场景和时间限制，合理地把握表达的层次和深度，无论是电梯30秒、会议发表观点、主题分享、培训、还是述职答辩都能应对自如。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;为什么你的想法总是不能很好地表达？&quot;&gt;&lt;a href=&quot;#为什么你的想法总是不能很好地表达？&quot; class=&quot;headerlink&quot; title=&quot;为什么你的想法总是不能很好地表达？&quot;&gt;&lt;/a&gt;为什么你的想法总是不能很好地表达？&lt;/h1&gt;&lt;p&gt;如果你的工作内容是技
-    
-    </summary>
-    
-      <category term="thought" scheme="http://blackteachinese.com/categories/thought/"/>
-    
-    
-      <category term="thought" scheme="http://blackteachinese.com/tags/thought/"/>
     
   </entry>
   

@@ -89,7 +89,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS," />
+  <meta name="keywords" content="render tree,dom tree," />
 
 
 
@@ -107,22 +107,18 @@
 
 
 
-<meta name="description" content="如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。
-跳转事件触发后不要做阻塞操作
-过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。建议有两种做法：1 提前做好权限校验2">
+<meta name="description" content="React 渲染过程HelloWorld Component：12345678910var HelloWorld = React.createClass(&amp;#123;  getInitialState: function() &amp;#123;    return &amp;#123;type: &amp;apos;say:&amp;apos;&amp;#125;;  &amp;#125;,  render: function() &amp;#123">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS性能最佳实践系列之--加快页面加载的检查清单">
-<meta property="og:url" content="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/index.html">
+<meta property="og:title" content="从React到UIView渲染过程解析">
+<meta property="og:url" content="http://blackteachinese.com/2017/12/24/ios_reactnative_render_process/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。
-跳转事件触发后不要做阻塞操作
-过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。建议有两种做法：1 提前做好权限校验2">
-<meta property="og:updated_time" content="2017-09-16T10:24:22.000Z">
+<meta property="og:description" content="React 渲染过程HelloWorld Component：12345678910var HelloWorld = React.createClass(&amp;#123;  getInitialState: function() &amp;#123;    return &amp;#123;type: &amp;apos;say:&amp;apos;&amp;#125;;  &amp;#125;,  render: function() &amp;#123">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmjuovkxsyj31kw0san5r.jpg">
+<meta property="og:updated_time" content="2017-12-24T06:28:07.301Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS性能最佳实践系列之--加快页面加载的检查清单">
-<meta name="twitter:description" content="如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。
-跳转事件触发后不要做阻塞操作
-过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。建议有两种做法：1 提前做好权限校验2">
+<meta name="twitter:title" content="从React到UIView渲染过程解析">
+<meta name="twitter:description" content="React 渲染过程HelloWorld Component：12345678910var HelloWorld = React.createClass(&amp;#123;  getInitialState: function() &amp;#123;    return &amp;#123;type: &amp;apos;say:&amp;apos;&amp;#125;;  &amp;#125;,  render: function() &amp;#123">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmjuovkxsyj31kw0san5r.jpg">
 
 
 
@@ -150,7 +146,7 @@
 
 
 
-  <link rel="canonical" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/"/>
+  <link rel="canonical" href="http://blackteachinese.com/2017/12/24/ios_reactnative_render_process/"/>
 
 
 
@@ -158,7 +154,7 @@
 
 
 
-  <title> iOS性能最佳实践系列之--加快页面加载的检查清单 | Blacktea's Life </title>
+  <title> 从React到UIView渲染过程解析 | Blacktea's Life </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -316,7 +312,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/12/24/ios_reactnative_render_process/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Blacktea">
@@ -337,7 +333,7 @@
             
             
               
-                iOS性能最佳实践系列之--加快页面加载的检查清单
+                从React到UIView渲染过程解析
               
             
           </h1>
@@ -352,8 +348,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T21:39:27+08:00">
-                2017-09-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-24T13:33:01+08:00">
+                2017-12-24
               </time>
             
 
@@ -375,8 +371,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
                   </a>
                 </span>
 
@@ -392,7 +388,7 @@
 
           
           
-             <span id="/2017/09/03/iOS_best_performance_pageLoad/" class="leancloud_visitors" data-flag-title="iOS性能最佳实践系列之--加快页面加载的检查清单">
+             <span id="/2017/12/24/ios_reactnative_render_process/" class="leancloud_visitors" data-flag-title="从React到UIView渲染过程解析">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -421,34 +417,15 @@
       
 
       
-        <p>如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。</p>
-<p><strong>跳转事件触发后不要做阻塞操作</strong></p>
-<p>过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。<br>建议有两种做法：<br>1 提前做好权限校验<br>2 直接进入新页面后再做权限校验，没有权限显示无权限的背景图</p>
-<p><strong>UIViewController的生命周期要避免阻塞</strong><br>UIViewController的生命周期方法都在主线程，不要因为做消耗资源的事情（除了初始化视图）导致主线程被阻塞。</p>
-<p>有消耗资源的操作放到子线程里，需要做UI渲染再回到主线程</p>
-<p>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">init</div><div class="line">initWithNibName:bundle</div><div class="line">viewWillAppear</div><div class="line">viewDidAppear</div><div class="line">viewDidLoad</div><div class="line">viewWillDisappear</div><div class="line">viewDidDisappear</div><div class="line">...</div></pre></td></tr></table></figure>
-<p><strong>如果接口请求慢，先加载缓存，再刷最新数据</strong></p>
-<p>如果页面的网络请求很慢，会出现白屏转菊花很久的情况，改善的策略如下。<br>1 先加载缓存数据<br>2 同步请求网络数据，网络数据请求完成后和本地数据校对，得出需要变化的数据。<br>3 将新增的数据加载到页面里，并提示“有数据更新”（类似新浪微博）</p>
-<p><strong>UITableView的DataSource的代理实现要避免阻塞</strong></p>
-<p>UITableView的DataSource回调函数在主线程，要避免耗时计算。</p>
-<p>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tableView:cellForRowAtIndexPath</div><div class="line">tableView:heightForRowAtIndexPath</div><div class="line">...</div></pre></td></tr></table></figure>
-<p><strong>减少UITableView高度计算次数</strong></p>
-<ul>
-<li>有多种Cell或高度是动态的<ul>
-<li>设置estimatedRowHeight(设置后会开启self—sizing，自动计算高度)</li>
-</ul>
-</li>
-<li>只有一种Cell并且高度固定<ul>
-<li>设置rowHeight</li>
-<li>不要重载”tableView:heightForRowAtIndexPath”</li>
-</ul>
-</li>
-</ul>
-<p><strong>UICollectionView的DataSource的代理实现要避免阻塞</strong></p>
-<p>UICollectionView生命周期的回调函数在主线程，要避免耗时计算。<br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">collectionView:cellForItemAtIndexPath</div><div class="line">collectionView:layout:sizeForItemAtIndexPath</div><div class="line">collectionView:didSelectItemAtIndexPath</div></pre></td></tr></table></figure>
+        <h1 id="React-渲染过程"><a href="#React-渲染过程" class="headerlink" title="React 渲染过程"></a>React 渲染过程</h1><p>HelloWorld Component：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var HelloWorld = React.createClass(&#123;</div><div class="line">  getInitialState: function() &#123;</div><div class="line">    return &#123;type: &apos;say:&apos;&#125;;</div><div class="line">  &#125;,</div><div class="line">  render: function() &#123;</div><div class="line">    return React.createElement(&quot;div&quot;, null,this.state.type, &quot;Hello &quot;, this.props.name);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">React.render(React.createElement(HelloWorld, &#123;name: &quot;John&quot;&#125;), document.getElementById(&quot;container&quot;));</div></pre></td></tr></table></figure></p>
+<p>JS Dom:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;div data-reactid=&quot;0&quot;&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.0&quot;&gt;say:&lt;/span&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.1&quot;&gt;Hello &lt;/span&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.2&quot;&gt;John&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>React.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">// ReactElement：创建虚拟DOM</div><div class="line">function ReactElement(type,key,props)&#123;</div><div class="line">  this.type = type;</div><div class="line">  this.key = key;</div><div class="line">  this.props = props;</div><div class="line">&#125;</div><div class="line">// mountComponent：渲染component，生成的dom结构</div><div class="line">ReactDOMTextComponent.prototype.mountComponent = function(rootID) &#123;</div><div class="line">    this._rootNodeID = rootID;</div><div class="line">    return &apos;&lt;span data-reactid=&quot;&apos; + rootID + &apos;&quot;&gt;&apos; + this._currentElement + &apos;&lt;/span&gt;&apos;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// instantiateReactComponent：生成component</div><div class="line">function instantiateReactComponent(node)&#123;</div><div class="line">        ......</div><div class="line">&#125;</div><div class="line">React = &#123;</div><div class="line">    createElement:function(type,config,children)&#123;</div><div class="line">        ...</div><div class="line">        return new ReactElement(type, key,props);</div><div class="line">    &#125;，</div><div class="line">    createClass:function(spec)&#123;</div><div class="line">        ...</div><div class="line">    &#125;,</div><div class="line">    // 渲染入口</div><div class="line">    render:function(element,container)&#123;</div><div class="line">        var componentInstance = instantiateReactComponent(element);</div><div class="line">        var markup = componentInstance.mountComponent(React.nextReactRootIndex++);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjuovkxsyj31kw0san5r.jpg" alt=""></p>
+<h1 id="Native"><a href="#Native" class="headerlink" title="Native"></a>Native</h1><p>JS拿出所有组件，循环调用nativeFlushQueueImmediate</p>
+<p>buffer<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">&lt;__NSArrayM 0x60c00024b8e0&gt;(</div><div class="line">51</div><div class="line">)</div><div class="line">,</div><div class="line">&lt;__NSArrayM 0x60c00024b730&gt;(</div><div class="line">5</div><div class="line">)</div><div class="line">,</div><div class="line">&lt;__NSArrayM 0x60c00024b850&gt;(</div><div class="line">&lt;__NSArrayM 0x60c00024b550&gt;(</div><div class="line">3,</div><div class="line">RCTText,</div><div class="line">1,</div><div class="line">&#123;</div><div class="line">    accessible = 1;</div><div class="line">    allowFontScaling = 1;</div><div class="line">    color = 4286846340;</div><div class="line">    ellipsizeMode = tail;</div><div class="line">    fontSize = 18;</div><div class="line">    padding = 8;</div><div class="line">    textAlign = center;</div><div class="line">&#125;</div><div class="line">)</div><div class="line"></div><div class="line">)</div><div class="line">,</div><div class="line">1</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>moduleIDs<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;__NSArrayM 0x60c00024b8e0&gt;(</div><div class="line">51</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>methodIDs<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;__NSArrayM 0x60c00024b730&gt;(</div><div class="line">5</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>paramsArrays<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&lt;__NSArrayM 0x60c00024b850&gt;(</div><div class="line">&lt;__NSArrayM 0x60c00024b550&gt;(</div><div class="line">3,</div><div class="line">RCTText,</div><div class="line">1,</div><div class="line">&#123;</div><div class="line">    accessible = 1;</div><div class="line">    allowFontScaling = 1;</div><div class="line">    color = 4286846340;</div><div class="line">    ellipsizeMode = tail;</div><div class="line">    fontSize = 18;</div><div class="line">    padding = 8;</div><div class="line">    textAlign = center;</div><div class="line">&#125;</div><div class="line">)</div><div class="line"></div><div class="line">)</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -504,7 +481,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag"># iOS</a>
+            <a href="/tags/render-tree/" rel="tag"># render tree</a>
+          
+            <a href="/tags/dom-tree/" rel="tag"># dom tree</a>
           
         </div>
       
@@ -517,8 +496,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/30/ios_app_base_performance_stratege/" rel="next" title="如何建设App的页面性能基线">
-                <i class="fa fa-chevron-left"></i> 如何建设App的页面性能基线
+              <a href="/2017/12/11/web_brower_render/" rel="next" title="浏览器渲染原理">
+                <i class="fa fa-chevron-left"></i> 浏览器渲染原理
               </a>
             
           </div>
@@ -526,10 +505,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/09/03/thought_structure_thinking/" rel="prev" title="结构化思考——完美应对电梯30秒的思考模型">
-                结构化思考——完美应对电梯30秒的思考模型 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -578,8 +553,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.JPG"
@@ -686,6 +670,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#React-渲染过程"><span class="nav-number">1.</span> <span class="nav-text">React 渲染过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Native"><span class="nav-number">2.</span> <span class="nav-text">Native</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
