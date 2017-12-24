@@ -114,7 +114,8 @@
 <meta property="og:site_name" content="Blacktea's Life">
 <meta property="og:description" content="React Native 是什么react.js是一个流行的前端开发框架，相信大家都有了解，它用了flexbox布局技术、jsx等语法糖的技术，这让前端同学能象喝茶一样轻松地开发H5页面。React本来是用来开发h5页面，facebook的工程师们，希望做一套能同时运行在iOS和Android的高性能开发框架，就将React render()方法渲染出来的js代码通过JSbridge加载到nati">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fmacuj6ha9j31f412uwk4.jpg">
-<meta property="og:updated_time" content="2017-12-10T16:54:55.757Z">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79gy1fmk3g15ifrj31kw0w5kbn.jpg">
+<meta property="og:updated_time" content="2017-12-17T13:39:33.820Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ReactNative到底做了什么？">
 <meta name="twitter:description" content="React Native 是什么react.js是一个流行的前端开发框架，相信大家都有了解，它用了flexbox布局技术、jsx等语法糖的技术，这让前端同学能象喝茶一样轻松地开发H5页面。React本来是用来开发h5页面，facebook的工程师们，希望做一套能同时运行在iOS和Android的高性能开发框架，就将React render()方法渲染出来的js代码通过JSbridge加载到nati">
@@ -494,7 +495,8 @@
 </ul>
 <p><strong>UI组件事件响应</strong><br>当RCTView组件触发了点击、滑动等触摸事件时，会通过bridge找倒自己的JSComponent,根据预先缓存的js callback函数，将参数传递给对应的React组件进行响应。</p>
 <p><strong>自定义UIModule组件</strong><br>1 创建RCTViewManager子类<br>a注册Module,使用RCT_EXPORT_MODULE注册宏<br>b实现视图创建的方法，’-(UIView *)view’<br>cJS层导入Native原生组件。在js模块的requireNativeComponent.js里操作UIManage导入。<br>2 创建属性<br>注册属性，使用RCT_EXPORT_VIEW_PROPERTY或RCT_CUSTOM_VIEW_PROPERTY<br>3 创建事件<br>注册事件，也是通过RCT_EXPORT_VIEW_PROPERTY，注册type为RCTBubblingEventBlock的事件属性<br>4 创建常量<br>a.native通过constantsToExport方法return一个NSDictionary注册常量<br>b.js通过UIManager.XXUIModule.Constants拿到注册的常量</p>
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="https://github.com/facebook/react-native" target="_blank" rel="external">react-native</a><br><a href="http://blog.cnbang.net/tech/2698/" target="_blank" rel="external">React Native通信机制详解</a><br><a href="https://github.com/facebook/yoga" target="_blank" rel="external">yoga</a><br><a href="http://awhisper.github.io/2016/06/24/ReactNative流程源码分析/" target="_blank" rel="external">ReactNative源码分析</a><a href="http://www.cocoachina.com/programmer/20170505/19189.html" target="_blank" rel="external">从源码一步一步解析它的实现原理</a></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmk3g15ifrj31kw0w5kbn.jpg" alt=""></p>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="https://github.com/facebook/react-native" target="_blank" rel="external">react-native</a><br><a href="http://blog.cnbang.net/tech/2698/" target="_blank" rel="external">React Native通信机制详解</a><br><a href="https://github.com/facebook/yoga" target="_blank" rel="external">yoga</a><br><a href="http://awhisper.github.io/2016/06/24/ReactNative流程源码分析/" target="_blank" rel="external">ReactNative源码分析</a><a href="http://www.cocoachina.com/programmer/20170505/19189.html" target="_blank" rel="external">从源码一步一步解析它的实现原理</a><br><a href="https://www.w3.org/TR/css-flexbox-1/" target="_blank" rel="external">W3C 标准的 Flexbox 模型</a><br><a href="http://code.liqingyao.com/flex-layout-algorithm-introduction/" target="_blank" rel="external">CSS Flex Layout 算法解析</a>            </p>
 
       
     </div>
@@ -573,6 +575,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/12/11/ios_ unified_storage/" rel="prev" title="如何设计一个iOS统一持久化SDK">
+                如何设计一个iOS统一持久化SDK <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -597,6 +603,8 @@
           
   <div class="comments" id="comments">
     
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjY1My85MjE0"></div>
+      
   </div>
 
 
@@ -643,7 +651,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -654,7 +662,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -665,7 +673,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -907,6 +915,17 @@
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 

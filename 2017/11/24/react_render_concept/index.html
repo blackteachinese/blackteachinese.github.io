@@ -107,16 +107,28 @@
 
 
 
-<meta name="description" content="React Render Mechanism 渲染机制Render  analyseRender DOM implement analyse1234DOM example:var element = React.createElement(&amp;apos;div&amp;apos;,&amp;#123;id:&amp;apos;test&amp;apos;,onclick:hello&amp;#125;,&amp;apos;click me&amp;apo">
+<meta name="description" content="What is ReactA JavaScript library for building user interfaces
+基本概念
+
+VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual d">
 <meta property="og:type" content="article">
 <meta property="og:title" content="React源码的秘密">
 <meta property="og:url" content="http://blackteachinese.com/2017/11/24/react_render_concept/index.html">
 <meta property="og:site_name" content="Blacktea's Life">
-<meta property="og:description" content="React Render Mechanism 渲染机制Render  analyseRender DOM implement analyse1234DOM example:var element = React.createElement(&amp;apos;div&amp;apos;,&amp;#123;id:&amp;apos;test&amp;apos;,onclick:hello&amp;#125;,&amp;apos;click me&amp;apo">
-<meta property="og:updated_time" content="2017-12-10T16:56:09.609Z">
+<meta property="og:description" content="What is ReactA JavaScript library for building user interfaces
+基本概念
+
+VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual d">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmiqw9swr5j30dx0asmxc.jpg">
+<meta property="og:updated_time" content="2017-12-17T03:46:22.199Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React源码的秘密">
-<meta name="twitter:description" content="React Render Mechanism 渲染机制Render  analyseRender DOM implement analyse1234DOM example:var element = React.createElement(&amp;apos;div&amp;apos;,&amp;#123;id:&amp;apos;test&amp;apos;,onclick:hello&amp;#125;,&amp;apos;click me&amp;apo">
+<meta name="twitter:description" content="What is ReactA JavaScript library for building user interfaces
+基本概念
+
+VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual d">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg">
 
 
 
@@ -402,7 +414,19 @@
       
 
       
-        <h2 id="React-Render-Mechanism-渲染机制"><a href="#React-Render-Mechanism-渲染机制" class="headerlink" title="React Render Mechanism 渲染机制"></a>React Render Mechanism 渲染机制</h2><h3 id="Render-analyse"><a href="#Render-analyse" class="headerlink" title="Render  analyse"></a>Render  analyse</h3><h4 id="Render-DOM-implement-analyse"><a href="#Render-DOM-implement-analyse" class="headerlink" title="Render DOM implement analyse"></a>Render DOM implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOM example:</div><div class="line"></div><div class="line">var element = React.createElement(&apos;div&apos;,&#123;id:&apos;test&apos;,onclick:hello&#125;,&apos;click me&apos;)</div><div class="line">React.render(element,document.getElementById(&quot;container&quot;))</div></pre></td></tr></table></figure>
+        <h2 id="What-is-React"><a href="#What-is-React" class="headerlink" title="What is React"></a>What is React</h2><p>A JavaScript library for building user interfaces</p>
+<p><strong>基本概念</strong></p>
+<ul>
+<li>VIRTUAL DOM<br>React render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual dom在性能上不会比纯手动优化的DOM操作更快，使用Virtual Dom能再不需要手动优化的情况下，保证过得去的性能，从而提高代码的可维护性和开发效率。这让我们可以无需担心性能问题而随时“刷新”整个页面，由虚拟DOM来确保只对界面上真正变化的节点进行实际的DOM操作。</li>
+</ul>
+<p>下图式浏览器的工作流：<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg" alt=""><br>a.Create DOM tree：浏览器的渲染引擎根据html的elements，生成Dom node，组成Dom tree<br>b.Create Render tree：浏览器解析外部CSS文件和元素的inline样式，结合Dom tree的nodes，生成render tree<br>c.layout:render tree上每一个node生成在屏幕上的具体位置的坐标值<br>d.painting:绘制</p>
+<p>如果直接操作Dom，每次操作都会触发整个渲染流程，如果连续修改50个节点，那就会造成50次重新渲染，这会造成不必要的渲染消耗。我们可以自己编写逻辑，将每个Dom操作汇总到一个Dom fragment,再传递给Dom tree。但这样我们就得自己去记录哪些节点改变，哪些没有改变，这显然开发效率太低，所以我们可以把这个工作抽象一下，于是就有了virtual dom。<br>virtual dom这个抽象层的作用就是将这件事自动化、抽象化，通过Diff算法计算出需要改变的节点，使用batching批处理多个节点的改动，然后操作Dom树进行渲染，避免不必要的重新渲染。</p>
+<ul>
+<li>JSX<br>JSX just provides syntactic sugar for “React.createElement(component, props, …children)”</li>
+<li>Component<br>无论是复杂的元素还是简单的元素，都定义为组件。通过组合组件的方式可以构建容易维护、高复用性的组件。</li>
+<li>one-way reactive data flow<br>React 的单向数据流的设计让前端 bug 定位变得简单，页面的UI和数据的对应是唯一的,我们可以通过定位数据变化就可以定位页面展现问题。<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmiqw9swr5j30dx0asmxc.jpg" alt=""></li>
+</ul>
+<h2 id="React-Render-Mechanism-渲染机制源码解析"><a href="#React-Render-Mechanism-渲染机制源码解析" class="headerlink" title="React Render Mechanism 渲染机制源码解析"></a>React Render Mechanism 渲染机制源码解析</h2><h3 id="Render-analyse"><a href="#Render-analyse" class="headerlink" title="Render  analyse"></a>Render  analyse</h3><h4 id="Render-DOM-implement-analyse"><a href="#Render-DOM-implement-analyse" class="headerlink" title="Render DOM implement analyse"></a>Render DOM implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOM example:</div><div class="line"></div><div class="line">var element = React.createElement(&apos;div&apos;,&#123;id:&apos;test&apos;,onclick:hello&#125;,&apos;click me&apos;)</div><div class="line">React.render(element,document.getElementById(&quot;container&quot;))</div></pre></td></tr></table></figure>
 <p>React.createElement:</p>
 <p>use createElement function to create a virtual dom -&gt; React.createElement</p>
 <ul>
@@ -548,7 +572,7 @@
 <li>insert INSERT_MARKUP nodes</li>
 <li>insert MOVE_EXISTING nodes</li>
 </ul>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_one/" target="_blank" rel="external">reactjs源码分析-上篇</a><br><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_two/" target="_blank" rel="external">reactjs源码分析-下篇（更新机制实现原理）</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_one/" target="_blank" rel="external">reactjs源码分析-上篇</a><br><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_two/" target="_blank" rel="external">reactjs源码分析-下篇（更新机制实现原理）</a><br><a href="http://www.jianshu.com/p/f75c1f0af3f0" target="_blank" rel="external">React为什么要使用Virtual DOM</a><br><a href="http://www.alloyteam.com/2015/10/react-virtual-analysis-of-the-dom/" target="_blank" rel="external">React虚拟DOM浅析</a><br><a href="https://zhuanlan.zhihu.com/p/21108312?refer=leanreact" target="_blank" rel="external">React 介绍</a></p>
 
       
     </div>
@@ -655,6 +679,8 @@
           
   <div class="comments" id="comments">
     
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjY1My85MjE0"></div>
+      
   </div>
 
 
@@ -701,7 +727,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -712,7 +738,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -723,7 +749,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -803,7 +829,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Render-Mechanism-渲染机制"><span class="nav-number">1.</span> <span class="nav-text">React Render Mechanism 渲染机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Render-analyse"><span class="nav-number">1.1.</span> <span class="nav-text">Render  analyse</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Render-DOM-implement-analyse"><span class="nav-number">1.1.1.</span> <span class="nav-text">Render DOM implement analyse</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Render-Composite-implement-analyse"><span class="nav-number">1.1.2.</span> <span class="nav-text">Render Composite implement analyse</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native-ReRender-mechanism-重新渲染机制"><span class="nav-number">2.</span> <span class="nav-text">React Native ReRender mechanism 重新渲染机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update"><span class="nav-number">2.1.</span> <span class="nav-text">All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation-of-DomComponent-RecevieComponent"><span class="nav-number">2.2.</span> <span class="nav-text">implementation of DomComponent RecevieComponent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#analyse-diff-and-patch"><span class="nav-number">2.3.</span> <span class="nav-text">analyse diff and patch</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-React"><span class="nav-number">1.</span> <span class="nav-text">What is React</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Render-Mechanism-渲染机制源码解析"><span class="nav-number">2.</span> <span class="nav-text">React Render Mechanism 渲染机制源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Render-analyse"><span class="nav-number">2.1.</span> <span class="nav-text">Render  analyse</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Render-DOM-implement-analyse"><span class="nav-number">2.1.1.</span> <span class="nav-text">Render DOM implement analyse</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Render-Composite-implement-analyse"><span class="nav-number">2.1.2.</span> <span class="nav-text">Render Composite implement analyse</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native-ReRender-mechanism-重新渲染机制"><span class="nav-number">3.</span> <span class="nav-text">React Native ReRender mechanism 重新渲染机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update"><span class="nav-number">3.1.</span> <span class="nav-text">All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation-of-DomComponent-RecevieComponent"><span class="nav-number">3.2.</span> <span class="nav-text">implementation of DomComponent RecevieComponent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#analyse-diff-and-patch"><span class="nav-number">3.3.</span> <span class="nav-text">analyse diff and patch</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></div>
             
 
           </div>
@@ -965,6 +991,17 @@
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 

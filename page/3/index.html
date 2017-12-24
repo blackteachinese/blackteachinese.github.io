@@ -309,6 +309,504 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/30/ios_app_base_performance_stratege/" itemprop="url">
+                  如何建设App的页面性能基线
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-30T21:39:27+08:00">
+                2017-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="为什么我们需要页面性能基线？"><a href="#为什么我们需要页面性能基线？" class="headerlink" title="为什么我们需要页面性能基线？"></a>为什么我们需要页面性能基线？</h1><p>开发人员的差异性<br>在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。</p>
+<p>业务迭代的变化<br>随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数据做为参考线，则可以对存量页面的性能进行自动化分析。</p>
+<h2 id="页面性能的两个特性"><a href="#页面性能的两个特性" class="headerlink" title="页面性能的两个特性"></a>页面性能的两个特性</h2><p>不一致性</p>
+<p>一个页面的性能指标怎么定主要受2个因素的影响，一个是UI元素的复杂度，一个是接口数据的复杂度。UI布局越复杂，页面渲染就会越慢。数据获取越复杂，页面就需要等待越长的时间进行渲染。因此我们不能一视同仁，所有页面都设置同样的基线。</p>
+<p>合理波动性</p>
+<p>鲜肉页面（新开发的页面）进入市场后，随着版本迭代，性能数据一定会有所波动。在一定范围内波动，我们认为是合理波动。</p>
+<h1 id="基线建设的3个目标"><a href="#基线建设的3个目标" class="headerlink" title="基线建设的3个目标"></a>基线建设的3个目标</h1><p>流程化<br>建立完整、合理的基线产出流程。</p>
+<p>工具统一化<br>建立统一的性能分析方法论、分析工具。</p>
+<p>标准化<br>建立标准化的基线算法，通过该算法计算出各页面的基线标准</p>
+<h2 id="3条性能基准线"><a href="#3条性能基准线" class="headerlink" title="3条性能基准线"></a>3条性能基准线</h2><p>性能红线</p>
+<p>性能指标只要差到一定的程度，用户就会感受到明显的不顺畅、慢、卡。这时候，无论页面多复杂、接口多慢，都不是理由（再有价值的产品，如果体验太差对用户来说就是垃圾）。因此，我们需要设立一个性能红线，无论如何不能超过红线。</p>
+<p>App综合性能指数</p>
+<p>正如证券市场的道琼斯指数一样，取App所有页面性能数据的平均值作为页面综合性能指数。鲜肉页面没有历史版本的数据，没有参考的标准。由于页面复杂度存在不一致性，不能随便找找一个页面来做参考，这个时候取App综合性能指数做参考是最合适的。</p>
+<p>页面性能基线（3个历史版本数据的均值）</p>
+<p>鲜肉页面通过过滤流水线后，我们就将通过后页面的线上平均数据做为该页面的性能基线。</p>
+<h2 id="2条流水线"><a href="#2条流水线" class="headerlink" title="2条流水线"></a>2条流水线</h2><p>鲜肉过滤流水线</p>
+<p>新开发的页面（鲜肉页面），由于复杂度不一致，我们不能准确判断开发出来的页面性能是否合理。但我们可以根据两条基准线做为参考值来估算页面性能是否合理。第一条是红线，高压线不能越。第二条是“APP综合性能指数”，如果低于这条线则合格，如果高于这条线则进入鉴别池。进入鉴别池的页面，将使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
+<p>熟肉自动流水线</p>
+<p>鲜肉页面经过过滤后，性能基本可以得到保障。但我们还需要保证，随着版本迭代这些页面性不能超过合理波动的范围。每期的版本迭代前，我们通过自动化测试拿到线下性能数据，然后与该页面的性能基线进行自动对比，计算迭代后的数据是否超过了基线的合理波动范围。若超过了，则进入鉴别池，使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
+<p>两条流水线都可以建立自动化过滤系统，根据基准线进行自动化数据分析，解放测试同学的同时，保证全面地覆盖。</p>
+<h2 id="落地设计"><a href="#落地设计" class="headerlink" title="落地设计"></a>落地设计</h2><p>根据实际的项目流程，可以分为线上实时监控和线下自动化数据分析。</p>
+<h2 id="线上实时监控"><a href="#线上实时监控" class="headerlink" title="线上实时监控"></a>线上实时监控</h2><p>线上建立可视化的性能数据图表，方便进行实时监控和分析。<br>图片显示如下几条线</p>
+<ul>
+<li>波动线（页面性能基线+合理波动值）</li>
+<li>性能红线</li>
+<li>当前版本均值</li>
+</ul>
+<h2 id="线下自动化数据分析"><a href="#线下自动化数据分析" class="headerlink" title="线下自动化数据分析"></a>线下自动化数据分析</h2><p>线下建立自动化过滤系统，根据基准线进行自动化数据分析。</p>
+<p>鲜肉页面过滤条件：<br>测试数据 &gt; APP综合指数（剔除一定范围0-500，2000+）<br>熟肉页面过滤条件：<br>测试数据 &gt; 页面基线值（页面性能基线+合理波动值）</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fjeywnme3lj319w0saq5d.jpg" alt=""></p>
+<h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg" alt=""></p>
+<h1 id="整体落地"><a href="#整体落地" class="headerlink" title="整体落地"></a>整体落地</h1><p>基线的流程和方法的建设，需要开发和测试人员一起协作完成。<br>开发人员负责：数据埋点、问题优化分析、积累沉淀<br>测试人员负责：测试件、数据平台建设、测试流程建设</p>
+<p>落地是重点也是难点。其中有2个要点。<br>1进行方案评审和宣导，获取团队人员的反馈，并进行改善，形成团队内的统一认知。<br>2合理安排落地节奏。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/16/Invite_Job_aliabbamd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/16/Invite_Job_aliabbamd/" itemprop="url">
+                  阿里巴巴国际无线技术部 - 在这里遇见最好的自己
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T22:33:49+08:00">
+                2017-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Invite/" itemprop="url" rel="index">
+                    <span itemprop="name">Invite</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！</strong></p>
+<h1 id="我们做什么"><a href="#我们做什么" class="headerlink" title="我们做什么"></a>我们做什么</h1><p>阿里巴巴国际无线技术部背靠阿里巴巴集团和阿里巴巴国际站，阿里巴巴国际站是全球领先的跨境B2B贸易服务平台，服务全世界数以千万计的采购商和供应商，阿里巴巴国际站（www.alibaba.com）帮助中小企业拓展国际贸易的出口营销推广服务，专注服务于全球中小微企业，在平台上，通过向海外买家展示、推广供应商的企业和产品，进而获得贸易商机和订单，买卖双方可以在线更高效地找到适合的彼此，并更快更安心地达成交易，是出口企业拓展国际贸易的首选跨境贸易平台。</p>
+<p>阿里巴巴国际站技术致力于打造一站式eWTP全球国际B类贸易服务平台解决方案，基于大数据在搜索、推荐、营销、流量、金融等场景中提供全方位一站式的服务，赋能卖家。</p>
+<p>近年来，随着智能手机的普及无线的趋势已经锐不可当。阿里巴巴国际无线技术部不仅是站在阿里巴巴集团和阿里巴巴国际站两个巨人的肩上，更是站在无线时代的浪潮之上。来吧少年，一起为全球中小企业服务！</p>
+<h1 id="我们在哪里"><a href="#我们在哪里" class="headerlink" title="我们在哪里"></a>我们在哪里</h1><p><em>杭州 - 一座来了就不想走的城市</em><br>杭州有“欲把西湖比西子，淡妆浓抹总相宜”的西湖，<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/175b41acb93011a4e220fbcf498603f0.png" alt=""><br>杭州有“钱塘岸上春如织，淼淼寒潮带晴色”的钱塘江（潮），<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/4781472e7fb735b122b5a47faf8c135a.png" alt=""><br>杭州有“最爱湖东行不足，绿杨阴里白沙堤”的白堤，<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/691676d5035cbdd8aa78e2514f7e4b26.png" alt=""><br>。。。。。。</p>
+<p>从古至今无数的文人墨客为杭州驻足，给杭州添色。正所谓“你在杭州看风景,看风景的人在历史中看你”。古有一本《西湖梦寻》让无数人慕名杭州，今有一家“阿里巴巴”让追梦人逐梦杭州。来吧少年，“江南无所有，聊赠一聘书”。</p>
+<h1 id="为什么是我们"><a href="#为什么是我们" class="headerlink" title="为什么是我们"></a>为什么是我们</h1><p>阿里巴巴早已经是一家庞大的集团公司，有大家熟知的淘宝、天猫等等。然而我却要说请记住它们，但请来阿里巴巴国际无线技术部：</p>
+<h2 id="内部环境：国际化-集团三大战略之一"><a href="#内部环境：国际化-集团三大战略之一" class="headerlink" title="内部环境：国际化 - 集团三大战略之一"></a>内部环境：国际化 - 集团三大战略之一</h2><p>早在2015年阿里巴巴集团提出：农村化、国际化、大数据和云计算是阿里巴巴集团未来的三大战略，2016年马老师又创造性的提出了eWTP，2016年9月马老师在二十国集团工商峰会（B20）发表演讲，系统性的阐述eWTP的理念、愿景和行动计划。并且在一年中几乎飞遍全球，向各国政府、国际组织描述和倡议eWTP。<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/04a5d40cf5de4a9d7cb7e8b585cd92dc.png" alt=""><br>2017年6月阿里巴巴在美国底特律举办大规模的论坛，马老师做了“中国的贸易机会”的主题演讲，更是承诺未来的5年内在美国创造100万的工作机。<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/e6d2d85ca980dee8afe223cd3e10c71e.png" alt=""><br>无论是国际化、eWTP和中美贸易阿里巴巴国际无线技术部都是最重要的战场。</p>
+<h2 id="外部环境：一带一路-国家级顶层战略"><a href="#外部环境：一带一路-国家级顶层战略" class="headerlink" title="外部环境：一带一路 - 国家级顶层战略"></a>外部环境：一带一路 - 国家级顶层战略</h2><p>2013年，中国首次超越美国跃居世界第一大贸易国。持续三年世界第一之后，世贸组织（WTO）的最新数据显示，2016年中国的进出口贸易额被美国反超，丧失了“世界第一外贸国家”的称号。</p>
+<p>2015国家发展改革委、外交部、商务部联合发布了《推动共建丝绸之路经济带和21世纪海上丝绸之路的愿景与行动》，即是大家熟知的“一带一路”。它将充分依靠中国与有关国家既有的双多边机制，借助既有的、行之有效的区域合作平台，一带一路旨在借用古代丝绸之路的历史符号，高举和平发展的旗帜，积极发展与沿线国家的经济合作伙伴关系，共同打造政治互信、经济融合、文化包容的利益共同体、命运共同体和责任共同体。可以说“一带一路”和eWTP有异曲同工之秒。</p>
+<p>2017年3月16号《中国新外贸模式研究报告》正式发布，重点分析了以阿里巴巴为代表的新外贸模式。结论是：新外贸模式极大降低了中国外贸的交易成本，同时交易平台提供的信息、数据和生态价值，会随时间增加为企业带来更大价值。阿里巴巴提倡的新外贸模式是外贸行业的新拐点。</p>
+<p>无论是内部环境还是外部环境，作为阿里巴巴发家的阿里巴巴国际站正站在新的历史起点欲展翅翱翔，来吧少年，一起鹰击长空。</p>
+<h1 id="我们的技术"><a href="#我们的技术" class="headerlink" title="我们的技术"></a>我们的技术</h1><p>在新技术上无论是Andriod还是iOS，我们积极跟进业内新技术，试验落地。比如：在iWatch产品发布之初便做了适配、遵循Andriod的MD规范、DeepLink、Firebase等；在国际化上自研多语言的实时更新引擎、RTL适配，做到覆盖全球所有主流语种、货币单位等。</p>
+<p>阿里巴巴国际无线技术部出品的Alibaba.com Andriod APP 多次获得Google Play官方推荐，以2017年3月10日为例：我们获得Google Play 104个国家的主页和购物分类的黄金展位。这是我们不断追求卓越，不断提升用户体验，不断创新的结果。由于我们在技术上的精益求精，我们始终和Google保持着非常良好的合作关系。<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/8603c70eae9fb9f962fc0a0bda80f413.png" alt=""></p>
+<p>更多的荣誉：<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/d8f8a426f79f3e77a425bf6a0a1c997d.png" alt=""></p>
+<p>来吧少年，一起码出未来！</p>
+<p><strong>不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！</strong></p>
+<h1 id="我们的团队"><a href="#我们的团队" class="headerlink" title="我们的团队"></a>我们的团队</h1><p>阿里巴巴国际无线技术部现聚集40多名江湖三大名门正派（Andriod, iOS,JAVA）的顶级高手，由江湖人称“小马哥”的带头大哥领导，在这里每一个人都身怀绝技，一起来走进这些可爱的小伙伴吧：</p>
+<h2 id="如果你是终生学习者，如果你对认知科学、商业本质感兴趣，来吧少年！"><a href="#如果你是终生学习者，如果你对认知科学、商业本质感兴趣，来吧少年！" class="headerlink" title="如果你是终生学习者，如果你对认知科学、商业本质感兴趣，来吧少年！"></a>如果你是终生学习者，如果你对认知科学、商业本质感兴趣，来吧少年！</h2><p>“小马哥”之所以称为“小马哥”，不仅仅因为他姓马，也不仅仅他的英文名叫“Jack”，更重要的是有马老师的风采。如果你常年关注“得到APP”，你一定对傅盛、刘润、罗胖、李笑来等等如数家珍，那么来吧少年，在这里近距离感受“小马哥”价值2W的《认知升级》。在这里每一天都是成长！</p>
+<p><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/b537531d13ce08f1463bce9e97ac0acc.png" alt=""></p>
+<h2 id="如果你是IOS的开发者，又常见混迹开源社区，来吧少年！"><a href="#如果你是IOS的开发者，又常见混迹开源社区，来吧少年！" class="headerlink" title="如果你是IOS的开发者，又常见混迹开源社区，来吧少年！"></a>如果你是IOS的开发者，又常见混迹开源社区，来吧少年！</h2><p><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/60ea9f6cad94a3e0ac2e1bb121e8bc86.png" alt=""></p>
+<h2 id="如果你怀有一颗不安分的心，来吧少年！"><a href="#如果你怀有一颗不安分的心，来吧少年！" class="headerlink" title="如果你怀有一颗不安分的心，来吧少年！"></a>如果你怀有一颗不安分的心，来吧少年！</h2><p>我们一起去探索这个世界：<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/6b33d913bad296d6a9284c25cbd25f57.png" alt=""></p>
+<h2 id="如果你精通八大菜系，来吧少年！"><a href="#如果你精通八大菜系，来吧少年！" class="headerlink" title="如果你精通八大菜系，来吧少年！"></a>如果你精通八大菜系，来吧少年！</h2><p>我们一起去吃遍全球：<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/5858ddc3d4ec7baac08fc659ca1fb739.png" alt=""></p>
+<p>如果以上这些都还不够打动你，那么下面一张一定可以<br><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/e49449564295d68aa2dbe212193b7cf6.png" alt=""></p>
+<h1 id="不要压抑你的天性了！打开邮箱把你的iOS-Android简历发到blackteachinese-gmail-com吧！"><a href="#不要压抑你的天性了！打开邮箱把你的iOS-Android简历发到blackteachinese-gmail-com吧！" class="headerlink" title="不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！"></a>不要压抑你的天性了！打开邮箱把你的iOS/Android简历发到blackteachinese@gmail.com吧！</h1>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/08/16/history-make-believe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/16/history-make-believe/" itemprop="url">
+                  《未来简史》————虚构比真实更重要
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-16T22:33:49+08:00">
+                2017-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/history/" itemprop="url" rel="index">
+                    <span itemprop="name">history</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>赫拉利提出了一个了解历史的理由。了解历史可以让我们了解历史给我带上的枷锁，让我们不再被历史的枷锁困住。</p>
+<p>美国中产阶级们喜欢在自己家的小别墅前养一片绿油油、整齐的草坪。他们还会买除草机等各种设备，并且定期去修剪、浇灌、维护这块草坪。事实上这很浪费时间，也没有太多实际的价值，但为什么他们还要维持这样的习惯呢？</p>
+<p>在中世纪欧洲，维护这样的草坪是很费人力、物力的，那个时候没有先进的设备，只有贵族家才能养得起，这是尊贵的表现。现在只要愿意花时间，中产阶级们都能养得起。那么这恰恰就失去了养殖草坪的尊贵性。就好像LV、Gucci等奢侈品如果大家都买得起，就失去了显示身份的价值。而了解了这段历史，我们可以知道自己为什么会有维护草坪这种自己都无法解释的习惯。不用再为这段偶然产生的历史习惯，而买单。</p>
+<p>人和自然是我们常常思考的问题。人真的是第一可宝贵的吗？</p>
+<p>回顾历史，在采集狩猎时代，人类相信万物有灵，相信泛灵论。人类每天需要猜测动物的想法、避免被动物偷袭、还要想办法捕获动物。采集狩猎时代人类只是大自然食物链上普通的一环，没有太大的优势。</p>
+<p>农业社会，人驯养了很多动物，动物成了人类的私有物品。人对动物可以为所欲为，不再需要考虑对方的感受，人和动物不再平等。这时候泛灵论就不满足时代的需要了，于是诞生了各种有神论。基督教宣布，上帝给人类永久的灵魂，而其他动物是没有灵魂的。人类成为第二可宝贵的。</p>
+<p>现代社会，进化论逐渐被社会认可，基督教那套灵魂的说法就站不住脚了。那人又如何比别的动物更宝贵呢？有人给出了答案，人有意识。这个理由还是很有市场的，它很难被证伪。科学家人认为人根本不需要意识。旧的记忆和新的外部刺激，对大脑来说都是电信号和化学反应。我们看到危险信号靠近后，视觉信号传递给大脑，大脑把神经信号传递给腿，腿受到命令就可以开始跑了。恐惧、害怕、惊慌等主观体验根本没有什么用。而且，现在科学家已经有足够证据证明哺乳动物和鸟类、鱼类都是有感情的。讨论意识不能说明人比动物宝贵。</p>
+<p>那人到底为什么可宝贵呢？<br>因为，突然有一天，人类基因突变，成为一个会幻想、懂虚构的年轻人。<br>人能虚构东西，并且能相信虚构的东西。虚构出来各种新的概念，上帝、国家、金钱、公司、价值观，能让人群实现大规模、跨越时间和空间的合作。</p>
+<p>国家也是虚构的，没有哪片土地天生属于某个国家。过去有一个国家，几千年来都维系着的文化和传统。突然有一天，在这个国家的土地上发生了一场战争。战争打完，这个国家被拆成了两片区域。这两片区域分别被植入了不同的想象共同体。最后出现了2个互相仇视的国家。</p>
+<p>这是现在我们认为人类为什么比别的动物更可贵的原因。这些虚构的概念甚至比真实存在的都显得重要。比如宗教的出现维系着大尺度的社会秩序。</p>
+<p>宗教是什么？<br>赫拉利总结了宗教的3个特点。<br>1 它有一套号称不是人发明的，而且不能被人改变的道德规范，要求人们必须遵守。<br>2 它给人们一个许诺，只要你遵从这套法规，就会有什么好处。<br>3 它的目的是为了巩固自己设想的社会秩序</p>
+<p>我想起我一个大学同学，一个信仰基督教的女生。她是一个善良、乐于助人，有所为有所不为。她相信以她的标准区为人处事，一定会收获幸福。她有一个特点，内心没有恐惧。她不惧怕现在、不惧怕未来，不惧怕自己的出生低微，不惧怕别人有更好的机会，不惧怕天灾、不惧怕人祸。</p>
+<p>这样的人，我们认为是有强大内心的。这也是基督教、佛教等主流宗教给社会带来的正面意义。每个宗教都有自己一套道德体系，只要这套道德体系无限趋近于社会共同的认知，那么我们可以只要大家去遵守，社会会变得更和谐。即便它给于教民的许诺是没有能力实现的。</p>
+<p>这么说来，各种主义、有价值观和远景的公司文化，其实也符合宗教的特点。这也是为什么管理学会认为，最高级的管理是价值观、理念的管理。大家都遵守同样的规定、并且愿意相信未来的收获和意义，管理起来成本是相当的低啊。所有人一颗心、指哪打哪，不论战略和战术如何调整和部署，都能朝同一个方向去发力，效果肯定是杠杠的6啊。</p>
+<p>看到这里，你估计也已经认为虚构的影响力确实很6，那你有没有想过你可以怎么使用虚构的思维呢？<br>虚构影响力可以这么大，是因为我们可以赋予虚构概念价值和意义，从而聚集更多的人。<br>我们做一个产品，要思考这个产品是否有改变世界的意义。做某一个项目，也需要思考它是否有影响深远的价值。<br>有新的想法，要尝试给想法定义一个新的概念。虚构的新概念，至少是需要经过思考和抽象的过程。大家对新概念的好奇，也能引发思考和传播。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/07/12/manage_interview/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1650,484 +2148,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/04/04/financial-use-invest-sense/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/04/financial-use-invest-sense/" itemprop="url">
-                  巴菲特的投资思维如何用于日常生活
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-04T15:36:16+08:00">
-                2017-04-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/思维/" itemprop="url" rel="index">
-                    <span itemprop="name">思维</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="学会权衡风险与收益"><a href="#学会权衡风险与收益" class="headerlink" title="学会权衡风险与收益"></a>学会权衡风险与收益</h1><p>首先，我们做事情要有明确的目的，不同的目的要采用不同的方法。<br>大部分人在生活中很容易受别人影响。<br>看到朋友给他的孩子报了钢琴、英语、绘画等兴趣班，就想象自己的孩子会落后于别人，赶紧自己也给孩子报了相应的培训班。</p>
-<p>危机意识敏锐是人类进化的优良习惯。在原始森林里，当你看到身边的人突然加速逃跑的时候，如果你非常理智思考一下，观察一下身边的情况，你很可能就野兽吃了。于是活下来的都拥有容易受他人影响的基因。但现代生活比原始森林复杂多了，光依靠过去的本能的反应已经远远不够了。我们应该明确好自己的目标，而不是别人给孩子报英语，我们就不加思索的也报英语。</p>
-<p>那我们应该怎么做？每个孩子有着不一样的基因，各方面的能力不一样，兴趣爱好也不一样。譬如，你发现自己孩子对音乐特别敏感，听到音乐会跟着哼、身体跟着节奏舞动。那说明你的孩子对音乐、舞蹈比较敏锐，可以尝试往这个方向引导。于是这就成为你权衡给孩子哪些教育其中一个目标。即便是要给孩子报兴趣班，也要依据你积累下来的这些目标和方向。不盲目跟风。</p>
-<h1 id="切莫好高骛远。"><a href="#切莫好高骛远。" class="headerlink" title="切莫好高骛远。"></a>切莫好高骛远。</h1><p>我们在制定目标时不能好高骛远。如果你好高骛远，那么你定的目标通常会没有可执行性。</p>
-<p>比如你定下这样的目标，“我今年的理财投资回报率要达到30%”。有些人可能会觉得也并不是很难，牛市的时候几个涨停就够了。天了噜，巴菲特每年的投资回报率就12%左右。他养着一个全球最贵的投资团队，每天分析各行业趋势、各国政策的影响、企业的动态，最后收益也就平均12%。</p>
-<p>我并非说没有任何人的投资的回报能高于巴菲特，只是非常少，可能低于5%。而且即便你某一年投资回报高于巴菲特并不代表你平均每年投资回报率能高于巴菲特，也就是说你的投资策略、投资能力并不优于巴菲特，只是刚好今年的投资运气特别好。这其实又说到另外一个主题，是关于自我认知能力，大部分人的自我认知能力都很差，这个且不说。</p>
-<p>在生活中好高骛远会带来什么实际性的错误呢？就像上面的例子，如果你定的理财回报率是30%，那你就会关注到很多风险极高的投资产品。比如一些区块链的垃圾币包装的理财产品、期货产品。你也更容易被别人忽悠去买这些风险极高、甚至完全是骗局的传销型理财产品。如果你定的目标是30岁前实现财富自由，你可能就会忽视基础的积累，只去做那些看起来有可能的事情。比如买彩票、盲目创业、高风险投资。你买股票时可能会加5倍杠杆，不翻倍的投资你不会考虑。</p>
-<h1 id="权衡回报和风险"><a href="#权衡回报和风险" class="headerlink" title="权衡回报和风险"></a>权衡回报和风险</h1><p>我们需要考虑的是回报和风险的比例，而不仅仅是回报本身。<br>是的，我们常常听别人说这个回报率是10%非常高，这个回报率是12%相当赞。但却很少有人说，这个理财产品往年的实际投资回报是多少。多大的百分比是亏损、多大的百分百是0%～5%之间。大家都对风险的分析做得不够，能大概知道A产品风险较低、B产品风险高一点就已经很不错了。更别提最后通过概率权的思想计算出实际的投资回报率（而不是发行方包装的回报率）。</p>
-<p>在生活中我们同样要学会权衡回报和收益。比如：周六有个李开复的讲座要不要去听。</p>
-<ul>
-<li>先算一下要花的时间。 <ul>
-<li>路上时间+讲座时间，共6个小时</li>
-</ul>
-</li>
-<li>初步预计一下收益。<ul>
-<li>认识几个行业朋友？听到李开复对人工智能的干货？感受一下气氛，激发一下自己的热情？</li>
-</ul>
-</li>
-<li>替代方案／机会成本<ul>
-<li>陪老婆孩子</li>
-<li>看半本书</li>
-<li>打场球锻炼一下</li>
-<li>花两个小时看视频直播，省下4个小时干别的。</li>
-</ul>
-</li>
-</ul>
-<h1 id="切换有成本"><a href="#切换有成本" class="headerlink" title="切换有成本"></a>切换有成本</h1><p>最后，任何事情都有一个准入的成本，或者说切换的成本。大到换工作，小到换手机，换电脑，都是如此。到新单位前三个月乃至半年，要重新学习和适应，其实做不了太重要的事情，这就是准入成本。换一台电脑，很多旧的文件要导出来，要装新软件，这都是准入成本。考虑到准入成本，你就不应该切换工作太频繁，在一个公司待不到2年通常都是一件成本较高的事情。</p>
-<p>PS：这些思想听起来是很简单道理，大家或多或少都听过这样的说法，但平时却很难做不到。这是由于我们长久以来形成的错误的思维习惯，你不下意识去纠正，即便听过N遍也很难真正吸收。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/03/29/success_outliers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/29/success_outliers/" itemprop="url">
-                  比天赋更重要是什么？
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T21:37:07+08:00">
-                2017-03-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/思维/" itemprop="url" rel="index">
-                    <span itemprop="name">思维</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一-优势积累比天赋更重要"><a href="#一-优势积累比天赋更重要" class="headerlink" title="一 .优势积累比天赋更重要"></a>一 .优势积累比天赋更重要</h1><h2 id="机遇比天赋更重要"><a href="#机遇比天赋更重要" class="headerlink" title="机遇比天赋更重要"></a>机遇比天赋更重要</h2><p>加拿大著名球队老虎队的队员里25个球员，有17个球员的出生日期在1～3月。为什么有么明显的倾向性？加拿大冰球选拔机制是按年龄分组，5岁一组、6岁一组。同样是1990年出生，1月份出生的小孩和12月份出生的小孩分在一组。对于小孩来说差了10几个月，身体发育就差很多，年初出生的球员就占据很大的优势。所以年初出生的小孩一开始表现就会更好，表现更好就会被筛选到特训组，得到更好的训练。得到更好的训练，表现就更好，如此不断积累优势，最后年初出生的小孩称为顶级球员的机率就大大提升。</p>
-<h2 id="知道一万小时理论也没用"><a href="#知道一万小时理论也没用" class="headerlink" title="知道一万小时理论也没用"></a>知道一万小时理论也没用</h2><p>不是每个人都有机会在合适的时机进行一万小时的训练。比如加拿大的冰球运动员，如果你小的时候进不了第一梯队，就没能进行优质的训练，很难达到一万小时。而且年龄大了再完成一万小时的训练也没有用了，因为运动员的身体条件高峰期是受年龄限制的。</p>
-<h2 id="社会环境变革比努力重要得多"><a href="#社会环境变革比努力重要得多" class="headerlink" title="社会环境变革比努力重要得多"></a>社会环境变革比努力重要得多</h2><p>70后毕业参加工作买一套房子，相当于80后工作10年。最近毕业的清华大学学生，买不起北京房子不要太多。</p>
-<h1 id="二-文化背景对成功影响很大"><a href="#二-文化背景对成功影响很大" class="headerlink" title="二.文化背景对成功影响很大"></a>二.文化背景对成功影响很大</h1><p>20世纪90年代韩国大航航空公司飞机失事率是同期美国联合航空的17倍，但究其原因竟然不是飞机设备、也不是管理问题。他们做了大量调研，听取飞机黑匣子录音，最终发现韩国文化是最根本的原因。因为韩国是一个等级分明的国家。在飞行过程中，机长做了一些错误的决策，副机长以及其他成员不敢说，没有了其他成员的有力监督，飞机失事率就变高了很多。</p>
-<h1 id="我们该怎么做"><a href="#我们该怎么做" class="headerlink" title="我们该怎么做"></a>我们该怎么做</h1><h2 id="挤入第一梯队"><a href="#挤入第一梯队" class="headerlink" title="挤入第一梯队"></a>挤入第一梯队</h2><p>学习和工作时要想办法进入“第一梯队”，这样才能获得高质量的训练，加速积累达到一万小时的训练，从了增加优势积累的机会。</p>
-<h2 id="如何获得社会变革红利"><a href="#如何获得社会变革红利" class="headerlink" title="如何获得社会变革红利"></a>如何获得社会变革红利</h2><p>花时间研究未来趋势，训练自己的预见能力，并且在未来趋势到来之前，开始一万小时的积累。比尔盖茨在大家还没用电脑前，就有了计算机编程的10万小时积累。<br>我们需要一点运气，找到风口并且在风口前已经做好了准备。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/03/14/ios_memoryLeak_tool/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/14/ios_memoryLeak_tool/" itemprop="url">
-                  内存泄漏监控
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-14T10:18:21+08:00">
-                2017-03-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="为什么要做app内存泄漏监控？"><a href="#为什么要做app内存泄漏监控？" class="headerlink" title="为什么要做app内存泄漏监控？"></a>为什么要做app内存泄漏监控？</h2><p>内存泄漏将导致app内存占用变大，成为iphone要kill App的时候优先考虑的对象.<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fduvum23wsj31870j3jwx.jpg" alt=""></p>
-<h2 id="监控内存泄漏的时机"><a href="#监控内存泄漏的时机" class="headerlink" title="监控内存泄漏的时机"></a>监控内存泄漏的时机</h2><ol>
-<li>UIViewController调用”dismissViewControllerAnimated:”的时候</li>
-<li>UInavigationController调用”popToRootViewControllerAnimated:”等pop方法</li>
-<li>UITabbbarViewController、UIPageViewController、UISplitViewController+MemoryLeak需要释放时，对应的内嵌视图控制器也需要释放。<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fduvtrj272j31080hgn00.jpg" alt=""></li>
-</ol>
-<h2 id="监控小技巧"><a href="#监控小技巧" class="headerlink" title="监控小技巧"></a>监控小技巧</h2><p>创建一个block,block持有需要释放的视图的weak指针，当监测时机到时，执行这个block，如果weak指针不为nil,则该试图已经内存泄漏了。<br><img src="https://ww4.sinaimg.cn/large/006tNc79gy1fduvux09v8j313i0ngjtw.jpg" alt=""></p>
-<h2 id="监控对象"><a href="#监控对象" class="headerlink" title="监控对象"></a>监控对象</h2><ol>
-<li>所有需要释放的视图控制器</li>
-<li>视图控制器的View,及其每一层嵌套的Subview</li>
-</ol>
-<h2 id="视图树的记录"><a href="#视图树的记录" class="headerlink" title="视图树的记录"></a>视图树的记录</h2><p>监测到内存泄漏后，为了方便开发定位到具体泄漏的视图，我们可以泄漏的视图树记录下来。</p>
-<h2 id="泄漏后如何及时提醒"><a href="#泄漏后如何及时提醒" class="headerlink" title="泄漏后如何及时提醒"></a>泄漏后如何及时提醒</h2><p>泄漏后怎么提醒开发者比较合适呢。</p>
-<ol>
-<li>发现泄漏马上把泄漏的视图树log打印出来</li>
-<li>悬浮一个提醒款，显示当前泄漏的数量</li>
-<li>命中断言（会阻断开发，容易被喷）</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2177,7 +2197,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2188,7 +2208,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2199,7 +2219,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2421,6 +2441,17 @@
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 

@@ -1,0 +1,875 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blacktea's Life" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="设计一个统一持久化SDK的意义提高可维护性和安全性。没有统一的存储层，业务代码里存储功能会有很多重复代码，不仅维护性差、安全性也无法保障
+提高存储质量和性能。不同业务场景适合使用的存储方式是不一样的，为了提高性能我们得使用复合式的存储策略，为了保证稳定性还得考虑监控
+不同场景的存储方式KV存储kV存储是最常用的存储方式，超过80%的业务存储会用到，它是一种NoSQL（非关系型数据库）模型搜索，适用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何设计一个iOS统一持久化SDK">
+<meta property="og:url" content="http://blackteachinese.com/2017/12/11/ios_ unified_storage/index.html">
+<meta property="og:site_name" content="Blacktea's Life">
+<meta property="og:description" content="设计一个统一持久化SDK的意义提高可维护性和安全性。没有统一的存储层，业务代码里存储功能会有很多重复代码，不仅维护性差、安全性也无法保障
+提高存储质量和性能。不同业务场景适合使用的存储方式是不一样的，为了提高性能我们得使用复合式的存储策略，为了保证稳定性还得考虑监控
+不同场景的存储方式KV存储kV存储是最常用的存储方式，超过80%的业务存储会用到，它是一种NoSQL（非关系型数据库）模型搜索，适用">
+<meta property="og:updated_time" content="2017-12-11T17:32:00.345Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何设计一个iOS统一持久化SDK">
+<meta name="twitter:description" content="设计一个统一持久化SDK的意义提高可维护性和安全性。没有统一的存储层，业务代码里存储功能会有很多重复代码，不仅维护性差、安全性也无法保障
+提高存储质量和性能。不同业务场景适合使用的存储方式是不一样的，为了提高性能我们得使用复合式的存储策略，为了保证稳定性还得考虑监控
+不同场景的存储方式KV存储kV存储是最常用的存储方式，超过80%的业务存储会用到，它是一种NoSQL（非关系型数据库）模型搜索，适用">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blackteachinese.com/2017/12/11/ios_ unified_storage/"/>
+
+
+
+
+
+  <title> 如何设计一个iOS统一持久化SDK | Blacktea's Life </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63129529";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blacktea's Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">A programmer who love music and football</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/12/11/ios_ unified_storage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何设计一个iOS统一持久化SDK
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T18:01:23+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="设计一个统一持久化SDK的意义"><a href="#设计一个统一持久化SDK的意义" class="headerlink" title="设计一个统一持久化SDK的意义"></a>设计一个统一持久化SDK的意义</h2><p>提高可维护性和安全性。<br>没有统一的存储层，业务代码里存储功能会有很多重复代码，不仅维护性差、安全性也无法保障</p>
+<p>提高存储质量和性能。<br>不同业务场景适合使用的存储方式是不一样的，为了提高性能我们得使用复合式的存储策略，为了保证稳定性还得考虑监控</p>
+<h2 id="不同场景的存储方式"><a href="#不同场景的存储方式" class="headerlink" title="不同场景的存储方式"></a>不同场景的存储方式</h2><h3 id="KV存储"><a href="#KV存储" class="headerlink" title="KV存储"></a>KV存储</h3><p>kV存储是最常用的存储方式，超过80%的业务存储会用到，它是一种NoSQL（非关系型数据库）模型搜索，适用于非复杂业务关系的场景。KV存储又包含5种类型分别是内存KV、文件KV、数据库KV、二级索引KV、流式大文件KV。</p>
+<h4 id="内存KV"><a href="#内存KV" class="headerlink" title="内存KV"></a>内存KV</h4><p>内存KV是在内存上存储，也是最快速的存储方式，通常文件KV、数据库KV也会实现内存KV进行对象级别的加速。<br>内存KV的实现要考虑几个关键点，接口设计、清理机制、淘汰机制、并发管理。</p>
+<p><strong>淘汰机制</strong><br>具体实现上建议使用LRU淘汰机制，它的核心思想是“最近用到的数据被重用的概率是最高的”，因此我们需要对缓存进行排序，并且保证位置调整的高性能，很自然地我们会想到使用双向链表来实现。查找一个链表中元素的时间复杂度是O(n)，每次命中的时候，我们就需要花费O(n)的时间来进行查找，如果不添加其他的数据结构，这个就是我们能实现的最高效率了。我们还可以组合上hash表，它查找时间复杂度是O(1)。<br>最后我们可以设计一个数据结构，里面包含一个hashmap和双向链表，使用hashmap查询cache,使用双向链表做排列和位置管理。</p>
+<p><strong>清理机制</strong><br>手机设备内存是奢侈品，在内存紧张时，我们要有清理缓存的机制</p>
+<p><strong>并发管理</strong><br>为了保证多线程调用的安全性，增删改查每项操作我们都要加锁</p>
+<h4 id="数据库KV"><a href="#数据库KV" class="headerlink" title="数据库KV"></a>数据库KV</h4><p>数据大小在20K~30k以内，使用数据库存储效率较高，数据库KV的安全保障，要支持数据库级别的加密。</p>
+<h4 id="文件KV"><a href="#文件KV" class="headerlink" title="文件KV"></a>文件KV</h4><p>数据大小大雨20K~30k，适合使用文件KV，需要提供文件校验、加密能力。</p>
+<h4 id="二级索引KV"><a href="#二级索引KV" class="headerlink" title="二级索引KV"></a>二级索引KV</h4><p>在文件KV的基础上，使用两个key来指定一个value，适合图片库这种需要基于图片url和尺寸信息的场景。</p>
+<h4 id="流式文件KV"><a href="#流式文件KV" class="headerlink" title="流式文件KV"></a>流式文件KV</h4><p>针对视频等较大的流式文件，如果我们对整块数据进行存取会消耗大量内存，需要进行分段处理。</p>
+<h3 id="ORM存储"><a href="#ORM存储" class="headerlink" title="ORM存储"></a>ORM存储</h3><p>ORM是对象关系映射Object Relational Mapping，它的核心是将复杂的数据结构对象化，将sql操作转化为简单易用的的面向对象操作。<br>ORM的开发需要考虑到各种feature，多线程安全、事务、时间模型、列级加密、支持批处理操作、对象域，支持对对象管理方式的控制等。</p>
+<h3 id="DB储存"><a href="#DB储存" class="headerlink" title="DB储存"></a>DB储存</h3><p>需要进行复杂数据的操作的存储场景，一般就要直接用到DB，DB的设计是一门大学问，要考虑的要点有很多。比如线程池管理、读写互斥、并发控制、任务调度，数据库的加密,Api的易用(SQLite3难用)。其中SQLite3免费版不支持加密的，但它是有预留加密数据库的接口，可以自己实现加密功能。如果要追求极致的性能，在SQL的查询还可以做缓存功能。</p>
+<h2 id="执行计划缓存"><a href="#执行计划缓存" class="headerlink" title="执行计划缓存"></a>执行计划缓存</h2><p>SQL响应时间包括两部分：RT = 解析时间和 + 执行时间。<br>如果将执行计划进行缓存可以减少解析的时间，如果将结果集进行缓存，可以减少执行时间。But,由于查询的结果集可能很多，而且数据精彩会被修改，结果集缓存意义不大，因此我们主要考虑对执行计划进行缓存。</p>
+<p>相识的sql可以使用同一个执行计划，比如“select <em> from t where num=1”和“select </em> from t where num=2”。因此我们可以先将语句标准化（忽略大小写，忽略空格数目，将常量全部抽象成 ?），减少缓存数量，最后还要考虑淘汰机制，整体思路如下。<br>1对SQL进行词法语法分析，抽象出常量<br>2查询执行计划缓存是否命中，若不命中，则进行解析<br>3将常量绑定到执行计划</p>
+<h2 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h2><p>TODO</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ww2.sinaimg.cn/large/006tNbRwgy1feav9se587j30kw0r2adr.jpg" alt="Blacktea wechat" style="width: 200px; max-width: 100%;"/>
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>记录生活于感悟，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="https://ww4.sinaimg.cn/large/006tNbRwgy1feav9e683oj30yi1e6q7b.jpg" alt="Blacktea WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="https://ww3.sinaimg.cn/large/006tNbRwgy1feav9mjqarj30p011iq6c.jpg" alt="Blacktea Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/26/react_native_ios_source_code/" rel="next" title="ReactNative到底做了什么？">
+                <i class="fa fa-chevron-left"></i> ReactNative到底做了什么？
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/11/web_brower_render/" rel="prev" title="浏览器渲染原理">
+                浏览器渲染原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjY1My85MjE0"></div>
+      
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="Blacktea" />
+          <p class="site-author-name" itemprop="name">Blacktea</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/blackteachinese" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/your-user-name" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/your-user-name" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/your-user-name" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设计一个统一持久化SDK的意义"><span class="nav-number">1.</span> <span class="nav-text">设计一个统一持久化SDK的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不同场景的存储方式"><span class="nav-number">2.</span> <span class="nav-text">不同场景的存储方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#KV存储"><span class="nav-number">2.1.</span> <span class="nav-text">KV存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#内存KV"><span class="nav-number">2.1.1.</span> <span class="nav-text">内存KV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据库KV"><span class="nav-number">2.1.2.</span> <span class="nav-text">数据库KV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文件KV"><span class="nav-number">2.1.3.</span> <span class="nav-text">文件KV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二级索引KV"><span class="nav-number">2.1.4.</span> <span class="nav-text">二级索引KV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流式文件KV"><span class="nav-number">2.1.5.</span> <span class="nav-text">流式文件KV</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ORM存储"><span class="nav-number">2.2.</span> <span class="nav-text">ORM存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DB储存"><span class="nav-number">2.3.</span> <span class="nav-text">DB储存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行计划缓存"><span class="nav-number">3.</span> <span class="nav-text">执行计划缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">4.</span> <span class="nav-text">监控</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Blacktea</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

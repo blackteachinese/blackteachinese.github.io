@@ -309,6 +309,458 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/12/24/2017-12-15/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/24/2017-12-15/" itemprop="url">
+                  React到UIKit完整渲染过程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-24T13:33:01+08:00">
+                2017-12-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="React-渲染过程"><a href="#React-渲染过程" class="headerlink" title="React 渲染过程"></a>React 渲染过程</h1><p>HelloWorld Component：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var HelloWorld = React.createClass(&#123;</div><div class="line">  getInitialState: function() &#123;</div><div class="line">    return &#123;type: &apos;say:&apos;&#125;;</div><div class="line">  &#125;,</div><div class="line">  render: function() &#123;</div><div class="line">    return React.createElement(&quot;div&quot;, null,this.state.type, &quot;Hello &quot;, this.props.name);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">React.render(React.createElement(HelloWorld, &#123;name: &quot;John&quot;&#125;), document.getElementById(&quot;container&quot;));</div></pre></td></tr></table></figure></p>
+<p>JS Dom:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;div data-reactid=&quot;0&quot;&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.0&quot;&gt;say:&lt;/span&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.1&quot;&gt;Hello &lt;/span&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.2&quot;&gt;John&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>React.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">// ReactElement：创建虚拟DOM</div><div class="line">function ReactElement(type,key,props)&#123;</div><div class="line">  this.type = type;</div><div class="line">  this.key = key;</div><div class="line">  this.props = props;</div><div class="line">&#125;</div><div class="line">// mountComponent：渲染component，生成的dom结构</div><div class="line">ReactDOMTextComponent.prototype.mountComponent = function(rootID) &#123;</div><div class="line">    this._rootNodeID = rootID;</div><div class="line">    return &apos;&lt;span data-reactid=&quot;&apos; + rootID + &apos;&quot;&gt;&apos; + this._currentElement + &apos;&lt;/span&gt;&apos;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// instantiateReactComponent：生成component</div><div class="line">function instantiateReactComponent(node)&#123;</div><div class="line">        ......</div><div class="line">&#125;</div><div class="line">React = &#123;</div><div class="line">    createElement:function(type,config,children)&#123;</div><div class="line">        ...</div><div class="line">        return new ReactElement(type, key,props);</div><div class="line">    &#125;，</div><div class="line">    createClass:function(spec)&#123;</div><div class="line">        ...</div><div class="line">    &#125;,</div><div class="line">    // 渲染入口</div><div class="line">    render:function(element,container)&#123;</div><div class="line">        var componentInstance = instantiateReactComponent(element);</div><div class="line">        var markup = componentInstance.mountComponent(React.nextReactRootIndex++);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjuovkxsyj31kw0san5r.jpg" alt=""></p>
+<h1 id="Native"><a href="#Native" class="headerlink" title="Native"></a>Native</h1><p>JS拿出所有组件，循环调用nativeFlushQueueImmediate</p>
+<p>buffer<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">&lt;__NSArrayM 0x60c00024b8e0&gt;(</div><div class="line">51</div><div class="line">)</div><div class="line">,</div><div class="line">&lt;__NSArrayM 0x60c00024b730&gt;(</div><div class="line">5</div><div class="line">)</div><div class="line">,</div><div class="line">&lt;__NSArrayM 0x60c00024b850&gt;(</div><div class="line">&lt;__NSArrayM 0x60c00024b550&gt;(</div><div class="line">3,</div><div class="line">RCTText,</div><div class="line">1,</div><div class="line">&#123;</div><div class="line">    accessible = 1;</div><div class="line">    allowFontScaling = 1;</div><div class="line">    color = 4286846340;</div><div class="line">    ellipsizeMode = tail;</div><div class="line">    fontSize = 18;</div><div class="line">    padding = 8;</div><div class="line">    textAlign = center;</div><div class="line">&#125;</div><div class="line">)</div><div class="line"></div><div class="line">)</div><div class="line">,</div><div class="line">1</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>moduleIDs<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;__NSArrayM 0x60c00024b8e0&gt;(</div><div class="line">51</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>methodIDs<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;__NSArrayM 0x60c00024b730&gt;(</div><div class="line">5</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>paramsArrays<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&lt;__NSArrayM 0x60c00024b850&gt;(</div><div class="line">&lt;__NSArrayM 0x60c00024b550&gt;(</div><div class="line">3,</div><div class="line">RCTText,</div><div class="line">1,</div><div class="line">&#123;</div><div class="line">    accessible = 1;</div><div class="line">    allowFontScaling = 1;</div><div class="line">    color = 4286846340;</div><div class="line">    ellipsizeMode = tail;</div><div class="line">    fontSize = 18;</div><div class="line">    padding = 8;</div><div class="line">    textAlign = center;</div><div class="line">&#125;</div><div class="line">)</div><div class="line"></div><div class="line">)</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/12/11/web_brower_render/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/11/web_brower_render/" itemprop="url">
+                  浏览器渲染原理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T18:01:23+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-tree-construction?hl=zh-cn" target="_blank" rel="external">渲染树构建、布局及绘制</a><br><a href="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/" target="_blank" rel="external">浏览器工作原理</a><br><a href="https://docs.google.com/presentation/d/1ZRIQbUKw9Tf077odCh66OrrwRIVNLvI_nhLm2Gi__F0/embed?start=false&amp;loop=false&amp;delayms=3000&amp;slide=id.g312aaaf6_1_188" target="_blank" rel="external">How WebKit Works</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/12/11/ios_ unified_storage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/11/ios_ unified_storage/" itemprop="url">
+                  如何设计一个iOS统一持久化SDK
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T18:01:23+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="设计一个统一持久化SDK的意义"><a href="#设计一个统一持久化SDK的意义" class="headerlink" title="设计一个统一持久化SDK的意义"></a>设计一个统一持久化SDK的意义</h2><p>提高可维护性和安全性。<br>没有统一的存储层，业务代码里存储功能会有很多重复代码，不仅维护性差、安全性也无法保障</p>
+<p>提高存储质量和性能。<br>不同业务场景适合使用的存储方式是不一样的，为了提高性能我们得使用复合式的存储策略，为了保证稳定性还得考虑监控</p>
+<h2 id="不同场景的存储方式"><a href="#不同场景的存储方式" class="headerlink" title="不同场景的存储方式"></a>不同场景的存储方式</h2><h3 id="KV存储"><a href="#KV存储" class="headerlink" title="KV存储"></a>KV存储</h3><p>kV存储是最常用的存储方式，超过80%的业务存储会用到，它是一种NoSQL（非关系型数据库）模型搜索，适用于非复杂业务关系的场景。KV存储又包含5种类型分别是内存KV、文件KV、数据库KV、二级索引KV、流式大文件KV。</p>
+<h4 id="内存KV"><a href="#内存KV" class="headerlink" title="内存KV"></a>内存KV</h4><p>内存KV是在内存上存储，也是最快速的存储方式，通常文件KV、数据库KV也会实现内存KV进行对象级别的加速。<br>内存KV的实现要考虑几个关键点，接口设计、清理机制、淘汰机制、并发管理。</p>
+<p><strong>淘汰机制</strong><br>具体实现上建议使用LRU淘汰机制，它的核心思想是“最近用到的数据被重用的概率是最高的”，因此我们需要对缓存进行排序，并且保证位置调整的高性能，很自然地我们会想到使用双向链表来实现。查找一个链表中元素的时间复杂度是O(n)，每次命中的时候，我们就需要花费O(n)的时间来进行查找，如果不添加其他的数据结构，这个就是我们能实现的最高效率了。我们还可以组合上hash表，它查找时间复杂度是O(1)。<br>最后我们可以设计一个数据结构，里面包含一个hashmap和双向链表，使用hashmap查询cache,使用双向链表做排列和位置管理。</p>
+<p><strong>清理机制</strong><br>手机设备内存是奢侈品，在内存紧张时，我们要有清理缓存的机制</p>
+<p><strong>并发管理</strong><br>为了保证多线程调用的安全性，增删改查每项操作我们都要加锁</p>
+<h4 id="数据库KV"><a href="#数据库KV" class="headerlink" title="数据库KV"></a>数据库KV</h4><p>数据大小在20K~30k以内，使用数据库存储效率较高，数据库KV的安全保障，要支持数据库级别的加密。</p>
+<h4 id="文件KV"><a href="#文件KV" class="headerlink" title="文件KV"></a>文件KV</h4><p>数据大小大雨20K~30k，适合使用文件KV，需要提供文件校验、加密能力。</p>
+<h4 id="二级索引KV"><a href="#二级索引KV" class="headerlink" title="二级索引KV"></a>二级索引KV</h4><p>在文件KV的基础上，使用两个key来指定一个value，适合图片库这种需要基于图片url和尺寸信息的场景。</p>
+<h4 id="流式文件KV"><a href="#流式文件KV" class="headerlink" title="流式文件KV"></a>流式文件KV</h4><p>针对视频等较大的流式文件，如果我们对整块数据进行存取会消耗大量内存，需要进行分段处理。</p>
+<h3 id="ORM存储"><a href="#ORM存储" class="headerlink" title="ORM存储"></a>ORM存储</h3><p>ORM是对象关系映射Object Relational Mapping，它的核心是将复杂的数据结构对象化，将sql操作转化为简单易用的的面向对象操作。<br>ORM的开发需要考虑到各种feature，多线程安全、事务、时间模型、列级加密、支持批处理操作、对象域，支持对对象管理方式的控制等。</p>
+<h3 id="DB储存"><a href="#DB储存" class="headerlink" title="DB储存"></a>DB储存</h3><p>需要进行复杂数据的操作的存储场景，一般就要直接用到DB，DB的设计是一门大学问，要考虑的要点有很多。比如线程池管理、读写互斥、并发控制、任务调度，数据库的加密,Api的易用(SQLite3难用)。其中SQLite3免费版不支持加密的，但它是有预留加密数据库的接口，可以自己实现加密功能。如果要追求极致的性能，在SQL的查询还可以做缓存功能。</p>
+<h2 id="执行计划缓存"><a href="#执行计划缓存" class="headerlink" title="执行计划缓存"></a>执行计划缓存</h2><p>SQL响应时间包括两部分：RT = 解析时间和 + 执行时间。<br>如果将执行计划进行缓存可以减少解析的时间，如果将结果集进行缓存，可以减少执行时间。But,由于查询的结果集可能很多，而且数据精彩会被修改，结果集缓存意义不大，因此我们主要考虑对执行计划进行缓存。</p>
+<p>相识的sql可以使用同一个执行计划，比如“select <em> from t where num=1”和“select </em> from t where num=2”。因此我们可以先将语句标准化（忽略大小写，忽略空格数目，将常量全部抽象成 ?），减少缓存数量，最后还要考虑淘汰机制，整体思路如下。<br>1对SQL进行词法语法分析，抽象出常量<br>2查询执行计划缓存是否命中，若不命中，则进行解析<br>3将常量绑定到执行计划</p>
+<h2 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h2><p>TODO</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/11/26/react_native_ios_source_code/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -498,7 +950,8 @@
 </ul>
 <p><strong>UI组件事件响应</strong><br>当RCTView组件触发了点击、滑动等触摸事件时，会通过bridge找倒自己的JSComponent,根据预先缓存的js callback函数，将参数传递给对应的React组件进行响应。</p>
 <p><strong>自定义UIModule组件</strong><br>1 创建RCTViewManager子类<br>a注册Module,使用RCT_EXPORT_MODULE注册宏<br>b实现视图创建的方法，’-(UIView *)view’<br>cJS层导入Native原生组件。在js模块的requireNativeComponent.js里操作UIManage导入。<br>2 创建属性<br>注册属性，使用RCT_EXPORT_VIEW_PROPERTY或RCT_CUSTOM_VIEW_PROPERTY<br>3 创建事件<br>注册事件，也是通过RCT_EXPORT_VIEW_PROPERTY，注册type为RCTBubblingEventBlock的事件属性<br>4 创建常量<br>a.native通过constantsToExport方法return一个NSDictionary注册常量<br>b.js通过UIManager.XXUIModule.Constants拿到注册的常量</p>
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="https://github.com/facebook/react-native" target="_blank" rel="external">react-native</a><br><a href="http://blog.cnbang.net/tech/2698/" target="_blank" rel="external">React Native通信机制详解</a><br><a href="https://github.com/facebook/yoga" target="_blank" rel="external">yoga</a><br><a href="http://awhisper.github.io/2016/06/24/ReactNative流程源码分析/" target="_blank" rel="external">ReactNative源码分析</a><a href="http://www.cocoachina.com/programmer/20170505/19189.html" target="_blank" rel="external">从源码一步一步解析它的实现原理</a></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fmk3g15ifrj31kw0w5kbn.jpg" alt=""></p>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><p><a href="https://github.com/facebook/react-native" target="_blank" rel="external">react-native</a><br><a href="http://blog.cnbang.net/tech/2698/" target="_blank" rel="external">React Native通信机制详解</a><br><a href="https://github.com/facebook/yoga" target="_blank" rel="external">yoga</a><br><a href="http://awhisper.github.io/2016/06/24/ReactNative流程源码分析/" target="_blank" rel="external">ReactNative源码分析</a><a href="http://www.cocoachina.com/programmer/20170505/19189.html" target="_blank" rel="external">从源码一步一步解析它的实现原理</a><br><a href="https://www.w3.org/TR/css-flexbox-1/" target="_blank" rel="external">W3C 标准的 Flexbox 模型</a><br><a href="http://code.liqingyao.com/flex-layout-algorithm-introduction/" target="_blank" rel="external">CSS Flex Layout 算法解析</a>            </p>
 
           
         
@@ -641,7 +1094,19 @@
       
         
           
-            <h2 id="React-Render-Mechanism-渲染机制"><a href="#React-Render-Mechanism-渲染机制" class="headerlink" title="React Render Mechanism 渲染机制"></a>React Render Mechanism 渲染机制</h2><h3 id="Render-analyse"><a href="#Render-analyse" class="headerlink" title="Render  analyse"></a>Render  analyse</h3><h4 id="Render-DOM-implement-analyse"><a href="#Render-DOM-implement-analyse" class="headerlink" title="Render DOM implement analyse"></a>Render DOM implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOM example:</div><div class="line"></div><div class="line">var element = React.createElement(&apos;div&apos;,&#123;id:&apos;test&apos;,onclick:hello&#125;,&apos;click me&apos;)</div><div class="line">React.render(element,document.getElementById(&quot;container&quot;))</div></pre></td></tr></table></figure>
+            <h2 id="What-is-React"><a href="#What-is-React" class="headerlink" title="What is React"></a>What is React</h2><p>A JavaScript library for building user interfaces</p>
+<p><strong>基本概念</strong></p>
+<ul>
+<li>VIRTUAL DOM<br>React render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual dom在性能上不会比纯手动优化的DOM操作更快，使用Virtual Dom能再不需要手动优化的情况下，保证过得去的性能，从而提高代码的可维护性和开发效率。这让我们可以无需担心性能问题而随时“刷新”整个页面，由虚拟DOM来确保只对界面上真正变化的节点进行实际的DOM操作。</li>
+</ul>
+<p>下图式浏览器的工作流：<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg" alt=""><br>a.Create DOM tree：浏览器的渲染引擎根据html的elements，生成Dom node，组成Dom tree<br>b.Create Render tree：浏览器解析外部CSS文件和元素的inline样式，结合Dom tree的nodes，生成render tree<br>c.layout:render tree上每一个node生成在屏幕上的具体位置的坐标值<br>d.painting:绘制</p>
+<p>如果直接操作Dom，每次操作都会触发整个渲染流程，如果连续修改50个节点，那就会造成50次重新渲染，这会造成不必要的渲染消耗。我们可以自己编写逻辑，将每个Dom操作汇总到一个Dom fragment,再传递给Dom tree。但这样我们就得自己去记录哪些节点改变，哪些没有改变，这显然开发效率太低，所以我们可以把这个工作抽象一下，于是就有了virtual dom。<br>virtual dom这个抽象层的作用就是将这件事自动化、抽象化，通过Diff算法计算出需要改变的节点，使用batching批处理多个节点的改动，然后操作Dom树进行渲染，避免不必要的重新渲染。</p>
+<ul>
+<li>JSX<br>JSX just provides syntactic sugar for “React.createElement(component, props, …children)”</li>
+<li>Component<br>无论是复杂的元素还是简单的元素，都定义为组件。通过组合组件的方式可以构建容易维护、高复用性的组件。</li>
+<li>one-way reactive data flow<br>React 的单向数据流的设计让前端 bug 定位变得简单，页面的UI和数据的对应是唯一的,我们可以通过定位数据变化就可以定位页面展现问题。<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmiqw9swr5j30dx0asmxc.jpg" alt=""></li>
+</ul>
+<h2 id="React-Render-Mechanism-渲染机制源码解析"><a href="#React-Render-Mechanism-渲染机制源码解析" class="headerlink" title="React Render Mechanism 渲染机制源码解析"></a>React Render Mechanism 渲染机制源码解析</h2><h3 id="Render-analyse"><a href="#Render-analyse" class="headerlink" title="Render  analyse"></a>Render  analyse</h3><h4 id="Render-DOM-implement-analyse"><a href="#Render-DOM-implement-analyse" class="headerlink" title="Render DOM implement analyse"></a>Render DOM implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOM example:</div><div class="line"></div><div class="line">var element = React.createElement(&apos;div&apos;,&#123;id:&apos;test&apos;,onclick:hello&#125;,&apos;click me&apos;)</div><div class="line">React.render(element,document.getElementById(&quot;container&quot;))</div></pre></td></tr></table></figure>
 <p>React.createElement:</p>
 <p>use createElement function to create a virtual dom -&gt; React.createElement</p>
 <ul>
@@ -787,7 +1252,7 @@
 <li>insert INSERT_MARKUP nodes</li>
 <li>insert MOVE_EXISTING nodes</li>
 </ul>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_one/" target="_blank" rel="external">reactjs源码分析-上篇</a><br><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_two/" target="_blank" rel="external">reactjs源码分析-下篇（更新机制实现原理）</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_one/" target="_blank" rel="external">reactjs源码分析-上篇</a><br><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_two/" target="_blank" rel="external">reactjs源码分析-下篇（更新机制实现原理）</a><br><a href="http://www.jianshu.com/p/f75c1f0af3f0" target="_blank" rel="external">React为什么要使用Virtual DOM</a><br><a href="http://www.alloyteam.com/2015/10/react-virtual-analysis-of-the-dom/" target="_blank" rel="external">React虚拟DOM浅析</a><br><a href="https://zhuanlan.zhihu.com/p/21108312?refer=leanreact" target="_blank" rel="external">React 介绍</a></p>
 
           
         
@@ -1637,478 +2102,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/28/target_how_to_make_target/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/09/28/target_how_to_make_target/" itemprop="url">
-                  明确的目标的反效果
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-28T22:35:00+08:00">
-                2017-09-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近听到一个毁三观的观点，”明确的目标是有害的“。为什么是有害的呢？<br>第一个理由是，明确的目标违背经济学原理“看不见的手”。<br>比如今年宝洁定了1000亿的业务目标，如果提前完成了，大家就会放松了。但今年行情可能就是很好，应该乘胜追击才不浪费机会。而如果行情不好，很难完成这个数字，就可能会做各种不合理的促销，消耗第二年的购买力。<br>第二个理由是，目标太明确，可能会让人不惜一切代价，忽视风险。<br>例如像我定了每天跑3.5公里的目标，但由于最近工作比较忙，回去已经10点多了。如果按目标继续跑，因为身体状况不好，跑步得到的可能达不到锻炼的效果，反而增加了身体的负担。</p>
-<p>这两个理由听起来还是很符合逻辑的。那我们难道就不定明确的目标吗？<br>也不是。<br>制定目标的过程，能使我们梳理清楚自己对未来的合理期望。<br>我们大部份人对自己未来的期望都很模糊。因为模糊，很难衡量期望的合理性、意义、价值和难度。<br>这个时候思考目标的过程就很有意义了，这让我们从混沌到清晰。<br>有点挑战的目标，并让一定范围内的社交关系知道，能让自己形成一定的焦虑，从而提升自己的执行力。</p>
-<p>目标制定好，在执行的过程中我们应该尽量遵循2个原则。<br>1 合理投入，理性调整<br>在执行的过程中，我们要投入预期的精力。遇到特殊情况应该适当地调整目标。<br>2 自我觉察，克服人性弱点。<br>我们常常因为懒惰、拖延、逃避等人性的弱点导致不能投入足够的精力在目标的执行中。这关键在于不能及时觉察到自己在拖延。<br>最典型例子就是我们平时会无意识地刷微信朋友圈，网易新闻。事后我们可能会懊恼，又浪费了时间。避免这种窘境的方法是，提升觉察能力，在打开微信前觉察到自己的行为不理性，也可以像查理.芒格一样思考一下，“我即将做的是一个理性的抉择吗？”</p>
-<p>以上主要针对个人目标来考虑，而针对团队的目标，其实还会有更多的意义…</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/22/iOS_best_performance_easyBlock/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/09/22/iOS_best_performance_easyBlock/" itemprop="url">
-                  iOS开发性能最佳实践之——容易出现耗时阻塞的检查清单(持续更新)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T11:19:00+08:00">
-                2017-09-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><strong>剪贴板读取</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</div><div class="line">   UIPasteboard *pasteboard = [UIPasteboard generalPasteboard]; </div><div class="line">   if (pasteboard.string.length &gt; 0) &#123;//这个方法会阻塞线程</div><div class="line">      NSString *text = [pasteboard.string copy];</div><div class="line">      [pasteboard setValue:@&quot;&quot; forPasteboardType:UIPasteboardNameGeneral];</div><div class="line">      if (text == nil || [text isEqualToString:@&quot;&quot;]) &#123;</div><div class="line">          return ;</div><div class="line">      &#125;</div><div class="line">      dispatch_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">          [self processShareCode:text];</div><div class="line">      &#125;);</div><div class="line">   &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p><strong>日期格式化</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSDateFormatter *formatter = [[NSDateFormatter alloc] init];</div><div class="line">[formatter setDateStyle:NSDateFormatterShortStyle];</div><div class="line">[formatter setDateFormat:@&quot;yyyy#MM#dd#HH:mm#ss&quot;];</div><div class="line">NSString *result = [formatter stringFromDate:date];</div></pre></td></tr></table></figure>
-<p><strong>文件读取</strong>    </p>
-<p>我们通常会使用NSFileManager来读取文件，但是NSFileManager读取文件并不是性能最好的,推荐使用stat.h里的’int stat(const char <em>, struct stat </em>) __DARWIN_INODE64(stat);’方法。</p>
-<p>NSFileManager<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mach_timebase_info_data_t info;  </div><div class="line">if (mach_timebase_info(&amp;info) != KERN_SUCCESS) return -1.0; </div><div class="line">__darwin_off_t fileSize1 = 0;</div><div class="line">uint64_t start = mach_absolute_time();</div><div class="line">for (NSInteger i = 0; i &lt;= 10000; i++) &#123;</div><div class="line">    NSDictionary&lt;NSFileAttributeKey, id&gt;* attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:imagePath error:nil];</div><div class="line">    fileSize1= [attributes fileSize];</div><div class="line">&#125;</div><div class="line">uint64_t end = mach_absolute_time();</div><div class="line">uint64_t elapsed = end - start;  </div><div class="line">uint64_t nanos1 = elapsed * info.numer / info.denom;</div><div class="line">return (CGFloat)nanos / NSEC_PER_SEC;</div></pre></td></tr></table></figure></p>
-<p>stat<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mach_timebase_info_data_t info;  </div><div class="line"> if (mach_timebase_info(&amp;info) != KERN_SUCCESS) return -1.0; </div><div class="line"> __darwin_off_t fileSize = 0;</div><div class="line"> uint64_t start = mach_absolute_time();</div><div class="line"> for (NSInteger i = 0; i &lt;= 10000; i++) &#123;</div><div class="line">     int rs = stat(filePath, &amp;statBuf);</div><div class="line">     fileSize= statBuf.st_size;</div><div class="line"> &#125;</div><div class="line"> uint64_t end = mach_absolute_time();</div><div class="line"> uint64_t elapsed = end - start;  </div><div class="line"> uint64_t nanos1 = elapsed * info.numer / info.denom;</div><div class="line"> return (CGFloat)nanos / NSEC_PER_SEC;</div></pre></td></tr></table></figure></p>
-<p>在iPhone6S设备10000次循环的测试条件下，stat是性能是NSFileManager的4倍左右</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2017/09/20/iOS_best_performance_safe/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Blacktea">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blacktea's Life">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/09/20/iOS_best_performance_safe/" itemprop="url">
-                  如何编写安全的iOS代码
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-20T22:30:27+08:00">
-                2017-09-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><strong>遍历集合先Copy</strong></p>
-<p>如果你正在遍历的集合是mutable的,在你遍历的同时，可能另外一个线程对这个集合做了修改，一个Crash将出现.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*** Terminating app due to uncaught exception &apos;NSGenericException&apos;, reason: &apos;*** Collection  was mutated while being enumerated.&apos;</div></pre></td></tr></table></figure>
-<p>如何避免呢？<br>拿到NSArray／NSMutableArray、NSDictionary/NSMutableDictionary都copy一下。</p>
-<p><strong>集合操作要预判</strong><br>提前做好判断，保证key/value不为nil，数组不会越界。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">addObject:</div><div class="line">removeObjectAtIndex:</div><div class="line">insertObjectAtIndex:</div><div class="line">setObject:forKey:</div><div class="line">@[]</div><div class="line">@&#123;&#125;</div></pre></td></tr></table></figure>
-<p><strong>NSKeyedArchiver别常用</strong><br>在iOS8上会抛exception，非要用加上@try{}@catch{}</p>
-<p><strong>KVO成对出现</strong></p>
-<p>有add必要有remove，否则极有可能Crash，可以使用FaceBook的FBKVOController</p>
-<p><strong>tableView的delegate要置空</strong><br>viewController的dealloc把tableView的delegate置空</p>
-<p>iOS8及以前，delegate属性不是weak，不会自动设为nil。否则做异步网络请求，退出页面就容易出现野指针。</p>
-<p><strong>不要在Category覆盖系统方法</strong></p>
-<p>不要坑别人</p>
-<p><strong>Api需要特定线程，记得加断言</strong><br>如果一个api需要在特定线程执行，记得加上断言判断，否则调用方容易在不合适的线程调用，导致Crash</p>
-<p><strong>多线程环境下懒加载变量要加锁</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (id *)pen</div><div class="line">&#123;</div><div class="line">    if (!_pen) &#123;</div><div class="line">        @synchronized(self) &#123; </div><div class="line">            if (!_pen) &#123;</div><div class="line">                _pen = [[BTPen alloc] init];</div><div class="line">                _pen = @&quot;tea&quot;;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return _pen;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>NSNotificationCenter要防止Self为空</strong><br>NSNotificationCenter在iOS 8及更老系统上存在多线程bug，selector执行到一半时可能会因为self销毁而触发crash.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (void)receiveTesNotify:(NSNotification *)notify</div><div class="line">&#123;</div><div class="line">   __weak typeof(self) weakSelf = self;</div><div class="line">   __strong typeof(self) strongSelf = wself;</div><div class="line">   if (! weakSelf) &#123; </div><div class="line">    return; </div><div class="line">   &#125;</div><div class="line">   [strongSelf action];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>使用dispatch_sync要小心</strong></p>
-<p>容易死锁。下面将一个Block同步到主线程的队列里。因为你用同步，必须先让你执行，但你放到主线程队列里，却要等待主线程原来的任务执行完。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)test &#123;</div><div class="line"> dispatch_queue_t mainQueue = dispatch_get_main_queue();</div><div class="line">  dispatch_block_t block = ^() &#123;</div><div class="line">      NSLog(@&quot;Hello&quot;);</div><div class="line">  &#125;;</div><div class="line">  dispatch_sync(mainQueue, block);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><strong>cancelPreviousPerformRequestsWithTarget要防御</strong></p>
-<p>对receiver使用cancelPreviousPerformRequestsWithTarget，会导致receiver引用计数减1。如果调用前receiver的引用计数就是1，调用完receiver就会被释放。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">__weak typeof(self) weakSelf = self;</div><div class="line">[NSObject cancelPreviousPerformRequestsWithTarget:self];</div><div class="line">if (!weakSelf)</div><div class="line">&#123;</div><div class="line">//self已经被销毁</div><div class="line">    return;</div><div class="line">&#125;</div><div class="line">// 再调用会Crash</div><div class="line">[self action];</div></pre></td></tr></table></figure>
-<p><strong>在dealloc中，不要将self作为参数传递</strong></p>
-<p>如果self在此时被retain住，到下个runloop周期再次释放，则会造成多次释放crash。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-(void)dealloc&#123;</div><div class="line">    [self doSome:self]; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>  因为当前已经在self所指向对象的销毁阶段，如果在doSome:中将self放到了autorelease pool中，那么self会被retain住，计划下个runloop周期再进行销毁；但是dealloc运行结束后，self对象的内存空间就直接被回收了，self变成了野指针<br> 当到了下个runloop周期，self指向的对象实际上已经被销毁，会因为非法访问造成crash问题</p>
-<p><strong>使用锁要避免出现特殊逻辑锁没有被回收</strong></p>
-<p>如果某个方法里锁未被回收，下次调用该方法会造成线程死锁</p>
-<p>可能提前出现return,要在return前回收</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (void) doSomething&#123;</div><div class="line">    [self.lock lock];</div><div class="line">    if (type == 1)&#123;</div><div class="line">        .....</div><div class="line">        [self.lock unlock];</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    else if(type == 2)&#123;</div><div class="line">        .....</div><div class="line">        [self.lock unlock];</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    .....</div><div class="line">    [self.lock unlock];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可能出现异常,要在finally回收</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (void) doSomething&#123;</div><div class="line">    [self.lock lock];</div><div class="line">    @try&#123;</div><div class="line">        ...</div><div class="line">    &#125;@catch(NSException* ex)&#123;</div><div class="line">    &#125;@finally&#123;</div><div class="line">        ......</div><div class="line">        [self.lock unlock];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2158,7 +2151,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2169,7 +2162,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2180,7 +2173,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2402,6 +2395,17 @@
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 

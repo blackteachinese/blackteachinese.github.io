@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/12/24/2017-12-15/</loc>
+    <lastmod>2017-12-24T05:34:28.046Z</lastmod>
+    <data>
+        <display>
+        <title>React到UIKit完整渲染过程</title>
+        <pubTime>2017-12-24T05:33:01.000Z</pubTime>
+        
+        <tag>render tree</tag>
+         
+        <tag>dom tree</tag>
+         
+         
+           
+             
+              <breadCrumb title="web" url="http://blackteachinese.com/categories/web/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/11/26/react_native_ios_source_code/</loc>
+    <lastmod>2017-12-17T13:39:33.820Z</lastmod>
+    <data>
+        <display>
+        <title>ReactNative到底做了什么？</title>
+        <pubTime>2017-11-26T04:35:00.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/11/24/react_render_concept/</loc>
+    <lastmod>2017-12-17T03:46:22.199Z</lastmod>
+    <data>
+        <display>
+        <title>React源码的秘密</title>
+        <pubTime>2017-11-24T12:35:00.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/12/11/web_brower_render/</loc>
+    <lastmod>2017-12-14T09:03:41.550Z</lastmod>
+    <data>
+        <display>
+        <title>浏览器渲染原理</title>
+        <pubTime>2017-12-11T10:01:23.000Z</pubTime>
+        
+        <tag>render tree</tag>
+         
+        <tag>dom tree</tag>
+         
+         
+           
+             
+              <breadCrumb title="web" url="http://blackteachinese.com/categories/web/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/12/11/ios_%20unified_storage/</loc>
+    <lastmod>2017-12-11T17:32:00.345Z</lastmod>
+    <data>
+        <display>
+        <title>如何设计一个iOS统一持久化SDK</title>
+        <pubTime>2017-12-11T10:01:23.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/14/weex_how_to_start/</loc>
+    <lastmod>2017-11-13T07:46:27.953Z</lastmod>
+    <data>
+        <display>
+        <title>零基础如何做Weex开发</title>
+        <pubTime>2017-09-14T13:39:27.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/10/30/iOS_multithreading/</loc>
+    <lastmod>2017-11-09T12:13:44.742Z</lastmod>
+    <data>
+        <display>
+        <title>iOS开发性能最佳实践之——如何找到多线程技术合适的应用场景</title>
+        <pubTime>2017-10-30T10:19:00.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2016/10/24/iOS_device_pixel/</loc>
+    <lastmod>2017-11-05T14:25:25.486Z</lastmod>
+    <data>
+        <display>
+        <title>iPhone的屏幕像素</title>
+        <pubTime>2016-10-24T09:11:00.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/11/02/ios_iOS11_iphoneX_problem/</loc>
+    <lastmod>2017-11-05T14:19:26.490Z</lastmod>
+    <data>
+        <display>
+        <title>iOS布局技术的演变和iPhoneX适配</title>
+        <pubTime>2017-11-02T09:35:20.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/28/target_how_to_make_target/</loc>
+    <lastmod>2017-10-31T03:12:40.560Z</lastmod>
+    <data>
+        <display>
+        <title>明确的目标的反效果</title>
+        <pubTime>2017-09-28T14:35:00.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/22/iOS_best_performance_easyBlock/</loc>
+    <lastmod>2017-10-30T12:33:56.204Z</lastmod>
+    <data>
+        <display>
+        <title>iOS开发性能最佳实践之——容易出现耗时阻塞的检查清单(持续更新)</title>
+        <pubTime>2017-09-22T03:19:00.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/08/16/history-make-believe/</loc>
+    <lastmod>2017-10-30T06:37:58.063Z</lastmod>
+    <data>
+        <display>
+        <title>《未来简史》————虚构比真实更重要</title>
+        <pubTime>2017-08-16T14:33:49.000Z</pubTime>
+        
+        <tag>history</tag>
+         
+         
+           
+             
+              <breadCrumb title="history" url="http://blackteachinese.com/categories/history/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/10/25/ios_urlencode/</loc>
+    <lastmod>2017-10-30T06:37:51.619Z</lastmod>
+    <data>
+        <display>
+        <title>一个多层嵌套URL引发的URLEncode血案</title>
+        <pubTime>2017-10-25T10:05:24.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/10/28/c_memory_alloc/</loc>
+    <lastmod>2017-10-30T06:37:48.786Z</lastmod>
+    <data>
+        <display>
+        <title>计算机的内存分配问题</title>
+        <pubTime>2017-10-28T10:21:31.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/10/19/iOS_%20synchronized/</loc>
+    <lastmod>2017-10-19T06:27:04.791Z</lastmod>
+    <data>
+        <display>
+        <title>iOS里synchronized的死锁、性能、实效</title>
+        <pubTime>2017-10-19T02:39:00.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/20/iOS_best_performance_safe/</loc>
+    <lastmod>2017-09-22T09:33:43.000Z</lastmod>
+    <data>
+        <display>
+        <title>如何编写安全的iOS代码</title>
+        <pubTime>2017-09-20T14:30:27.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/07/12/arm64/</loc>
+    <lastmod>2017-09-22T09:33:32.000Z</lastmod>
+    <data>
+        <display>
+        <title>10分钟入门arm64汇编</title>
+        <pubTime>2017-07-12T13:39:27.000Z</pubTime>
+        
+        <tag>default</tag>
+         
+         
+           
+             
+              <breadCrumb title="default" url="http://blackteachinese.com/categories/default/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/05/iOS_best_performance_pageSlide/</loc>
+    <lastmod>2017-09-20T16:09:42.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS性能最佳实践之--保证页面流畅性的检查清单</title>
+        <pubTime>2017-09-05T13:39:27.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/15/iOS_coding_rule/</loc>
+    <lastmod>2017-09-20T16:09:38.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS最容易违反的代码规范</title>
+        <pubTime>2017-09-15T13:39:27.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/11/iOS_best_performance_rounded_and_shadow/</loc>
+    <lastmod>2017-09-16T13:09:29.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS性能最佳实践之——圆角和阴影的正确使用姿势</title>
+        <pubTime>2017-09-11T13:39:27.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/</loc>
+    <lastmod>2017-09-16T10:24:22.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS性能最佳实践系列之--加快页面加载的检查清单</title>
+        <pubTime>2017-09-03T13:39:27.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/09/iOS_best_performance_collection_enumeration/</loc>
+    <lastmod>2017-09-11T14:40:40.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS开发性能最佳实践系列之——集合遍历</title>
+        <pubTime>2017-09-09T13:39:27.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/</loc>
+    <lastmod>2017-09-10T17:16:08.000Z</lastmod>
+    <data>
+        <display>
+        <title>如何建设App的页面性能基线</title>
+        <pubTime>2017-08-30T13:39:27.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/09/03/thought_structure_thinking/</loc>
+    <lastmod>2017-09-06T05:23:37.000Z</lastmod>
+    <data>
+        <display>
+        <title>结构化思考——完美应对电梯30秒的思考模型</title>
+        <pubTime>2017-09-03T13:39:27.000Z</pubTime>
+        
+        <tag>thought</tag>
+         
+         
+           
+             
+              <breadCrumb title="thought" url="http://blackteachinese.com/categories/thought/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/08/16/Invite_Job_aliabbamd/</loc>
+    <lastmod>2017-08-31T10:32:30.000Z</lastmod>
+    <data>
+        <display>
+        <title>阿里巴巴国际无线技术部 - 在这里遇见最好的自己</title>
+        <pubTime>2017-08-16T14:33:49.000Z</pubTime>
+        
+        <tag>Invite</tag>
+         
+         
+           
+             
+              <breadCrumb title="Invite" url="http://blackteachinese.com/categories/Invite/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2016/04/14/ios-widget/</loc>
+    <lastmod>2017-08-29T10:20:22.000Z</lastmod>
+    <data>
+        <display>
+        <title>TodayExtension入坑指南</title>
+        <pubTime>2016-04-14T07:59:52.000Z</pubTime>
+        
+        <tag>default</tag>
+         
+         
+           
+             
+              <breadCrumb title="default" url="http://blackteachinese.com/categories/default/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/01/15/other-craftsman/</loc>
+    <lastmod>2017-08-14T07:53:36.000Z</lastmod>
+    <data>
+        <display>
+        <title>匠人精神的重要性</title>
+        <pubTime>2017-01-15T07:43:51.000Z</pubTime>
+        
+        <tag>default</tag>
+         
+         
+           
+             
+              <breadCrumb title="default" url="http://blackteachinese.com/categories/default/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/05/09/webrtc-flow-introduce/</loc>
+    <lastmod>2017-07-23T11:58:54.000Z</lastmod>
+    <data>
+        <display>
+        <title>webrtc实现音视频通话</title>
+        <pubTime>2017-05-09T07:32:17.000Z</pubTime>
+        
+        <tag>voip</tag>
+         
+         
+           
+             
+              <breadCrumb title="voip" url="http://blackteachinese.com/categories/voip/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/07/12/manage_interview/</loc>
+    <lastmod>2017-07-23T10:47:31.000Z</lastmod>
+    <data>
+        <display>
+        <title>如何面试一个iOS工程师</title>
+        <pubTime>2017-07-12T13:39:27.000Z</pubTime>
+        
+        <tag>管理、面试、iOS、招聘</tag>
+         
+         
+           
+             
+              <breadCrumb title="管理" url="http://blackteachinese.com/categories/%E7%AE%A1%E7%90%86/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/03/29/success_outliers/</loc>
+    <lastmod>2017-07-23T05:28:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>比天赋更重要是什么？</title>
+        <pubTime>2017-03-29T13:37:07.000Z</pubTime>
+        
+        <tag>成功</tag>
+         
+        <tag>努力</tag>
+         
+        <tag>天赋</tag>
+         
+        <tag>比尔盖茨</tag>
+         
+        <tag>优势积累</tag>
+         
+        <tag>逆袭</tag>
+         
+        <tag>一万小时理论</tag>
+         
+         
+           
+             
+              <breadCrumb title="思维" url="http://blackteachinese.com/categories/%E6%80%9D%E7%BB%B4/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/07/10/thought-to-be-lovely-man/</loc>
+    <lastmod>2017-07-10T14:38:39.000Z</lastmod>
+    <data>
+        <display>
+        <title>成为值得被爱的人</title>
+        <pubTime>2017-07-10T14:01:06.000Z</pubTime>
+        
+        <tag>心灵</tag>
+         
+         
+           
+             
+              <breadCrumb title="心灵" url="http://blackteachinese.com/categories/%E5%BF%83%E7%81%B5/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/04/25/compile-principleintroduce/</loc>
+    <lastmod>2017-04-25T13:51:42.000Z</lastmod>
+    <data>
+        <display>
+        <title>编译原理入门</title>
+        <pubTime>2017-04-25T06:12:53.000Z</pubTime>
+        
+        <tag>compile</tag>
+         
+         
+           
+             
+              <breadCrumb title="compile" url="http://blackteachinese.com/categories/compile/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/04/18/webrtc-compile-ios-framework/</loc>
+    <lastmod>2017-04-19T16:48:54.000Z</lastmod>
+    <data>
+        <display>
+        <title>WebRTC源码如何编译iOS使用的Framework</title>
+        <pubTime>2017-04-18T15:21:09.000Z</pubTime>
+        
+        <tag>compile</tag>
+         
+        <tag>iOS</tag>
+         
+        <tag>webrtc</tag>
+         
+         
+           
+             
+              <breadCrumb title="webrtc" url="http://blackteachinese.com/categories/webrtc/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/04/09/server-intelliJ-Servlet-and-mysql-mac-guide/</loc>
+    <lastmod>2017-04-12T15:52:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>Mac上使用intelliJ开发WEbServer(Servlet)、mysql的新手教程</title>
+        <pubTime>2017-04-09T09:03:57.000Z</pubTime>
+        
+        <tag>intelliJ</tag>
+         
+        <tag>Servlet</tag>
+         
+        <tag>mysql</tag>
+         
+        <tag>Mac</tag>
+         
+        <tag>WEbServer</tag>
+         
+         
+           
+             
+              <breadCrumb title="server" url="http://blackteachinese.com/categories/server/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/03/14/ios_memoryLeak_tool/</loc>
+    <lastmod>2017-04-09T09:16:27.000Z</lastmod>
+    <data>
+        <display>
+        <title>内存泄漏监控</title>
+        <pubTime>2017-03-14T02:18:21.000Z</pubTime>
+        
+        <tag>内存泄漏</tag>
+         
+        <tag>监控</tag>
+         
+        <tag>报警</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blackteachinese.com/2016/12/30/ios-ui-left-slip-bug/</loc>
+    <lastmod>2017-04-09T08:59:13.000Z</lastmod>
+    <data>
+        <display>
+        <title>iOS侧滑出现的卡死Bug</title>
+        <pubTime>2016-12-30T10:30:07.000Z</pubTime>
+        
+        <tag>iOS</tag>
+         
+        <tag>左滑bug</tag>
+         
+        <tag>interactivePopGestureRecognizer</tag>
+         
+        <tag>左滑卡死</tag>
+         
+         
+           
+             
+              <breadCrumb title="iOS" url="http://blackteachinese.com/categories/iOS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+    
+  <url>
+    <loc>http://blackteachinese.com/2017/04/04/financial-use-invest-sense/</loc>
+    <lastmod>2017-04-04T09:49:36.000Z</lastmod>
+    <data>
+        <display>
+        <title>巴菲特的投资思维如何用于日常生活</title>
+        <pubTime>2017-04-04T07:36:16.000Z</pubTime>
+        
+        <tag>投资</tag>
+         
+        <tag>思维</tag>
+         
+        <tag>理财</tag>
+         
+        <tag>生活</tag>
+         
+         
+           
+             
+              <breadCrumb title="思维" url="http://blackteachinese.com/categories/%E6%80%9D%E7%BB%B4/"/>
+          
+        </display>
+    </data>
+    </url>
+
+</urlset>
