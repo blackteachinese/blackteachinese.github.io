@@ -121,7 +121,8 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual d">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmiqw9swr5j30dx0asmxc.jpg">
-<meta property="og:updated_time" content="2017-12-17T03:46:22.199Z">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmjuovkxsyj31kw0san5r.jpg">
+<meta property="og:updated_time" content="2017-12-24T13:52:22.640Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React源码的秘密">
 <meta name="twitter:description" content="What is ReactA JavaScript library for building user interfaces
@@ -432,15 +433,19 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 <ul>
 <li>VIRTUAL DOM<br>React render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual dom在性能上不会比纯手动优化的DOM操作更快，使用Virtual Dom能再不需要手动优化的情况下，保证过得去的性能，从而提高代码的可维护性和开发效率。这让我们可以无需担心性能问题而随时“刷新”整个页面，由虚拟DOM来确保只对界面上真正变化的节点进行实际的DOM操作。</li>
 </ul>
-<p>下图式浏览器的工作流：<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg" alt=""><br>a.Create DOM tree：浏览器的渲染引擎根据html的elements，生成Dom node，组成Dom tree<br>b.Create Render tree：浏览器解析外部CSS文件和元素的inline样式，结合Dom tree的nodes，生成render tree<br>c.layout:render tree上每一个node生成在屏幕上的具体位置的坐标值<br>d.painting:绘制</p>
+<p>下图是浏览器的工作流：<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg" alt=""><br>a.Create DOM tree：浏览器的渲染引擎根据html的elements，生成Dom node，组成Dom tree<br>b.Create Render tree：浏览器解析外部CSS文件和元素的inline样式，结合Dom tree的nodes，生成render tree<br>c.layout:render tree上每一个node生成在屏幕上的具体位置的坐标值<br>d.painting:绘制</p>
 <p>如果直接操作Dom，每次操作都会触发整个渲染流程，如果连续修改50个节点，那就会造成50次重新渲染，这会造成不必要的渲染消耗。我们可以自己编写逻辑，将每个Dom操作汇总到一个Dom fragment,再传递给Dom tree。但这样我们就得自己去记录哪些节点改变，哪些没有改变，这显然开发效率太低，所以我们可以把这个工作抽象一下，于是就有了virtual dom。<br>virtual dom这个抽象层的作用就是将这件事自动化、抽象化，通过Diff算法计算出需要改变的节点，使用batching批处理多个节点的改动，然后操作Dom树进行渲染，避免不必要的重新渲染。</p>
 <ul>
-<li>JSX<br>JSX just provides syntactic sugar for “React.createElement(component, props, …children)”</li>
+<li>JSX<br>JSX just provides syntactic sugar for “React.createElement(component, props, …children)”<br>JSX是一个语法糖实际上就是封装了React.createElement，使用JSX可以提高代码的可读性和开发效率</li>
 <li>Component<br>无论是复杂的元素还是简单的元素，都定义为组件。通过组合组件的方式可以构建容易维护、高复用性的组件。</li>
 <li>one-way reactive data flow<br>React 的单向数据流的设计让前端 bug 定位变得简单，页面的UI和数据的对应是唯一的,我们可以通过定位数据变化就可以定位页面展现问题。<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmiqw9swr5j30dx0asmxc.jpg" alt=""></li>
 </ul>
-<h2 id="React-Render-Mechanism-渲染机制源码解析"><a href="#React-Render-Mechanism-渲染机制源码解析" class="headerlink" title="React Render Mechanism 渲染机制源码解析"></a>React Render Mechanism 渲染机制源码解析</h2><h3 id="Render-analyse"><a href="#Render-analyse" class="headerlink" title="Render  analyse"></a>Render  analyse</h3><h4 id="Render-DOM-implement-analyse"><a href="#Render-DOM-implement-analyse" class="headerlink" title="Render DOM implement analyse"></a>Render DOM implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DOM example:</div><div class="line"></div><div class="line">var element = React.createElement(&apos;div&apos;,&#123;id:&apos;test&apos;,onclick:hello&#125;,&apos;click me&apos;)</div><div class="line">React.render(element,document.getElementById(&quot;container&quot;))</div></pre></td></tr></table></figure>
-<p>React.createElement:</p>
+<h2 id="React-Render-Mechanism-渲染机制源码解析"><a href="#React-Render-Mechanism-渲染机制源码解析" class="headerlink" title="React Render Mechanism 渲染机制源码解析"></a>React Render Mechanism 渲染机制源码解析</h2><h3 id="Render-analyse"><a href="#Render-analyse" class="headerlink" title="Render  analyse"></a>Render  analyse</h3><p>React有3种element，Text element、Basic element 基本元素、Custom element 自定义元素。</p>
+<h4 id="Render-DOM-implement-analyse"><a href="#Render-DOM-implement-analyse" class="headerlink" title="Render DOM implement analyse"></a>Render DOM implement analyse</h4><p>Basic element 基本元素渲染解析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Basic element example:</div><div class="line"></div><div class="line">var element = React.createElement(&apos;div&apos;,&#123;id:&apos;test&apos;,onclick:hello&#125;,&apos;click me&apos;)</div><div class="line">React.render(element,document.getElementById(&quot;container&quot;))</div></pre></td></tr></table></figure>
+<ol>
+<li>创建虚拟DOM实例<br>React.createElement:</li>
+</ol>
 <p>use createElement function to create a virtual dom -&gt; React.createElement</p>
 <ul>
 <li>keep the key to identify element</li>
@@ -448,7 +453,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 <li>copy the children to the props.children</li>
 <li>call ReactElement function and send ‘type’,’key’,’props’ for initial a element object</li>
 </ul>
-<p>React.render:</p>
+<p>2.将创建好的虚拟DOM实例通过React.render进行渲染<br>React.render:</p>
 <ul>
 <li>instantiateReactComponent<ul>
 <li>init component instance </li>
@@ -459,6 +464,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 </ul>
 </li>
 </ul>
+<p>3.在React.render里，首先调用instantiateReactComponent方法，根据element渲染出component实例。</p>
 <p>instantiateReactComponent:</p>
 <ul>
 <li>return ReactDOMTextComponent <ul>
@@ -474,15 +480,22 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 </ul>
 </li>
 </ul>
-<p>ReactDOMComponent.prototype.mountComponent: 浏览器默认元素</p>
+<p>4.接着调用mountComponent，将instantiateReactComponent得到的component实例渲染成原生的Dom结构</p>
+<p>ReactDOMComponent.prototype.mountComponent: </p>
 <ul>
 <li>assign type : tagOpen = ‘&lt;’ + ‘dic’</li>
 <li>add props : tagOpen += propKey + props[propKey]</li>
 <li>recursive child node to be content : each(content += childComponentInstance.mountComponent)</li>
 <li>result : tagOpen + ‘&gt;’ + content + tagClose</li>
 </ul>
-<h4 id="Render-Composite-implement-analyse"><a href="#Render-Composite-implement-analyse" class="headerlink" title="Render Composite implement analyse"></a>Render Composite implement analyse</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">var HelloMessage = React.createClass(&#123;</div><div class="line">  getInitialState: function() &#123;</div><div class="line">    return &#123;type: &apos;say:&apos;&#125;;</div><div class="line">  &#125;,</div><div class="line">  componentWillMount: function() &#123;</div><div class="line">    console.log(&apos;我就要开始渲染了。。。&apos;)</div><div class="line">  &#125;,</div><div class="line">  componentDidMount: function() &#123;</div><div class="line">    console.log(&apos;我已经渲染好了。。。&apos;)</div><div class="line">  &#125;,</div><div class="line">  render: function() &#123;</div><div class="line">    return React.createElement(&quot;div&quot;, null,this.state.type, &quot;Hello &quot;, this.props.name);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"></div><div class="line">React.render(React.createElement(HelloMessage, &#123;name: &quot;John&quot;&#125;), document.getElementById(&quot;container&quot;));</div></pre></td></tr></table></figure>
-<p>React.createClass</p>
+<p>React的伪代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">// ReactElement：创建虚拟DOM</div><div class="line">function ReactElement(type,key,props)&#123;</div><div class="line">  this.type = type;</div><div class="line">  this.key = key;</div><div class="line">  this.props = props;</div><div class="line">&#125;</div><div class="line">// mountComponent：渲染component，生成的dom结构</div><div class="line">ReactDOMTextComponent.prototype.mountComponent = function(rootID) &#123;</div><div class="line">    this._rootNodeID = rootID;</div><div class="line">    return &apos;&lt;span data-reactid=&quot;&apos; + rootID + &apos;&quot;&gt;&apos; + this._currentElement + &apos;&lt;/span&gt;&apos;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// instantiateReactComponent：生成component</div><div class="line">function instantiateReactComponent(node)&#123;</div><div class="line">        ......</div><div class="line">&#125;</div><div class="line">React = &#123;</div><div class="line">    createElement:function(type,config,children)&#123;</div><div class="line">        ...</div><div class="line">        return new ReactElement(type, key,props);</div><div class="line">    &#125;，</div><div class="line">    createClass:function(spec)&#123;</div><div class="line">        ...</div><div class="line">    &#125;,</div><div class="line">    // 渲染入口</div><div class="line">    render:function(element,container)&#123;</div><div class="line">        var componentInstance = instantiateReactComponent(element);</div><div class="line">        var markup = componentInstance.mountComponent(React.nextReactRootIndex++);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>渲染结果<br>HelloWorld组件通过React.render进行解析最后变成Render Tree</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;div data-reactid=&quot;0&quot;&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.0&quot;&gt;say:&lt;/span&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.1&quot;&gt;Hello &lt;/span&gt;</div><div class="line">    &lt;span data-reactid=&quot;0.2&quot;&gt;John&lt;/span&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
+<p>渲染流程图<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjuovkxsyj31kw0san5r.jpg" alt=""></p>
+<h4 id="Render-Composite-implement-analyse"><a href="#Render-Composite-implement-analyse" class="headerlink" title="Render Composite implement analyse"></a>Render Composite implement analyse</h4><p>Custom element自定义元素渲染解析</p>
+<p>自定义元素的渲染流程有两点不一样，第一增加了创建自定义类的环节，第二，在最后一步“mountComponent”会递归调用，将父组件的每一个子组件进行渲染解析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">var HelloMessage = React.createClass(&#123;</div><div class="line">  getInitialState: function() &#123;</div><div class="line">    return &#123;type: &apos;say:&apos;&#125;;</div><div class="line">  &#125;,</div><div class="line">  componentWillMount: function() &#123;</div><div class="line">    console.log(&apos;我就要开始渲染了。。。&apos;)</div><div class="line">  &#125;,</div><div class="line">  componentDidMount: function() &#123;</div><div class="line">    console.log(&apos;我已经渲染好了。。。&apos;)</div><div class="line">  &#125;,</div><div class="line">  render: function() &#123;</div><div class="line">    return React.createElement(&quot;div&quot;, null,this.state.type, &quot;Hello &quot;, this.props.name);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"></div><div class="line">React.render(React.createElement(HelloMessage, &#123;name: &quot;John&quot;&#125;), document.getElementById(&quot;container&quot;));</div></pre></td></tr></table></figure>
+<p>1.创建自定义类<br>React.createClass</p>
 <ul>
 <li>Constructor a child class</li>
 <li>inserit to ReactClasss <ul>
@@ -518,11 +531,12 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 </ul>
 </li>
 </ul>
-<h2 id="React-Native-ReRender-mechanism-重新渲染机制"><a href="#React-Native-ReRender-mechanism-重新渲染机制" class="headerlink" title="React Native ReRender mechanism 重新渲染机制"></a>React Native ReRender mechanism 重新渲染机制</h2><p>ReactClass.prototype.setState</p>
+<h2 id="React-Native-ReRender-mechanism-重新渲染机制"><a href="#React-Native-ReRender-mechanism-重新渲染机制" class="headerlink" title="React Native ReRender mechanism 重新渲染机制"></a>React Native ReRender mechanism 重新渲染机制</h2><p>一个react组件的重新渲染，是通过setState方法的调用，导致stated改变发起的<br>ReactClass.prototype.setState</p>
 <ul>
 <li>call ‘this._reactInternalInstance.receiveComponent(null, newState);’</li>
 </ul>
-<h3 id="All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update"><a href="#All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update" class="headerlink" title="All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update."></a>All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update.</h3><p>ReactCompositeComponent.prototype.receiveComponent</p>
+<h3 id="All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update"><a href="#All-the-component-implement-the-‘receiveComponent’-the-handle-the-render-of-themself-the-DOMComponent-is-the-most-complexest-it-used-diff-algorithm-to-handle-the-child-node-update" class="headerlink" title="All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update."></a>All the component implement the ‘receiveComponent’ the handle the render of themself. the DOMComponent is the most complexest ,it used diff algorithm to handle the child node update.</h3><p>state改变后会调用组件的receiveComponent方法进行element和属性的更新</p>
+<p>ReactCompositeComponent.prototype.receiveComponent</p>
 <ul>
 <li>update element 更新element对象</li>
 <li>bind the new state and props 生成心的state和props</li>
@@ -538,13 +552,15 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 <li>updateDOMProperties 更新属性</li>
 <li>updateDOMChildren 更新子节点</li>
 </ul>
-<h3 id="implementation-of-DomComponent-RecevieComponent"><a href="#implementation-of-DomComponent-RecevieComponent" class="headerlink" title="implementation of DomComponent RecevieComponent"></a>implementation of DomComponent RecevieComponent</h3><p>ReactDOMComponent.prototype._updateDOMProperties</p>
+<h3 id="implementation-of-DomComponent-RecevieComponent"><a href="#implementation-of-DomComponent-RecevieComponent" class="headerlink" title="implementation of DomComponent RecevieComponent"></a>implementation of DomComponent RecevieComponent</h3><p>首先是更新Properties</p>
+<p>ReactDOMComponent.prototype._updateDOMProperties</p>
 <ul>
 <li>remove the old attribute</li>
 <li>remove the event monitor</li>
 <li>add the new attribute</li>
 <li>add the new event monitor</li>
 </ul>
+<p>接着是更新子组件</p>
 <p>ReactDOMComponent.prototype._updateDOMChildren</p>
 <ul>
 <li>diff<ul>
@@ -556,7 +572,8 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 </ul>
 </li>
 </ul>
-<h3 id="analyse-diff-and-patch"><a href="#analyse-diff-and-patch" class="headerlink" title="analyse diff and patch"></a>analyse diff and patch</h3><p>ReactDOMComponent.prototype._diff</p>
+<h3 id="analyse-diff-and-patch"><a href="#analyse-diff-and-patch" class="headerlink" title="analyse diff and patch"></a>analyse diff and patch</h3><p>更新子组件时,使用diff算法计算出需要移动、插入、删除的组件，大部分没有变动的组件不做更新。</p>
+<p>ReactDOMComponent.prototype._diff</p>
 <ul>
 <li>getting the previous component of childrend</li>
 <li>generating the next component of childrend</li>
@@ -585,7 +602,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 <li>insert INSERT_MARKUP nodes</li>
 <li>insert MOVE_EXISTING nodes</li>
 </ul>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_one/" target="_blank" rel="external">reactjs源码分析-上篇</a><br><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_two/" target="_blank" rel="external">reactjs源码分析-下篇（更新机制实现原理）</a><br><a href="http://www.jianshu.com/p/f75c1f0af3f0" target="_blank" rel="external">React为什么要使用Virtual DOM</a><br><a href="http://www.alloyteam.com/2015/10/react-virtual-analysis-of-the-dom/" target="_blank" rel="external">React虚拟DOM浅析</a><br><a href="https://zhuanlan.zhihu.com/p/21108312?refer=leanreact" target="_blank" rel="external">React 介绍</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_one/" target="_blank" rel="external">reactjs源码分析-上篇</a><br><a href="http://purplebamboo.github.io/2015/09/15/reactjs_source_analyze_part_two/" target="_blank" rel="external">reactjs源码分析-下篇（更新机制实现原理）</a><br><a href="http://www.jianshu.com/p/f75c1f0af3f0" target="_blank" rel="external">React为什么要使用Virtual DOM</a><br><a href="http://www.alloyteam.com/2015/10/react-virtual-analysis-of-the-dom/" target="_blank" rel="external">React虚拟DOM浅析</a><br><a href="https://zhuanlan.zhihu.com/p/21108312?refer=leanreact" target="_blank" rel="external">React 介绍</a><br><a href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-tree-construction?hl=zh-cn" target="_blank" rel="external">渲染树构建、布局及绘制</a><br><a href="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/" target="_blank" rel="external">浏览器工作原理</a><br><a href="https://docs.google.com/presentation/d/1ZRIQbUKw9Tf077odCh66OrrwRIVNLvI_nhLm2Gi__F0/embed?start=false&amp;loop=false&amp;delayms=3000&amp;slide=id.g312aaaf6_1_188" target="_blank" rel="external">How WebKit Works</a></p>
 
       
     </div>
@@ -740,7 +757,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">36</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
