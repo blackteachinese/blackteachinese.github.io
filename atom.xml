@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blackteachinese.com/"/>
-  <updated>2017-12-24T13:58:02.033Z</updated>
+  <updated>2017-12-24T14:00:12.440Z</updated>
   <id>http://blackteachinese.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blackteachinese.com/2017/12/24/ios_reactnative_render_process/"/>
     <id>http://blackteachinese.com/2017/12/24/ios_reactnative_render_process/</id>
     <published>2017-12-24T05:33:01.000Z</published>
-    <updated>2017-12-24T13:58:02.033Z</updated>
+    <updated>2017-12-24T14:00:12.440Z</updated>
     
     <content type="html"><![CDATA[<h1 id="React"><a href="#React" class="headerlink" title="React"></a>React</h1><p>首先用React写一个HelloWorld组件，代码如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var HelloWorld = React.createClass(&#123;</div><div class="line">  getInitialState: function() &#123;</div><div class="line">    return &#123;type: &apos;say:&apos;&#125;;</div><div class="line">  &#125;,</div><div class="line">  render: function() &#123;</div><div class="line">    return React.createElement(&quot;div&quot;, null,this.state.type, &quot;Hello &quot;, this.props.name);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">React.render(React.createElement(HelloWorld, &#123;name: &quot;John&quot;&#125;), document.getElementById(&quot;container&quot;));</div></pre></td></tr></table></figure>
@@ -98,7 +98,7 @@
     <link href="http://blackteachinese.com/2017/11/26/react_native_ios_source_code/"/>
     <id>http://blackteachinese.com/2017/11/26/react_native_ios_source_code/</id>
     <published>2017-11-26T04:35:00.000Z</published>
-    <updated>2017-12-17T13:39:33.820Z</updated>
+    <updated>2017-12-24T14:00:10.918Z</updated>
     
     <content type="html"><![CDATA[<h2 id="React-Native-是什么"><a href="#React-Native-是什么" class="headerlink" title="React Native 是什么"></a>React Native 是什么</h2><p>react.js是一个流行的前端开发框架，相信大家都有了解，它用了flexbox布局技术、jsx等语法糖的技术，这让前端同学能象喝茶一样轻松地开发H5页面。React本来是用来开发h5页面，facebook的工程师们，希望做一套能同时运行在iOS和Android的高性能开发框架，就将React render()方法渲染出来的js代码通过JSbridge加载到native，native再通过JSCore和V8这两个js解析引擎，解析为native的页面。</p>
 <h2 id="React-Native-的组成"><a href="#React-Native-的组成" class="headerlink" title="React Native 的组成"></a>React Native 的组成</h2><p>ReactNative功能结构可以分为两部分，JS模块和Native模块。JS模块和Native模块都有Bridge组件，两端的Bridge遵守一套通信协议、通信机制，从而实现了js和native的无缝连接。</p>
@@ -212,7 +212,7 @@
     <link href="http://blackteachinese.com/2017/11/24/react_render_concept/"/>
     <id>http://blackteachinese.com/2017/11/24/react_render_concept/</id>
     <published>2017-11-24T12:35:00.000Z</published>
-    <updated>2017-12-24T13:52:22.640Z</updated>
+    <updated>2017-12-24T14:00:05.598Z</updated>
     
     <content type="html"><![CDATA[<h2 id="What-is-React"><a href="#What-is-React" class="headerlink" title="What is React"></a>What is React</h2><p>A JavaScript library for building user interfaces</p>
 <p><strong>基本概念</strong></p>
