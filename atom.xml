@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blackteachinese.com/"/>
-  <updated>2019-03-18T07:13:03.522Z</updated>
+  <updated>2019-03-18T11:16:34.387Z</updated>
   <id>http://blackteachinese.com/</id>
   
   <author>
@@ -20,15 +20,15 @@
     <link href="http://blackteachinese.com/2019/03/18/iOS_performance_analyse_time/"/>
     <id>http://blackteachinese.com/2019/03/18/iOS_performance_analyse_time/</id>
     <published>2019-03-18T06:59:00.000Z</published>
-    <updated>2019-03-18T07:13:03.522Z</updated>
+    <updated>2019-03-18T11:16:34.387Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="保障良好性能三个层次"><a href="#保障良好性能三个层次" class="headerlink" title="保障良好性能三个层次"></a>保障良好性能三个层次</h2><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g16yagp4voj31go0isado.jpg" alt=""></p>
-<p><strong>常用高效的工具和管理方法</strong></p>
+    <content type="html"><![CDATA[<h2 id="保障良好性能三个层次"><a href="#保障良好性能三个层次" class="headerlink" title="保障良好性能三个层次"></a>保障良好性能三个层次</h2><p><strong>常用高效的工具和管理方法</strong></p>
 <p>刚开始我们的程序遇到性能问题时，我们会学习各种工具去分析程序性能，当性能出现明显问题时，这是最高效的解决方法，并且我们也能在这个过程中积累对代码性能的了解，这通常是点状的经验。后来我们发现性能问题还是层出不穷，于是我们开始对程序运行的核心链路做拆分，为拆分后的每个模块定义基线，数据跟踪，卡口流程。这和社会环保问题其实很像，性能出现问题时有高效的定位、解决问题的工具和能力，这相当于体育比赛后组织方有高效地清除垃圾方法和执行人员。性能基线和卡口流程相当于社会法律和执法体系，丢垃圾罚500、吐痰罚200.</p>
 <p><strong>了解本质是养成意识的前提</strong></p>
 <p>这通常都是最有效的管理方法，但却不是万能和高效的办法，通常只能在核心的业务做这种投入。建设管理设施和执行维护的成本非常高，就如识别谁丢了垃圾的成本就很高，而且很多时候你发现一片污染时，它可能是许多人一起作用的结果。要本质上去改善软件的性能，需要编写代码的人有良好的性能意识和习惯。就如新闻上常说的，日本的观众看完比赛，留下来的那片区域都非常收拾得很干净。想要真正形成意识、养成习惯，只喊口号和宣导是一种办法，但还不够。我们需要回归到本质，让大家真正认知到环保的好处，我们要把问题量化帮助大家理解， 让大家知道一套卖家的塑料饭盒具体处理的成本有多少。</p>
 <p><strong>对一砖一瓦要有明确认知</strong></p>
 <p>要形成具体地认知，我们得把性能问题拆解成基本元素，随着规模地上升，程序模块拆分越来越细、流程越来越交错，性能问题具体是哪个部件很容易被掩盖。幸好，程序再庞大也是一砖一瓦搭建出来的，归根结底是0和1两个数字的问题。当然0和1组合的可能性太多，超过了人脑的记忆能力。再上一层到了汇编，汇编对于稳定性问题来说是最确定性的协议，但对性能来说组合的复杂度还是过高了。<br>那再往上一层找，就到了高级语言最基础的运算和标准接口，这在iOS程序里是OC语言、C语言的基础操作。</p>
+<p><strong>保障良好性能三个层次</strong><br><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g170b9phkpj31go0isdjg.jpg" alt=""></p>
 <h2 id="基础操作解析"><a href="#基础操作解析" class="headerlink" title="基础操作解析"></a>基础操作解析</h2><p>下面首先基于OC和C语言的基本操作在iPhone6Plus设备的性能表现，弄清楚关键的性能代码的成本，再总结如何编写良好性能的代码。</p>
 <p><strong>测试用例：</strong></p>
 <p>复杂度为O(n^2),n在500到5000之间。</p>
@@ -182,7 +182,7 @@
 </table>
 <p>NSNumber的算术运算比基础数据类型要慢了1个数量级，达到了10ns，装箱和拆箱的成本还是很高的，所以要尽量避免NSNumber的使用。</p>
 <p> <strong>关系运算</strong></p>
-<p> 操作 Comparisons (n=5000)|  平均操作时间（纳秒）    |<br>|———————————|——|<br> | if (i &lt; j)               | 0.649 |<br> | if (i &lt; j) k++           | 0.555 |<br> | if (x[i] &lt; x[j]) k++     | 0.803 |</p>
+<p> 操作 Comparisons (n=5000)|  平均操作时间（纳秒）    |<br>|———————————|——|<br>| if (i &lt; j)               | 0.649 |<br>| if (i &lt; j) k++           | 0.555 |<br>| if (x[i] &lt; x[j]) k++     | 0.803 |</p>
 <table>
 <thead>
 <tr>
@@ -209,7 +209,7 @@
 </tr>
 </tbody>
 </table>
-<p>  操作  Max Function, Macro and Inline (n=5000) |  平均操作时间（纳秒）    |<br>|———————————|——|<br> | k = (i &gt; j) ? i : j      | 0.910 |<br> | k = maxmac(i, j)         | 0.851 |<br> | k = maxfunc(i, j)        | 1.029 |</p>
+<p>  操作  Max Function, Macro and Inline (n=5000) |  平均操作时间（纳秒）    |<br>|———————————|——|<br>| k = (i &gt; j) ? i : j      | 0.910 |<br>| k = maxmac(i, j)         | 0.851 |<br>| k = maxfunc(i, j)        | 1.029 |</p>
 <p>比较和算术运算成本差不多，使用for(i..n)每次循环都要判断一次。同样的交换逻辑，使用宏展开比使用函数要快800us。因此，对于一些简单高频的计算，可以使用宏进行展开优化。</p>
 <p> <strong>数学函数</strong></p>
 <table>
@@ -259,7 +259,7 @@
 <table>
 <thead>
 <tr>
-<th>操作 NSArray Handle (n=1000)</th>
+<th>操作 NSMutableArray Handle (n=1000)</th>
 <th>平均操作时间（纳秒）</th>
 </tr>
 </thead>
@@ -282,7 +282,7 @@
 </tr>
 </tbody>
 </table>
-<p>NSArray的操作明显比数组存取要耗时很多，如果是性能关键代码是普通C数组的，但是这样扩展性会比较差，需要自己管理引用计数，也不能享受NSArray排序、搜索等便捷方法，所以一般情况还是建议使用NSArray。</p>
+<p>NSMutableArray的操作明显比数组存取要耗时很多，如果是性能关键代码是普通C数组的，但是这样扩展性会比较差，需要自己管理引用计数，也不能享受NSMutableArray排序、搜索等便捷方法，所以一般情况还是建议使用NSMutableArray。</p>
 <table>
 <thead>
 <tr>
@@ -325,7 +325,7 @@
 <table>
 <thead>
 <tr>
-<th>操作  NSDictionary Handle (n=500)</th>
+<th>操作  NSMutableDictionary Handle (n=500)</th>
 <th>平均操作时间（纳秒）</th>
 </tr>
 </thead>
@@ -348,7 +348,7 @@
 </tr>
 </tbody>
 </table>
-<p>NSDictionary的键值访问比起对象的赋值、取值耗时要高1个数量级，1万次操作就达到1ms，并且如果有数据类型要存储，字典必须用NSNumber,NSNumber的操作本身就性能很差。<br>字典在项目中使用频率是较高的，在不需要动态性的高频场景应该使用对象替代NSDictionary。一般网络请求json格式回来我们都会先通过NSJSONSerialization转成NSDictionary。业务数据量大的时候，成本显然不小。</p>
+<p>NSMutableDictionary的键值访问比起对象的赋值、取值耗时要高1个数量级，1万次操作就达到1ms，并且如果有数据类型要存储，字典必须用NSNumber,NSNumber的操作本身就性能很差。<br>字典在项目中使用频率是较高的，在不需要动态性的高频场景应该使用对象替代NSMutableDictionary。一般网络请求json格式回来我们都会先通过NSJSONSerialization转成NSDictionary。业务数据量大的时候，成本显然不小。</p>
 <table>
 <thead>
 <tr>
@@ -608,14 +608,12 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        if (NSNotFound != [array indexOfObject:object]) &#123;</div><div class="line">            [array addObject:object];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>NSArray是有序的，它的查找、删除方法都需要遍历整个集合（containsObject，indexOfObject，removeObject），时间复杂度都是O(n)以上。</p>
 <p>优化的办法是使用set,set使用了哈希值存储对象，containsObject复杂度是O(1),可以将整个操作恢复到线性。我们需要对常用集合每个方法的复杂度有清晰的认识，才能保证不会不小心写出O(n^2)以上的代码。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    NSSet *set = [NSSet setWithArray:array];</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        if ([set containsObject:object]) &#123;</div><div class="line">            [array addObject:object];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    NSSet *set = [NSSet setWithArray:array];</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        if (![set containsObject:object]) &#123;</div><div class="line">            [array addObject:object];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>第二：注意方法嵌套代码，这很容易使我们忽略了整体的复杂度</strong></p>
 <p>在工程项目中，你的代码可能是像下面这样编写的，这就很难直观的看出有线性的嵌套。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        [self addAbsentObject:object];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)addAbsentObject:(id)object &#123;</div><div class="line">    if (NSNotFound != [array indexOfObject:object]) &#123;</div><div class="line">        [array addObject:object];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>要避免这种失误，我们得加强代码的敏感度，看到关键方法要有直觉的反应。同时编写底层方法时，对有复杂度风险的方法加上明确的注释，不要让调用方跳入泥坑。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1 记住关键操作的性能公式</p>
-<p>原始操作：消息传递：对象创建 : 键值访问 =  1 : 10 : 100 : 200</p>
-<p>PS：在X86的模拟器里，对象创建成本是键值访问的两倍，但是在iPhone6Plus A9的表现,键值访问要反而慢两倍。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1 记住关键操作的性能公式<br>原始操作：消息传递：对象创建 : 键值访问 =  1 : 10 : 100 : 200</p>
 <p>2 权衡利用C语言的速度和OC的面向对象设计，c语言的集合类型比起OC确实要快上一两个数量级。</p>
 <p>3 尽量用对象替代动态的NSDictionary,用基础数据类型替代需要装箱的NSNumber。</p>
 <p>4 如果有高频次的对象分配，达到了10万甚至100万的数量，可以使用预分配内存加复用的方式来加速。</p>
@@ -625,7 +623,8 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;保障良好性能三个层次&quot;&gt;&lt;a href=&quot;#保障良好性能三个层次&quot; class=&quot;headerlink&quot; title=&quot;保障良好性能三个层次&quot;&gt;&lt;/a&gt;保障良好性能三个层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large
+      &lt;h2 id=&quot;保障良好性能三个层次&quot;&gt;&lt;a href=&quot;#保障良好性能三个层次&quot; class=&quot;headerlink&quot; title=&quot;保障良好性能三个层次&quot;&gt;&lt;/a&gt;保障良好性能三个层次&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;常用高效的工具和管理方法&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;刚
     
     </summary>
     
@@ -1644,54 +1643,43 @@
   </entry>
   
   <entry>
-    <title>iOS性能最佳实践系列之--加快页面加载的检查清单</title>
-    <link href="http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/"/>
-    <id>http://blackteachinese.com/2017/09/03/iOS_best_performance_pageLoad/</id>
+    <title>结构化思考——完美应对电梯30秒的思考模型</title>
+    <link href="http://blackteachinese.com/2017/09/03/thought_structure_thinking/"/>
+    <id>http://blackteachinese.com/2017/09/03/thought_structure_thinking/</id>
     <published>2017-09-03T13:39:27.000Z</published>
-    <updated>2017-09-16T10:24:22.000Z</updated>
+    <updated>2017-09-06T05:23:37.000Z</updated>
     
-    <content type="html"><![CDATA[<p>如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。</p>
-<p><strong>跳转事件触发后不要做阻塞操作</strong></p>
-<p>过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需要一些权限才能访问。于是代码里点击事件触发后，发了一个网络请求去校验权限，校验成功后再跳转。从用户的角度看，相当于卡了一下再跳新的页面，体验很糟糕。<br>建议有两种做法：<br>1 提前做好权限校验<br>2 直接进入新页面后再做权限校验，没有权限显示无权限的背景图</p>
-<p><strong>UIViewController的生命周期要避免阻塞</strong><br>UIViewController的生命周期方法都在主线程，不要因为做消耗资源的事情（除了初始化视图）导致主线程被阻塞。</p>
-<p>有消耗资源的操作放到子线程里，需要做UI渲染再回到主线程</p>
-<p>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">init</div><div class="line">initWithNibName:bundle</div><div class="line">viewWillAppear</div><div class="line">viewDidAppear</div><div class="line">viewDidLoad</div><div class="line">viewWillDisappear</div><div class="line">viewDidDisappear</div><div class="line">...</div></pre></td></tr></table></figure>
-<p><strong>如果接口请求慢，先加载缓存，再刷最新数据</strong></p>
-<p>如果页面的网络请求很慢，会出现白屏转菊花很久的情况，改善的策略如下。<br>1 先加载缓存数据<br>2 同步请求网络数据，网络数据请求完成后和本地数据校对，得出需要变化的数据。<br>3 将新增的数据加载到页面里，并提示“有数据更新”（类似新浪微博）</p>
-<p><strong>UITableView的DataSource的代理实现要避免阻塞</strong></p>
-<p>UITableView的DataSource回调函数在主线程，要避免耗时计算。</p>
-<p>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tableView:cellForRowAtIndexPath</div><div class="line">tableView:heightForRowAtIndexPath</div><div class="line">...</div></pre></td></tr></table></figure>
-<p><strong>减少UITableView高度计算次数</strong></p>
-<ul>
-<li>有多种Cell或高度是动态的<ul>
-<li>设置estimatedRowHeight(设置后会开启self—sizing，自动计算高度)</li>
-</ul>
-</li>
-<li>只有一种Cell并且高度固定<ul>
-<li>设置rowHeight</li>
-<li>不要重载”tableView:heightForRowAtIndexPath”</li>
-</ul>
-</li>
-</ul>
-<p><strong>UICollectionView的DataSource的代理实现要避免阻塞</strong></p>
-<p>UICollectionView生命周期的回调函数在主线程，要避免耗时计算。<br>下面是检查清单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">collectionView:cellForItemAtIndexPath</div><div class="line">collectionView:layout:sizeForItemAtIndexPath</div><div class="line">collectionView:didSelectItemAtIndexPath</div></pre></td></tr></table></figure>
+    <content type="html"><![CDATA[<h1 id="为什么你的想法总是不能很好地表达？"><a href="#为什么你的想法总是不能很好地表达？" class="headerlink" title="为什么你的想法总是不能很好地表达？"></a>为什么你的想法总是不能很好地表达？</h1><p>如果你的工作内容是技术型的（程序员），你很可能对自己日常工作中的语言表达不太满意。你可能专业知识很丰满，对事情的看法也很独到，但就是讲不好。</p>
+<p>你也许还不觉得这是个很大的问题，因为大家会给某种职业贴标签：“XXX就是不善于表达”。这样的说法你听多了，可能会真的接受这种观点，但事实并不是如此。</p>
+<p>讲得不好主要有三个因素影响，思考能力、语言能力、心态。<br>思考能力决定你的表达内容的质量，思路是否清晰、重点是否突出、观点是否独到。<br>语言能力决定你的表达的内容形式是否丰富、有没有文采，有没有类比、举例帮组听众理解更深刻等。<br>心态决定你能不能正常发挥自己的水平。</p>
+<p>也许你已经可以看出来，思考能力决定你表达的核心内容。因为在日常工作中，工作中的交流是趋于理性的，大家更看重的是你的思路和观点。</p>
+<h1 id="为什么是结构力思考？"><a href="#为什么是结构力思考？" class="headerlink" title="为什么是结构力思考？"></a>为什么是结构力思考？</h1><p>在工作中我们遇到各种问题时，大脑会习惯性依据经验来思考。这样思考的结果，观点通常是散状的，类似现在微信文章的清单体。散状的观点，重点不突出，各个观点间没有清晰的逻辑联系。这样不能形成严密的逻辑关系，不利于让听众了解你表达的重点，观点之间有可能相互重复、甚至冲突。而在工作中，我们讨论解决方案时，最终是需要团队协作去执行的。这需要方案重点突出、逻辑严密，既能够统一思想又具有指导意义。</p>
+<p>因此，我们需要结构化思考的意识。</p>
+<h1 id="4个策略助你进行结构化思考"><a href="#4个策略助你进行结构化思考" class="headerlink" title="4个策略助你进行结构化思考"></a>4个策略助你进行结构化思考</h1><h2 id="结论先行"><a href="#结论先行" class="headerlink" title="结论先行"></a>结论先行</h2><p>将结论（核心观点／内容）作为树形结构的父节点。</p>
+<h2 id="以下呼上"><a href="#以下呼上" class="headerlink" title="以下呼上"></a>以下呼上</h2><p>树形结构里，子节点要呼应／支持父节点的内容。</p>
+<h2 id="合理归类"><a href="#合理归类" class="headerlink" title="合理归类"></a>合理归类</h2><p>通过合理地归纳分类，让一个复杂地问题逐步细化，成为可理解、可执行的观点／指南。</p>
+<h2 id="逻辑递进"><a href="#逻辑递进" class="headerlink" title="逻辑递进"></a>逻辑递进</h2><p>如果能形成时间、重要程度、结构顺序，这几种逻辑顺序，能让人更容易理解和记忆。</p>
+<p>先看一个清单体：“如何帮孩子缓解入园焦虑、快速融入幼儿园生活”。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1. 最开始上幼儿园时，大部分孩子会感到压力和不适应。作为家长，不要觉得孩子小题大做，而要认真对待。</div><div class="line">2. 提前在家帮孩子调整作息，尽量跟幼儿园保持一致。比如早晨7:30起床吃早饭、中午12点左右午睡。同步作息时间，能让孩子快速适应幼儿园的节奏。</div><div class="line">3. 不要在平时借幼儿园抱怨孩子。“还不会自己吃饭，上了幼儿园怎么办”……这只会增加孩子对它的恐惧。</div><div class="line">4. 提前带孩子熟悉幼儿园环境。试着坐坐小椅子，上个卫生间，在校园里散散步。熟悉了环境，孩子会更有安全感。</div><div class="line">5. 尽快让孩子和老师熟悉起来——和孩子一起与老师聊聊天、当孩子的面夸夸老师，都会增加他对老师的信任。如果有机会提前让孩子和老师接触，那就更好了。</div><div class="line">6. 让孩子挑选一件熟悉的物件陪他上学，比如一块手绢、一辆玩具车或一块午睡毯。一件熟悉的物品，能缓解孩子对陌生环境的不适。</div><div class="line">7. 不要用欺骗的方式把孩子骗到幼儿园，更不要偷偷溜走，鼓励孩子主动跟你说“再见”。</div><div class="line">8. 跟孩子约定时间时，要说他能理解的话。不要说“妈妈5点来接你”，孩子没有“5点”的概念，应该说“你在幼儿园乖乖吃完晚餐，妈妈就来接你”。且一定要说话算数，否则会失去孩子的信任。</div><div class="line">9. 让孩子练习表达自己的感受，鼓励他说出需求。不妨引导他多说说学校的事情。习惯于表达需求后，孩子更敢于向老师求助。</div><div class="line">10. 分离焦虑，很大程度上是父母的焦虑。你的情绪会传染给孩子，一定要控制好。孩子哭闹时，不要跟他一起难过；一旦约定分别，就安心上班，不要在边上偷看，被孩子看到反而会激起他刚平复的心情。</div><div class="line">11. 孩子哭诉时，告诉他幼儿园的好是没用的，要用“共情”的方式沟通——“宝宝，妈妈也想念你”。向孩子表达你和他有同样的感受，这样孩子才会觉得你和他是一个“阵营”的。</div><div class="line">12. 不要觉得孩子在幼儿园受了委屈，就在家里加倍补偿。那反而会让孩子觉得“家里这么舒服，还是不要去幼儿园了”。</div><div class="line">13. 最后，从入园第一天，你的态度就要一以贯之，不要昨天去了，今天孩子哭得厉害就不去了。相信幼儿园和老师，他们比你有经验。</div></pre></td></tr></table></figure>
+<p>下面看看，如果使用结构化进行思考会怎么样。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fj6g5b0w07j31ee0us19w.jpg" alt=""></p>
+<h2 id="合理选择结构化思考的表达层次"><a href="#合理选择结构化思考的表达层次" class="headerlink" title="合理选择结构化思考的表达层次"></a>合理选择结构化思考的表达层次</h2><p>在工作中我们以下有几种场景会发表观点：</p>
+<p>临时汇报（电梯30秒）<br>只有一句话时间，就说第一层。</p>
+<p>会议发言（1分钟）<br>说到第二层。</p>
+<p>工作总结（3到5分钟）<br>讲到第三层。</p>
+<p>主题分享／培训 （30分钟）<br>抓住一个故事／案例展开来，深入浅出地阐述</p>
+<p>根据不同场景和时间限制，合理地把握表达的层次和深度，无论是电梯30秒、会议发表观点、主题分享、培训、还是述职答辩都能应对自如。</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;跳转事件触发后不要做阻塞操作&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需
+      &lt;h1 id=&quot;为什么你的想法总是不能很好地表达？&quot;&gt;&lt;a href=&quot;#为什么你的想法总是不能很好地表达？&quot; class=&quot;headerlink&quot; title=&quot;为什么你的想法总是不能很好地表达？&quot;&gt;&lt;/a&gt;为什么你的想法总是不能很好地表达？&lt;/h1&gt;&lt;p&gt;如果你的工作内容是技
     
     </summary>
     
-      <category term="iOS" scheme="http://blackteachinese.com/categories/iOS/"/>
+      <category term="thought" scheme="http://blackteachinese.com/categories/thought/"/>
     
     
-      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
+      <category term="thought" scheme="http://blackteachinese.com/tags/thought/"/>
     
   </entry>
   
