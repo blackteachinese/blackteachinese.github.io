@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blackteachinese.com/2019/03/18/iOS_performance_analyse_time/</loc>
+    
+    <lastmod>2019-03-18T07:13:03.522Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blackteachinese.com/2018/06/03/firstNodeServerInAliyun/</loc>
+    
+    <lastmod>2018-06-07T09:07:23.255Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blackteachinese.com/2017/11/24/react_render_concept/</loc>
+    
+    <lastmod>2017-12-25T15:45:03.869Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blackteachinese.com/2017/12/24/ios_reactnative_render_process/</loc>
     
     <lastmod>2017-12-24T14:00:12.440Z</lastmod>
@@ -12,13 +33,6 @@
     <loc>http://blackteachinese.com/2017/11/26/react_native_ios_source_code/</loc>
     
     <lastmod>2017-12-24T14:00:10.918Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blackteachinese.com/2017/11/24/react_render_concept/</loc>
-    
-    <lastmod>2017-12-24T14:00:05.598Z</lastmod>
     
   </url>
   

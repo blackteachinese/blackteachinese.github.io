@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blackteachinese.com/"/>
-  <updated>2017-12-24T14:00:12.440Z</updated>
+  <updated>2019-03-18T07:13:03.522Z</updated>
   <id>http://blackteachinese.com/</id>
   
   <author>
@@ -14,6 +14,650 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>iOS性能解读——把时间当作朋友</title>
+    <link href="http://blackteachinese.com/2019/03/18/iOS_performance_analyse_time/"/>
+    <id>http://blackteachinese.com/2019/03/18/iOS_performance_analyse_time/</id>
+    <published>2019-03-18T06:59:00.000Z</published>
+    <updated>2019-03-18T07:13:03.522Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="保障良好性能三个层次"><a href="#保障良好性能三个层次" class="headerlink" title="保障良好性能三个层次"></a>保障良好性能三个层次</h2><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g16yagp4voj31go0isado.jpg" alt=""></p>
+<p><strong>常用高效的工具和管理方法</strong></p>
+<p>刚开始我们的程序遇到性能问题时，我们会学习各种工具去分析程序性能，当性能出现明显问题时，这是最高效的解决方法，并且我们也能在这个过程中积累对代码性能的了解，这通常是点状的经验。后来我们发现性能问题还是层出不穷，于是我们开始对程序运行的核心链路做拆分，为拆分后的每个模块定义基线，数据跟踪，卡口流程。这和社会环保问题其实很像，性能出现问题时有高效的定位、解决问题的工具和能力，这相当于体育比赛后组织方有高效地清除垃圾方法和执行人员。性能基线和卡口流程相当于社会法律和执法体系，丢垃圾罚500、吐痰罚200.</p>
+<p><strong>了解本质是养成意识的前提</strong></p>
+<p>这通常都是最有效的管理方法，但却不是万能和高效的办法，通常只能在核心的业务做这种投入。建设管理设施和执行维护的成本非常高，就如识别谁丢了垃圾的成本就很高，而且很多时候你发现一片污染时，它可能是许多人一起作用的结果。要本质上去改善软件的性能，需要编写代码的人有良好的性能意识和习惯。就如新闻上常说的，日本的观众看完比赛，留下来的那片区域都非常收拾得很干净。想要真正形成意识、养成习惯，只喊口号和宣导是一种办法，但还不够。我们需要回归到本质，让大家真正认知到环保的好处，我们要把问题量化帮助大家理解， 让大家知道一套卖家的塑料饭盒具体处理的成本有多少。</p>
+<p><strong>对一砖一瓦要有明确认知</strong></p>
+<p>要形成具体地认知，我们得把性能问题拆解成基本元素，随着规模地上升，程序模块拆分越来越细、流程越来越交错，性能问题具体是哪个部件很容易被掩盖。幸好，程序再庞大也是一砖一瓦搭建出来的，归根结底是0和1两个数字的问题。当然0和1组合的可能性太多，超过了人脑的记忆能力。再上一层到了汇编，汇编对于稳定性问题来说是最确定性的协议，但对性能来说组合的复杂度还是过高了。<br>那再往上一层找，就到了高级语言最基础的运算和标准接口，这在iOS程序里是OC语言、C语言的基础操作。</p>
+<h2 id="基础操作解析"><a href="#基础操作解析" class="headerlink" title="基础操作解析"></a>基础操作解析</h2><p>下面首先基于OC和C语言的基本操作在iPhone6Plus设备的性能表现，弄清楚关键的性能代码的成本，再总结如何编写良好性能的代码。</p>
+<p><strong>测试用例：</strong></p>
+<p>复杂度为O(n^2),n在500到5000之间。</p>
+<p><strong>测试设备：</strong></p>
+<p>iPhone6Plus<br>1.85 GHz<br>Cores    2[7]<br>L1 cache    Per core: 64 KB instruction + 64 KB data<br>L2 cache    3 MB shared[7]<br>L3 cache    4 MB shared[8]</p>
+<p><strong>算术运算</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作 Integer Arithmetic (n=5000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{}</td>
+<td>3.316</td>
+</tr>
+<tr>
+<td>{}</td>
+<td>3.304</td>
+</tr>
+<tr>
+<td>{}</td>
+<td>3.291</td>
+</tr>
+<tr>
+<td>k++</td>
+<td>0.185</td>
+</tr>
+<tr>
+<td>k = i</td>
+<td>0.397</td>
+</tr>
+<tr>
+<td>k = i + j</td>
+<td>0.598</td>
+</tr>
+<tr>
+<td>k = i - j</td>
+<td>0.655</td>
+</tr>
+<tr>
+<td>k = i * j</td>
+<td>0.685</td>
+</tr>
+<tr>
+<td>k = i / j</td>
+<td>0.736</td>
+</tr>
+<tr>
+<td>k = i % j</td>
+<td>0.524</td>
+</tr>
+<tr>
+<td>k = i &amp; j</td>
+<td>0.763</td>
+</tr>
+<tr>
+<td>k = i 或 j</td>
+<td>0.716</td>
+</tr>
+<tr>
+<td>k = i ^ j</td>
+<td>0.407</td>
+</tr>
+<tr>
+<td>k = ~i</td>
+<td>0.139</td>
+</tr>
+<tr>
+<td>k = i &gt;&gt; 2</td>
+<td>0.189</td>
+</tr>
+<tr>
+<td>k = i &lt;&lt; 2</td>
+<td>0.088</td>
+</tr>
+</tbody>
+</table>
+<p>上图显示，每个空循环就需要3ns，这里的操作成本来自两层循环里变量自增、边界判断的消耗。因此，后面每项目操作测量的时间都减去了这个空方法的成本。</p>
+<p>位运算毫无疑问是最快，只需要0.1ns左右。变量自增的成本比较低，算术运算差距都不大，其中除法运算和取模运算只比乘法要慢一点，这个有点不符合常识。在MacPro i7的模拟器上除法运算比乘法要慢5～10倍，应该是A9芯片对除法做了优化。</p>
+<table>
+<thead>
+<tr>
+<th>操作 Floating Point Arithmetic (n=5000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fj=j;</td>
+<td>0.850</td>
+</tr>
+<tr>
+<td>fj=j; fk = fi + fj;</td>
+<td>1.037</td>
+</tr>
+<tr>
+<td>fj=j; fk = fi - fj;</td>
+<td>1.073</td>
+</tr>
+<tr>
+<td>fj=j; fk = fi * fj;</td>
+<td>1.049</td>
+</tr>
+<tr>
+<td>fj=j; fk = fi / fj;</td>
+<td>1.017</td>
+</tr>
+</tbody>
+</table>
+<p> 浮点变量的运算和整型相比差距不大。</p>
+<table>
+<thead>
+<tr>
+<th>操作 NSNumber Arithmetic (n=5000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>numberJ = @(numberI.intValue + j)</td>
+<td>13.717</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue - j)</td>
+<td>13.405</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue * j)</td>
+<td>13.377</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue / j)</td>
+<td>13.465</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue % j)</td>
+<td>14.792</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue &amp; j)</td>
+<td>13.401</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue 或 j)</td>
+<td>13.436</td>
+</tr>
+</tbody>
+</table>
+<p>NSNumber的算术运算比基础数据类型要慢了1个数量级，达到了10ns，装箱和拆箱的成本还是很高的，所以要尽量避免NSNumber的使用。</p>
+<p> <strong>关系运算</strong></p>
+<p> 操作 Comparisons (n=5000)|  平均操作时间（纳秒）    |<br>|———————————|——|<br> | if (i &lt; j)               | 0.649 |<br> | if (i &lt; j) k++           | 0.555 |<br> | if (x[i] &lt; x[j]) k++     | 0.803 |</p>
+<table>
+<thead>
+<tr>
+<th>操作 Array Comparisons and Swaps (n=5000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k = (x[i]&lt;x[k]) ? -1:1</td>
+<td>6.663</td>
+</tr>
+<tr>
+<td>k = intcmp(x+i, x+j)</td>
+<td>1.532</td>
+</tr>
+<tr>
+<td>swapmac(i, j)</td>
+<td>1.692</td>
+</tr>
+<tr>
+<td>swapfunc(i, j)</td>
+<td>2.425</td>
+</tr>
+</tbody>
+</table>
+<p>  操作  Max Function, Macro and Inline (n=5000) |  平均操作时间（纳秒）    |<br>|———————————|——|<br> | k = (i &gt; j) ? i : j      | 0.910 |<br> | k = maxmac(i, j)         | 0.851 |<br> | k = maxfunc(i, j)        | 1.029 |</p>
+<p>比较和算术运算成本差不多，使用for(i..n)每次循环都要判断一次。同样的交换逻辑，使用宏展开比使用函数要快800us。因此，对于一些简单高频的计算，可以使用宏进行展开优化。</p>
+<p> <strong>数学函数</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作 Math Functions (n=1000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fk = j+fi;</td>
+<td>1.725</td>
+</tr>
+<tr>
+<td>k = rand();</td>
+<td>7.700</td>
+</tr>
+<tr>
+<td>fk = sqrt(j+fi)</td>
+<td>1.965</td>
+</tr>
+<tr>
+<td>fk = sin(j+fi)</td>
+<td>13.524</td>
+</tr>
+<tr>
+<td>fk = sinh(j+fi)</td>
+<td>5.069</td>
+</tr>
+<tr>
+<td>fk = asin(j+fi)</td>
+<td>2.333</td>
+</tr>
+<tr>
+<td>fk = cos(j+fi)</td>
+<td>13.948</td>
+</tr>
+<tr>
+<td>fk = tan(j+fi)</td>
+<td>18.347</td>
+</tr>
+</tbody>
+</table>
+<p> 数学函数里开平方根还是很快的，而随机数和三角函数都上了一个数量级。</p>
+<p> <strong>集合操作</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作 NSArray Handle (n=1000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[array addObject:@”a”]</td>
+<td>31.316</td>
+</tr>
+<tr>
+<td>[array objectAtIndex:0]</td>
+<td>4.708</td>
+</tr>
+<tr>
+<td>[array containsObject:@”a”]</td>
+<td>17.681</td>
+</tr>
+<tr>
+<td>[array removeObject:@”a”]</td>
+<td>65.235</td>
+</tr>
+</tbody>
+</table>
+<p>NSArray的操作明显比数组存取要耗时很多，如果是性能关键代码是普通C数组的，但是这样扩展性会比较差，需要自己管理引用计数，也不能享受NSArray排序、搜索等便捷方法，所以一般情况还是建议使用NSArray。</p>
+<table>
+<thead>
+<tr>
+<th>操作  String Handle (n=500)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[string isEqualToString:@”b”]</td>
+<td>114.632</td>
+</tr>
+<tr>
+<td>[string stringByAppendingString:@”b”]</td>
+<td>689.016</td>
+</tr>
+<tr>
+<td>[string substringFromIndex:0]</td>
+<td>165.271</td>
+</tr>
+<tr>
+<td>[string compare:@”b”]</td>
+<td>138.748</td>
+</tr>
+<tr>
+<td>strcmp(str1, str2)      -</td>
+<td>2.029</td>
+</tr>
+<tr>
+<td>strcpy(str1, str2)</td>
+<td>13.995</td>
+</tr>
+<tr>
+<td>strncpy(dest, str2, 1)</td>
+<td>14.412</td>
+</tr>
+</tbody>
+</table>
+<p>NString的的操作耗时比C字符串也要高1两个数量级，但是涉及可读文本是这些开销是值得的，否则你得自己处理Unicode,这本身就很复杂而且也很耗性能。当然如果只是用做功能字符串，完全可以用C字符串替代。</p>
+<table>
+<thead>
+<tr>
+<th>操作  NSDictionary Handle (n=500)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[dic setObject:@”a” forKey:@”b”]</td>
+<td>98.359</td>
+</tr>
+<tr>
+<td>[dic objectForKey:@”a”]</td>
+<td>198.459</td>
+</tr>
+<tr>
+<td>obj.a = @”b”</td>
+<td>12.444</td>
+</tr>
+<tr>
+<td>NSString *b = obj.a</td>
+<td>7.948</td>
+</tr>
+</tbody>
+</table>
+<p>NSDictionary的键值访问比起对象的赋值、取值耗时要高1个数量级，1万次操作就达到1ms，并且如果有数据类型要存储，字典必须用NSNumber,NSNumber的操作本身就性能很差。<br>字典在项目中使用频率是较高的，在不需要动态性的高频场景应该使用对象替代NSDictionary。一般网络请求json格式回来我们都会先通过NSJSONSerialization转成NSDictionary。业务数据量大的时候，成本显然不小。</p>
+<table>
+<thead>
+<tr>
+<th>OC Core Method (n=500) 操作</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[self emptyMethod]</td>
+<td>4.951</td>
+</tr>
+<tr>
+<td>[obj autorelease]</td>
+<td>6.020</td>
+</tr>
+</tbody>
+</table>
+<p> 一个空的OC消息发送是算术运算的3倍，虽然实际项目中消息数量很容易爆炸，但只要不是千万级别以上的数量，也不会有性能的隐患。</p>
+<p> <strong>内存分配和读取</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作 Memory Allocation (n=500)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>free(malloc(16));</td>
+<td>57.301</td>
+</tr>
+<tr>
+<td>free(malloc(100));</td>
+<td>60.835</td>
+</tr>
+<tr>
+<td>free(maloc(2000));</td>
+<td>130.475</td>
+</tr>
+<tr>
+<td>[NSObject alloc]</td>
+<td>49.398</td>
+</tr>
+</tbody>
+</table>
+<p>堆内存的分配是消息发送的50倍，比算术运算要高2个数量级以上。一次性多分配更多内存比多次分配小内存要快很多，因为单次操作主存成本很高。（PS：在X86的模拟器里，对象创建成本是键值访问的两倍，但是在iPhone6Plus的表现,键值访问要反而慢两倍。）<br>这是一个重要的优化点，在性能关键代码里，高频对象可以提前做内存预分配和复用，以优化运行的速度。</p>
+<ul>
+<li>A8 (iPhone6)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>数据集大小</th>
+<th>Stride</th>
+<th>平均单次读取耗时 ns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64KB</td>
+<td>1</td>
+<td>0.114195</td>
+</tr>
+<tr>
+<td>64KB</td>
+<td>64</td>
+<td>0.115699</td>
+</tr>
+<tr>
+<td>64KB</td>
+<td>5678</td>
+<td>0.163618</td>
+</tr>
+<tr>
+<td>1MB</td>
+<td>1</td>
+<td>0.116082</td>
+</tr>
+<tr>
+<td>1MB</td>
+<td>64</td>
+<td>0.153635</td>
+</tr>
+<tr>
+<td>1MB</td>
+<td>5678</td>
+<td>0.186276</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>1</td>
+<td>0.114724</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>64</td>
+<td>0.153919</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>5678</td>
+<td>0.324870</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>1</td>
+<td>0.216536</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>64</td>
+<td>2.808878</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>5678</td>
+<td>9.092147</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>A9 (iPhone6S Plus)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>数据集大小</th>
+<th>Stride</th>
+<th>平均单次读取耗时 ns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64KB</td>
+<td>1</td>
+<td>0.030707</td>
+</tr>
+<tr>
+<td>64KB</td>
+<td>64</td>
+<td>0.033846</td>
+</tr>
+<tr>
+<td>64KB</td>
+<td>5678</td>
+<td>0.053130</td>
+</tr>
+<tr>
+<td>3MB</td>
+<td>1</td>
+<td>0.030772</td>
+</tr>
+<tr>
+<td>3MB</td>
+<td>64</td>
+<td>0.035724</td>
+</tr>
+<tr>
+<td>3MB</td>
+<td>5678</td>
+<td>0.062342</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>1</td>
+<td>0.031756</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>64</td>
+<td>0.038277</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>5678</td>
+<td>0.092065</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>1</td>
+<td>0.034641</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>64</td>
+<td>0.106000</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>5678</td>
+<td>0.404821</td>
+</tr>
+</tbody>
+</table>
+<p>L1、L2、L3缓存的数据集，顺序读取和跨缓存行读取性能基本相同，随机读取会慢50%～200%。由此看出，数据集比较集中并且在高速缓存大小范围内，访问的模式影响不太大，速度比较稳定。<br>当数据集超过L3时，访问到主存的概率会越来越大，这个时候访问的模式就有较大的差异。顺序访问时大部分的操作还是可以命中缓存行，耗时和前面差不多。步伐大于缓存行后，性能开始明显变差。在A8处理器下，最差到了顺序访问的50倍以上。A9处理器优化很明显，最差也就是顺序访问的10倍.</p>
+<h2 id="复杂度的陷阱"><a href="#复杂度的陷阱" class="headerlink" title="复杂度的陷阱"></a>复杂度的陷阱</h2><h4 id="性能瓶颈离我们并不远"><a href="#性能瓶颈离我们并不远" class="headerlink" title="性能瓶颈离我们并不远"></a>性能瓶颈离我们并不远</h4><p>时间复杂度的几种规模，相信大家都很熟悉了。但我们要明确，什么样的复杂度在OC的世界里是有风险的。</p>
+<p>下面这个表格可以直观看出各种复杂度的差距</p>
+<table>
+<thead>
+<tr>
+<th>运行时间（微秒）</th>
+<th></th>
+<th>n^3</th>
+<th>n^2</th>
+<th>nLog2^n</th>
+<th>n</th>
+<th>Log2^n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>10</td>
+<td>1ms</td>
+<td>100us</td>
+<td>30us</td>
+<td>10us</td>
+<td>3.3us</td>
+</tr>
+<tr>
+<td>当n为右侧规模时所需要的运算时间</td>
+<td>10^2</td>
+<td>1s</td>
+<td>10ms</td>
+<td>660us</td>
+<td>100us</td>
+<td>6.6us</td>
+</tr>
+<tr>
+<td></td>
+<td>10^3</td>
+<td>16分钟</td>
+<td>1s</td>
+<td>10ms</td>
+<td>1ms</td>
+<td>9.9us</td>
+</tr>
+<tr>
+<td></td>
+<td>10^4</td>
+<td>69天</td>
+<td>1分钟 40秒</td>
+<td>132ms</td>
+<td>10ms</td>
+<td>13.2us</td>
+</tr>
+</tbody>
+</table>
+<p>假设我们编写的代码块里有NSDictionary的键值操作或者字符串拼接操作，操作耗时很容易到了微秒级别。</p>
+<p>此时如果你方法的复杂度到了O(n^2)，当n到了10^2时，整个运算就超过10ms,n到了10^3时，运算时间会到1s。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">int n = 1000;</div><div class="line">NSMutableDictionary *dic = [NSMutableDictionary new];</div><div class="line">for (int i = 0; i &lt; n; i ++) &#123;</div><div class="line">    for (int j = 0; j &lt; n; j ++) &#123;</div><div class="line">        [dic setObject:@(j) forKey:@(i)];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>例如上面这个case，只有一行的操作代码，就能达到100ms。而这个规模，在客户端的计算中是很容易出现的。所以我们要对嵌套的线性运算保持敏感，明白它的存在会有多大的风险。</p>
+<h4 id="被遗漏的二阶运算"><a href="#被遗漏的二阶运算" class="headerlink" title="被遗漏的二阶运算"></a>被遗漏的二阶运算</h4><p>即便是有控制复杂度地意识，我们很是会不小心在线性运算中嵌套线性运算，导致accidentally quadratic。要避免这种情况发生，我们需要做到一下两点，</p>
+<p><strong>第一：对常用系统方法的复杂度建立清晰的认知。</strong></p>
+<p>例如下面的Case。将对象添加到数组前使用indexOfObject进行去重判断，而indexOfObject是O(n)的，这直接导致整个操作复杂度升级到O(n^2)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        if (NSNotFound != [array indexOfObject:object]) &#123;</div><div class="line">            [array addObject:object];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>NSArray是有序的，它的查找、删除方法都需要遍历整个集合（containsObject，indexOfObject，removeObject），时间复杂度都是O(n)以上。</p>
+<p>优化的办法是使用set,set使用了哈希值存储对象，containsObject复杂度是O(1),可以将整个操作恢复到线性。我们需要对常用集合每个方法的复杂度有清晰的认识，才能保证不会不小心写出O(n^2)以上的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    NSSet *set = [NSSet setWithArray:array];</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        if ([set containsObject:object]) &#123;</div><div class="line">            [array addObject:object];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>第二：注意方法嵌套代码，这很容易使我们忽略了整体的复杂度</strong></p>
+<p>在工程项目中，你的代码可能是像下面这样编写的，这就很难直观的看出有线性的嵌套。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        [self addAbsentObject:object];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)addAbsentObject:(id)object &#123;</div><div class="line">    if (NSNotFound != [array indexOfObject:object]) &#123;</div><div class="line">        [array addObject:object];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>要避免这种失误，我们得加强代码的敏感度，看到关键方法要有直觉的反应。同时编写底层方法时，对有复杂度风险的方法加上明确的注释，不要让调用方跳入泥坑。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1 记住关键操作的性能公式</p>
+<p>原始操作：消息传递：对象创建 : 键值访问 =  1 : 10 : 100 : 200</p>
+<p>PS：在X86的模拟器里，对象创建成本是键值访问的两倍，但是在iPhone6Plus A9的表现,键值访问要反而慢两倍。</p>
+<p>2 权衡利用C语言的速度和OC的面向对象设计，c语言的集合类型比起OC确实要快上一两个数量级。</p>
+<p>3 尽量用对象替代动态的NSDictionary,用基础数据类型替代需要装箱的NSNumber。</p>
+<p>4 如果有高频次的对象分配，达到了10万甚至100万的数量，可以使用预分配内存加复用的方式来加速。</p>
+<p>5 保持敏感，除非必要不要写出O(n^2)的代码块</p>
+<p>6 遇到必要的复杂计算或IO，合理使用多线程发挥CPU多核的计算能力，减少主线程的卡顿</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;保障良好性能三个层次&quot;&gt;&lt;a href=&quot;#保障良好性能三个层次&quot; class=&quot;headerlink&quot; title=&quot;保障良好性能三个层次&quot;&gt;&lt;/a&gt;保障良好性能三个层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;https://ws3.sinaimg.cn/large
+    
+    </summary>
+    
+      <category term="iOS" scheme="http://blackteachinese.com/categories/iOS/"/>
+    
+    
+      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用node在阿里云上创建一个简单的web服务</title>
+    <link href="http://blackteachinese.com/2018/06/03/firstNodeServerInAliyun/"/>
+    <id>http://blackteachinese.com/2018/06/03/firstNodeServerInAliyun/</id>
+    <published>2018-06-03T09:05:24.000Z</published>
+    <updated>2018-06-07T09:07:23.255Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="创建Node项目"><a href="#创建Node项目" class="headerlink" title="创建Node项目"></a>创建Node项目</h2><p><strong>Demo</strong><br><a href="https://github.com/blackteachinese/blackteahome" target="_blank" rel="external">https://github.com/blackteachinese/blackteahome</a></p>
+<h2 id="阿里云ESC环境安装"><a href="#阿里云ESC环境安装" class="headerlink" title="阿里云ESC环境安装"></a>阿里云ESC环境安装</h2><h2 id="部署Node服务"><a href="#部署Node服务" class="headerlink" title="部署Node服务"></a>部署Node服务</h2>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;创建Node项目&quot;&gt;&lt;a href=&quot;#创建Node项目&quot; class=&quot;headerlink&quot; title=&quot;创建Node项目&quot;&gt;&lt;/a&gt;创建Node项目&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Demo&lt;/strong&gt;&lt;br&gt;&lt;a href=&quot;https://gith
+    
+    </summary>
+    
+      <category term="Node" scheme="http://blackteachinese.com/categories/Node/"/>
+    
+    
+      <category term="Node" scheme="http://blackteachinese.com/tags/Node/"/>
+    
+  </entry>
   
   <entry>
     <title>从React到UIView渲染过程解析</title>
@@ -212,12 +856,12 @@
     <link href="http://blackteachinese.com/2017/11/24/react_render_concept/"/>
     <id>http://blackteachinese.com/2017/11/24/react_render_concept/</id>
     <published>2017-11-24T12:35:00.000Z</published>
-    <updated>2017-12-24T14:00:05.598Z</updated>
+    <updated>2017-12-25T15:45:03.869Z</updated>
     
     <content type="html"><![CDATA[<h2 id="What-is-React"><a href="#What-is-React" class="headerlink" title="What is React"></a>What is React</h2><p>A JavaScript library for building user interfaces</p>
 <p><strong>基本概念</strong></p>
 <ul>
-<li>VIRTUAL DOM<br>React render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual dom在性能上不会比纯手动优化的DOM操作更快，使用Virtual Dom能再不需要手动优化的情况下，保证过得去的性能，从而提高代码的可维护性和开发效率。这让我们可以无需担心性能问题而随时“刷新”整个页面，由虚拟DOM来确保只对界面上真正变化的节点进行实际的DOM操作。</li>
+<li>VIRTUAL DOM<br>React render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual dom在性能上不会比纯手动优化的DOM操作更快，使用Virtual DOM能在不需要手动优化的情况下，保证过得去的性能，从而提高代码的可维护性和开发效率。这让我们可以无需担心性能问题而随时“刷新”整个页面，由虚拟DOM来确保只对界面上真正变化的节点进行实际的DOM操作。</li>
 </ul>
 <p>下图是浏览器的工作流：<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg" alt=""><br>a.Create DOM tree：浏览器的渲染引擎根据html的elements，生成Dom node，组成Dom tree<br>b.Create Render tree：浏览器解析外部CSS文件和元素的inline样式，结合Dom tree的nodes，生成render tree<br>c.layout:render tree上每一个node生成在屏幕上的具体位置的坐标值<br>d.painting:绘制</p>
 <p>如果直接操作Dom，每次操作都会触发整个渲染流程，如果连续修改50个节点，那就会造成50次重新渲染，这会造成不必要的渲染消耗。我们可以自己编写逻辑，将每个Dom操作汇总到一个Dom fragment,再传递给Dom tree。但这样我们就得自己去记录哪些节点改变，哪些没有改变，这显然开发效率太低，所以我们可以把这个工作抽象一下，于是就有了virtual dom。<br>virtual dom这个抽象层的作用就是将这件事自动化、抽象化，通过Diff算法计算出需要改变的节点，使用batching批处理多个节点的改动，然后操作Dom树进行渲染，避免不必要的重新渲染。</p>
@@ -1041,102 +1685,6 @@
       &lt;p&gt;如果一个页面加载慢，会给用户带来最直接的伤害。下面整理了一些tips，来保证页面的加载速度。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;跳转事件触发后不要做阻塞操作&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;过去review代码时发现过一个问题。某个按钮点击后需要跳转到另外一个页面，但这个页面需
-    
-    </summary>
-    
-      <category term="iOS" scheme="http://blackteachinese.com/categories/iOS/"/>
-    
-    
-      <category term="iOS" scheme="http://blackteachinese.com/tags/iOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>结构化思考——完美应对电梯30秒的思考模型</title>
-    <link href="http://blackteachinese.com/2017/09/03/thought_structure_thinking/"/>
-    <id>http://blackteachinese.com/2017/09/03/thought_structure_thinking/</id>
-    <published>2017-09-03T13:39:27.000Z</published>
-    <updated>2017-09-06T05:23:37.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="为什么你的想法总是不能很好地表达？"><a href="#为什么你的想法总是不能很好地表达？" class="headerlink" title="为什么你的想法总是不能很好地表达？"></a>为什么你的想法总是不能很好地表达？</h1><p>如果你的工作内容是技术型的（程序员），你很可能对自己日常工作中的语言表达不太满意。你可能专业知识很丰满，对事情的看法也很独到，但就是讲不好。</p>
-<p>你也许还不觉得这是个很大的问题，因为大家会给某种职业贴标签：“XXX就是不善于表达”。这样的说法你听多了，可能会真的接受这种观点，但事实并不是如此。</p>
-<p>讲得不好主要有三个因素影响，思考能力、语言能力、心态。<br>思考能力决定你的表达内容的质量，思路是否清晰、重点是否突出、观点是否独到。<br>语言能力决定你的表达的内容形式是否丰富、有没有文采，有没有类比、举例帮组听众理解更深刻等。<br>心态决定你能不能正常发挥自己的水平。</p>
-<p>也许你已经可以看出来，思考能力决定你表达的核心内容。因为在日常工作中，工作中的交流是趋于理性的，大家更看重的是你的思路和观点。</p>
-<h1 id="为什么是结构力思考？"><a href="#为什么是结构力思考？" class="headerlink" title="为什么是结构力思考？"></a>为什么是结构力思考？</h1><p>在工作中我们遇到各种问题时，大脑会习惯性依据经验来思考。这样思考的结果，观点通常是散状的，类似现在微信文章的清单体。散状的观点，重点不突出，各个观点间没有清晰的逻辑联系。这样不能形成严密的逻辑关系，不利于让听众了解你表达的重点，观点之间有可能相互重复、甚至冲突。而在工作中，我们讨论解决方案时，最终是需要团队协作去执行的。这需要方案重点突出、逻辑严密，既能够统一思想又具有指导意义。</p>
-<p>因此，我们需要结构化思考的意识。</p>
-<h1 id="4个策略助你进行结构化思考"><a href="#4个策略助你进行结构化思考" class="headerlink" title="4个策略助你进行结构化思考"></a>4个策略助你进行结构化思考</h1><h2 id="结论先行"><a href="#结论先行" class="headerlink" title="结论先行"></a>结论先行</h2><p>将结论（核心观点／内容）作为树形结构的父节点。</p>
-<h2 id="以下呼上"><a href="#以下呼上" class="headerlink" title="以下呼上"></a>以下呼上</h2><p>树形结构里，子节点要呼应／支持父节点的内容。</p>
-<h2 id="合理归类"><a href="#合理归类" class="headerlink" title="合理归类"></a>合理归类</h2><p>通过合理地归纳分类，让一个复杂地问题逐步细化，成为可理解、可执行的观点／指南。</p>
-<h2 id="逻辑递进"><a href="#逻辑递进" class="headerlink" title="逻辑递进"></a>逻辑递进</h2><p>如果能形成时间、重要程度、结构顺序，这几种逻辑顺序，能让人更容易理解和记忆。</p>
-<p>先看一个清单体：“如何帮孩子缓解入园焦虑、快速融入幼儿园生活”。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">1. 最开始上幼儿园时，大部分孩子会感到压力和不适应。作为家长，不要觉得孩子小题大做，而要认真对待。</div><div class="line">2. 提前在家帮孩子调整作息，尽量跟幼儿园保持一致。比如早晨7:30起床吃早饭、中午12点左右午睡。同步作息时间，能让孩子快速适应幼儿园的节奏。</div><div class="line">3. 不要在平时借幼儿园抱怨孩子。“还不会自己吃饭，上了幼儿园怎么办”……这只会增加孩子对它的恐惧。</div><div class="line">4. 提前带孩子熟悉幼儿园环境。试着坐坐小椅子，上个卫生间，在校园里散散步。熟悉了环境，孩子会更有安全感。</div><div class="line">5. 尽快让孩子和老师熟悉起来——和孩子一起与老师聊聊天、当孩子的面夸夸老师，都会增加他对老师的信任。如果有机会提前让孩子和老师接触，那就更好了。</div><div class="line">6. 让孩子挑选一件熟悉的物件陪他上学，比如一块手绢、一辆玩具车或一块午睡毯。一件熟悉的物品，能缓解孩子对陌生环境的不适。</div><div class="line">7. 不要用欺骗的方式把孩子骗到幼儿园，更不要偷偷溜走，鼓励孩子主动跟你说“再见”。</div><div class="line">8. 跟孩子约定时间时，要说他能理解的话。不要说“妈妈5点来接你”，孩子没有“5点”的概念，应该说“你在幼儿园乖乖吃完晚餐，妈妈就来接你”。且一定要说话算数，否则会失去孩子的信任。</div><div class="line">9. 让孩子练习表达自己的感受，鼓励他说出需求。不妨引导他多说说学校的事情。习惯于表达需求后，孩子更敢于向老师求助。</div><div class="line">10. 分离焦虑，很大程度上是父母的焦虑。你的情绪会传染给孩子，一定要控制好。孩子哭闹时，不要跟他一起难过；一旦约定分别，就安心上班，不要在边上偷看，被孩子看到反而会激起他刚平复的心情。</div><div class="line">11. 孩子哭诉时，告诉他幼儿园的好是没用的，要用“共情”的方式沟通——“宝宝，妈妈也想念你”。向孩子表达你和他有同样的感受，这样孩子才会觉得你和他是一个“阵营”的。</div><div class="line">12. 不要觉得孩子在幼儿园受了委屈，就在家里加倍补偿。那反而会让孩子觉得“家里这么舒服，还是不要去幼儿园了”。</div><div class="line">13. 最后，从入园第一天，你的态度就要一以贯之，不要昨天去了，今天孩子哭得厉害就不去了。相信幼儿园和老师，他们比你有经验。</div></pre></td></tr></table></figure>
-<p>下面看看，如果使用结构化进行思考会怎么样。<br><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fj6g5b0w07j31ee0us19w.jpg" alt=""></p>
-<h2 id="合理选择结构化思考的表达层次"><a href="#合理选择结构化思考的表达层次" class="headerlink" title="合理选择结构化思考的表达层次"></a>合理选择结构化思考的表达层次</h2><p>在工作中我们以下有几种场景会发表观点：</p>
-<p>临时汇报（电梯30秒）<br>只有一句话时间，就说第一层。</p>
-<p>会议发言（1分钟）<br>说到第二层。</p>
-<p>工作总结（3到5分钟）<br>讲到第三层。</p>
-<p>主题分享／培训 （30分钟）<br>抓住一个故事／案例展开来，深入浅出地阐述</p>
-<p>根据不同场景和时间限制，合理地把握表达的层次和深度，无论是电梯30秒、会议发表观点、主题分享、培训、还是述职答辩都能应对自如。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;为什么你的想法总是不能很好地表达？&quot;&gt;&lt;a href=&quot;#为什么你的想法总是不能很好地表达？&quot; class=&quot;headerlink&quot; title=&quot;为什么你的想法总是不能很好地表达？&quot;&gt;&lt;/a&gt;为什么你的想法总是不能很好地表达？&lt;/h1&gt;&lt;p&gt;如果你的工作内容是技
-    
-    </summary>
-    
-      <category term="thought" scheme="http://blackteachinese.com/categories/thought/"/>
-    
-    
-      <category term="thought" scheme="http://blackteachinese.com/tags/thought/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何建设App的页面性能基线</title>
-    <link href="http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/"/>
-    <id>http://blackteachinese.com/2017/08/30/ios_app_base_performance_stratege/</id>
-    <published>2017-08-30T13:39:27.000Z</published>
-    <updated>2017-09-10T17:16:08.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="为什么我们需要页面性能基线？"><a href="#为什么我们需要页面性能基线？" class="headerlink" title="为什么我们需要页面性能基线？"></a>为什么我们需要页面性能基线？</h1><p>开发人员的差异性<br>在客户端的团队里，每个人对性能的了解程度是不一样的。不同的开发人员开发出来的页面性能的水位也不一样。除了技术上的差异，意识上的差异也不能忽视。对性能的敬畏之心不一样，也会影响开发的性能。</p>
-<p>业务迭代的变化<br>随着业务的迭代，同一个页面因为需求的持续变更而会不断改造。这会让页面的性能指标有波动的出现。如果改造不注意，很容易会出现性能突然变差的情况。因为页面性能是波动性的，如果有基线数据做为参考线，则可以对存量页面的性能进行自动化分析。</p>
-<h2 id="页面性能的两个特性"><a href="#页面性能的两个特性" class="headerlink" title="页面性能的两个特性"></a>页面性能的两个特性</h2><p>不一致性</p>
-<p>一个页面的性能指标怎么定主要受2个因素的影响，一个是UI元素的复杂度，一个是接口数据的复杂度。UI布局越复杂，页面渲染就会越慢。数据获取越复杂，页面就需要等待越长的时间进行渲染。因此我们不能一视同仁，所有页面都设置同样的基线。</p>
-<p>合理波动性</p>
-<p>鲜肉页面（新开发的页面）进入市场后，随着版本迭代，性能数据一定会有所波动。在一定范围内波动，我们认为是合理波动。</p>
-<h1 id="基线建设的3个目标"><a href="#基线建设的3个目标" class="headerlink" title="基线建设的3个目标"></a>基线建设的3个目标</h1><p>流程化<br>建立完整、合理的基线产出流程。</p>
-<p>工具统一化<br>建立统一的性能分析方法论、分析工具。</p>
-<p>标准化<br>建立标准化的基线算法，通过该算法计算出各页面的基线标准</p>
-<h2 id="3条性能基准线"><a href="#3条性能基准线" class="headerlink" title="3条性能基准线"></a>3条性能基准线</h2><p>性能红线</p>
-<p>性能指标只要差到一定的程度，用户就会感受到明显的不顺畅、慢、卡。这时候，无论页面多复杂、接口多慢，都不是理由（再有价值的产品，如果体验太差对用户来说就是垃圾）。因此，我们需要设立一个性能红线，无论如何不能超过红线。</p>
-<p>App综合性能指数</p>
-<p>正如证券市场的道琼斯指数一样，取App所有页面性能数据的平均值作为页面综合性能指数。鲜肉页面没有历史版本的数据，没有参考的标准。由于页面复杂度存在不一致性，不能随便找找一个页面来做参考，这个时候取App综合性能指数做参考是最合适的。</p>
-<p>页面性能基线（3个历史版本数据的均值）</p>
-<p>鲜肉页面通过过滤流水线后，我们就将通过后页面的线上平均数据做为该页面的性能基线。</p>
-<h2 id="2条流水线"><a href="#2条流水线" class="headerlink" title="2条流水线"></a>2条流水线</h2><p>鲜肉过滤流水线</p>
-<p>新开发的页面（鲜肉页面），由于复杂度不一致，我们不能准确判断开发出来的页面性能是否合理。但我们可以根据两条基准线做为参考值来估算页面性能是否合理。第一条是红线，高压线不能越。第二条是“APP综合性能指数”，如果低于这条线则合格，如果高于这条线则进入鉴别池。进入鉴别池的页面，将使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
-<p>熟肉自动流水线</p>
-<p>鲜肉页面经过过滤后，性能基本可以得到保障。但我们还需要保证，随着版本迭代这些页面性不能超过合理波动的范围。每期的版本迭代前，我们通过自动化测试拿到线下性能数据，然后与该页面的性能基线进行自动对比，计算迭代后的数据是否超过了基线的合理波动范围。若超过了，则进入鉴别池，使用测试工具进行专项性能测试和分析。若发现问题，开发需要进行优化。</p>
-<p>两条流水线都可以建立自动化过滤系统，根据基准线进行自动化数据分析，解放测试同学的同时，保证全面地覆盖。</p>
-<h2 id="落地设计"><a href="#落地设计" class="headerlink" title="落地设计"></a>落地设计</h2><p>根据实际的项目流程，可以分为线上实时监控和线下自动化数据分析。</p>
-<h2 id="线上实时监控"><a href="#线上实时监控" class="headerlink" title="线上实时监控"></a>线上实时监控</h2><p>线上建立可视化的性能数据图表，方便进行实时监控和分析。<br>图片显示如下几条线</p>
-<ul>
-<li>波动线（页面性能基线+合理波动值）</li>
-<li>性能红线</li>
-<li>当前版本均值</li>
-</ul>
-<h2 id="线下自动化数据分析"><a href="#线下自动化数据分析" class="headerlink" title="线下自动化数据分析"></a>线下自动化数据分析</h2><p>线下建立自动化过滤系统，根据基准线进行自动化数据分析。</p>
-<p>鲜肉页面过滤条件：<br>测试数据 &gt; APP综合指数（剔除一定范围0-500，2000+）<br>熟肉页面过滤条件：<br>测试数据 &gt; 页面基线值（页面性能基线+合理波动值）</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tNc79gy1fjeywnme3lj319w0saq5d.jpg" alt=""></p>
-<h1 id="整体流程图"><a href="#整体流程图" class="headerlink" title="整体流程图"></a>整体流程图</h1><p><img src="https://ws4.sinaimg.cn/large/006tKfTcgy1fj33brdcwej31di0tg0wf.jpg" alt=""></p>
-<h1 id="整体落地"><a href="#整体落地" class="headerlink" title="整体落地"></a>整体落地</h1><p>基线的流程和方法的建设，需要开发和测试人员一起协作完成。<br>开发人员负责：数据埋点、问题优化分析、积累沉淀<br>测试人员负责：测试件、数据平台建设、测试流程建设</p>
-<p>落地是重点也是难点。其中有2个要点。<br>1进行方案评审和宣导，获取团队人员的反馈，并进行改善，形成团队内的统一认知。<br>2合理安排落地节奏。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;为什么我们需要页面性能基线？&quot;&gt;&lt;a href=&quot;#为什么我们需要页面性能基线？&quot; class=&quot;headerlink&quot; title=&quot;为什么我们需要页面性能基线？&quot;&gt;&lt;/a&gt;为什么我们需要页面性能基线？&lt;/h1&gt;&lt;p&gt;开发人员的差异性&lt;br&gt;在客户端的团队里，每
     
     </summary>
     

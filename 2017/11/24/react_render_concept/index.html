@@ -122,7 +122,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmiqw9swr5j30dx0asmxc.jpg">
 <meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79gy1fmjuovkxsyj31kw0san5r.jpg">
-<meta property="og:updated_time" content="2017-12-24T14:00:05.598Z">
+<meta property="og:updated_time" content="2017-12-25T15:45:03.869Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React源码的秘密">
 <meta name="twitter:description" content="What is ReactA JavaScript library for building user interfaces
@@ -431,7 +431,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
         <h2 id="What-is-React"><a href="#What-is-React" class="headerlink" title="What is React"></a>What is React</h2><p>A JavaScript library for building user interfaces</p>
 <p><strong>基本概念</strong></p>
 <ul>
-<li>VIRTUAL DOM<br>React render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual dom在性能上不会比纯手动优化的DOM操作更快，使用Virtual Dom能再不需要手动优化的情况下，保证过得去的性能，从而提高代码的可维护性和开发效率。这让我们可以无需担心性能问题而随时“刷新”整个页面，由虚拟DOM来确保只对界面上真正变化的节点进行实际的DOM操作。</li>
+<li>VIRTUAL DOM<br>React render执行的结果并不是真正的DOM节点，只是是轻量级的JavaScript对象，我们称之为virtual DOM。虚拟DOM是React的一大亮点，具有batching(批处理)和高效的Diff算法。使用Virtual dom在性能上不会比纯手动优化的DOM操作更快，使用Virtual DOM能在不需要手动优化的情况下，保证过得去的性能，从而提高代码的可维护性和开发效率。这让我们可以无需担心性能问题而随时“刷新”整个页面，由虚拟DOM来确保只对界面上真正变化的节点进行实际的DOM操作。</li>
 </ul>
 <p>下图是浏览器的工作流：<br><img src="https://ws1.sinaimg.cn/large/006tNc79gy1fmjjwrfm1mj30hc081q3m.jpg" alt=""><br>a.Create DOM tree：浏览器的渲染引擎根据html的elements，生成Dom node，组成Dom tree<br>b.Create Render tree：浏览器解析外部CSS文件和元素的inline样式，结合Dom tree的nodes，生成render tree<br>c.layout:render tree上每一个node生成在屏幕上的具体位置的坐标值<br>d.painting:绘制</p>
 <p>如果直接操作Dom，每次操作都会触发整个渲染流程，如果连续修改50个节点，那就会造成50次重新渲染，这会造成不必要的渲染消耗。我们可以自己编写逻辑，将每个Dom操作汇总到一个Dom fragment,再传递给Dom tree。但这样我们就得自己去记录哪些节点改变，哪些没有改变，这显然开发效率太低，所以我们可以把这个工作抽象一下，于是就有了virtual dom。<br>virtual dom这个抽象层的作用就是将这件事自动化、抽象化，通过Diff算法计算出需要改变的节点，使用batching批处理多个节点的改动，然后操作Dom树进行渲染，避免不必要的重新渲染。</p>
@@ -757,7 +757,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">38</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -768,7 +768,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -779,7 +779,7 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">35</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -881,8 +881,8 @@ VIRTUAL DOMReact render执行的结果并不是真正的DOM节点，只是是轻
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

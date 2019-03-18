@@ -1,0 +1,1592 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blacktea's Life" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="保障良好性能三个层次
+常用高效的工具和管理方法
+刚开始我们的程序遇到性能问题时，我们会学习各种工具去分析程序性能，当性能出现明显问题时，这是最高效的解决方法，并且我们也能在这个过程中积累对代码性能的了解，这通常是点状的经验。后来我们发现性能问题还是层出不穷，于是我们开始对程序运行的核心链路做拆分，为拆分后的每个模块定义基线，数据跟踪，卡口流程。这和社会环保问题其实很像，性能出现问题时有高效的定位、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS性能解读——把时间当作朋友">
+<meta property="og:url" content="http://blackteachinese.com/2019/03/18/iOS_performance_analyse_time/index.html">
+<meta property="og:site_name" content="Blacktea's Life">
+<meta property="og:description" content="保障良好性能三个层次
+常用高效的工具和管理方法
+刚开始我们的程序遇到性能问题时，我们会学习各种工具去分析程序性能，当性能出现明显问题时，这是最高效的解决方法，并且我们也能在这个过程中积累对代码性能的了解，这通常是点状的经验。后来我们发现性能问题还是层出不穷，于是我们开始对程序运行的核心链路做拆分，为拆分后的每个模块定义基线，数据跟踪，卡口流程。这和社会环保问题其实很像，性能出现问题时有高效的定位、">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1g16yagp4voj31go0isado.jpg">
+<meta property="og:updated_time" content="2019-03-18T07:13:03.522Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS性能解读——把时间当作朋友">
+<meta name="twitter:description" content="保障良好性能三个层次
+常用高效的工具和管理方法
+刚开始我们的程序遇到性能问题时，我们会学习各种工具去分析程序性能，当性能出现明显问题时，这是最高效的解决方法，并且我们也能在这个过程中积累对代码性能的了解，这通常是点状的经验。后来我们发现性能问题还是层出不穷，于是我们开始对程序运行的核心链路做拆分，为拆分后的每个模块定义基线，数据跟踪，卡口流程。这和社会环保问题其实很像，性能出现问题时有高效的定位、">
+<meta name="twitter:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1g16yagp4voj31go0isado.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blackteachinese.com/2019/03/18/iOS_performance_analyse_time/"/>
+
+
+
+
+
+
+
+  <title> iOS性能解读——把时间当作朋友 | Blacktea's Life </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=63129529";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blacktea's Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">A programmer who love music and football</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blackteachinese.com/2019/03/18/iOS_performance_analyse_time/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Blacktea">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blacktea's Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS性能解读——把时间当作朋友
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-18T14:59:00+08:00">
+                2019-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/03/18/iOS_performance_analyse_time/" class="leancloud_visitors" data-flag-title="iOS性能解读——把时间当作朋友">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="保障良好性能三个层次"><a href="#保障良好性能三个层次" class="headerlink" title="保障良好性能三个层次"></a>保障良好性能三个层次</h2><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g16yagp4voj31go0isado.jpg" alt=""></p>
+<p><strong>常用高效的工具和管理方法</strong></p>
+<p>刚开始我们的程序遇到性能问题时，我们会学习各种工具去分析程序性能，当性能出现明显问题时，这是最高效的解决方法，并且我们也能在这个过程中积累对代码性能的了解，这通常是点状的经验。后来我们发现性能问题还是层出不穷，于是我们开始对程序运行的核心链路做拆分，为拆分后的每个模块定义基线，数据跟踪，卡口流程。这和社会环保问题其实很像，性能出现问题时有高效的定位、解决问题的工具和能力，这相当于体育比赛后组织方有高效地清除垃圾方法和执行人员。性能基线和卡口流程相当于社会法律和执法体系，丢垃圾罚500、吐痰罚200.</p>
+<p><strong>了解本质是养成意识的前提</strong></p>
+<p>这通常都是最有效的管理方法，但却不是万能和高效的办法，通常只能在核心的业务做这种投入。建设管理设施和执行维护的成本非常高，就如识别谁丢了垃圾的成本就很高，而且很多时候你发现一片污染时，它可能是许多人一起作用的结果。要本质上去改善软件的性能，需要编写代码的人有良好的性能意识和习惯。就如新闻上常说的，日本的观众看完比赛，留下来的那片区域都非常收拾得很干净。想要真正形成意识、养成习惯，只喊口号和宣导是一种办法，但还不够。我们需要回归到本质，让大家真正认知到环保的好处，我们要把问题量化帮助大家理解， 让大家知道一套卖家的塑料饭盒具体处理的成本有多少。</p>
+<p><strong>对一砖一瓦要有明确认知</strong></p>
+<p>要形成具体地认知，我们得把性能问题拆解成基本元素，随着规模地上升，程序模块拆分越来越细、流程越来越交错，性能问题具体是哪个部件很容易被掩盖。幸好，程序再庞大也是一砖一瓦搭建出来的，归根结底是0和1两个数字的问题。当然0和1组合的可能性太多，超过了人脑的记忆能力。再上一层到了汇编，汇编对于稳定性问题来说是最确定性的协议，但对性能来说组合的复杂度还是过高了。<br>那再往上一层找，就到了高级语言最基础的运算和标准接口，这在iOS程序里是OC语言、C语言的基础操作。</p>
+<h2 id="基础操作解析"><a href="#基础操作解析" class="headerlink" title="基础操作解析"></a>基础操作解析</h2><p>下面首先基于OC和C语言的基本操作在iPhone6Plus设备的性能表现，弄清楚关键的性能代码的成本，再总结如何编写良好性能的代码。</p>
+<p><strong>测试用例：</strong></p>
+<p>复杂度为O(n^2),n在500到5000之间。</p>
+<p><strong>测试设备：</strong></p>
+<p>iPhone6Plus<br>1.85 GHz<br>Cores    2[7]<br>L1 cache    Per core: 64 KB instruction + 64 KB data<br>L2 cache    3 MB shared[7]<br>L3 cache    4 MB shared[8]</p>
+<p><strong>算术运算</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作 Integer Arithmetic (n=5000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{}</td>
+<td>3.316</td>
+</tr>
+<tr>
+<td>{}</td>
+<td>3.304</td>
+</tr>
+<tr>
+<td>{}</td>
+<td>3.291</td>
+</tr>
+<tr>
+<td>k++</td>
+<td>0.185</td>
+</tr>
+<tr>
+<td>k = i</td>
+<td>0.397</td>
+</tr>
+<tr>
+<td>k = i + j</td>
+<td>0.598</td>
+</tr>
+<tr>
+<td>k = i - j</td>
+<td>0.655</td>
+</tr>
+<tr>
+<td>k = i * j</td>
+<td>0.685</td>
+</tr>
+<tr>
+<td>k = i / j</td>
+<td>0.736</td>
+</tr>
+<tr>
+<td>k = i % j</td>
+<td>0.524</td>
+</tr>
+<tr>
+<td>k = i &amp; j</td>
+<td>0.763</td>
+</tr>
+<tr>
+<td>k = i 或 j</td>
+<td>0.716</td>
+</tr>
+<tr>
+<td>k = i ^ j</td>
+<td>0.407</td>
+</tr>
+<tr>
+<td>k = ~i</td>
+<td>0.139</td>
+</tr>
+<tr>
+<td>k = i &gt;&gt; 2</td>
+<td>0.189</td>
+</tr>
+<tr>
+<td>k = i &lt;&lt; 2</td>
+<td>0.088</td>
+</tr>
+</tbody>
+</table>
+<p>上图显示，每个空循环就需要3ns，这里的操作成本来自两层循环里变量自增、边界判断的消耗。因此，后面每项目操作测量的时间都减去了这个空方法的成本。</p>
+<p>位运算毫无疑问是最快，只需要0.1ns左右。变量自增的成本比较低，算术运算差距都不大，其中除法运算和取模运算只比乘法要慢一点，这个有点不符合常识。在MacPro i7的模拟器上除法运算比乘法要慢5～10倍，应该是A9芯片对除法做了优化。</p>
+<table>
+<thead>
+<tr>
+<th>操作 Floating Point Arithmetic (n=5000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fj=j;</td>
+<td>0.850</td>
+</tr>
+<tr>
+<td>fj=j; fk = fi + fj;</td>
+<td>1.037</td>
+</tr>
+<tr>
+<td>fj=j; fk = fi - fj;</td>
+<td>1.073</td>
+</tr>
+<tr>
+<td>fj=j; fk = fi * fj;</td>
+<td>1.049</td>
+</tr>
+<tr>
+<td>fj=j; fk = fi / fj;</td>
+<td>1.017</td>
+</tr>
+</tbody>
+</table>
+<p> 浮点变量的运算和整型相比差距不大。</p>
+<table>
+<thead>
+<tr>
+<th>操作 NSNumber Arithmetic (n=5000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>numberJ = @(numberI.intValue + j)</td>
+<td>13.717</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue - j)</td>
+<td>13.405</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue * j)</td>
+<td>13.377</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue / j)</td>
+<td>13.465</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue % j)</td>
+<td>14.792</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue &amp; j)</td>
+<td>13.401</td>
+</tr>
+<tr>
+<td>numberJ = @(numberI.intValue 或 j)</td>
+<td>13.436</td>
+</tr>
+</tbody>
+</table>
+<p>NSNumber的算术运算比基础数据类型要慢了1个数量级，达到了10ns，装箱和拆箱的成本还是很高的，所以要尽量避免NSNumber的使用。</p>
+<p> <strong>关系运算</strong></p>
+<p> 操作 Comparisons (n=5000)|  平均操作时间（纳秒）    |<br>|———————————|——|<br> | if (i &lt; j)               | 0.649 |<br> | if (i &lt; j) k++           | 0.555 |<br> | if (x[i] &lt; x[j]) k++     | 0.803 |</p>
+<table>
+<thead>
+<tr>
+<th>操作 Array Comparisons and Swaps (n=5000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k = (x[i]&lt;x[k]) ? -1:1</td>
+<td>6.663</td>
+</tr>
+<tr>
+<td>k = intcmp(x+i, x+j)</td>
+<td>1.532</td>
+</tr>
+<tr>
+<td>swapmac(i, j)</td>
+<td>1.692</td>
+</tr>
+<tr>
+<td>swapfunc(i, j)</td>
+<td>2.425</td>
+</tr>
+</tbody>
+</table>
+<p>  操作  Max Function, Macro and Inline (n=5000) |  平均操作时间（纳秒）    |<br>|———————————|——|<br> | k = (i &gt; j) ? i : j      | 0.910 |<br> | k = maxmac(i, j)         | 0.851 |<br> | k = maxfunc(i, j)        | 1.029 |</p>
+<p>比较和算术运算成本差不多，使用for(i..n)每次循环都要判断一次。同样的交换逻辑，使用宏展开比使用函数要快800us。因此，对于一些简单高频的计算，可以使用宏进行展开优化。</p>
+<p> <strong>数学函数</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作 Math Functions (n=1000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fk = j+fi;</td>
+<td>1.725</td>
+</tr>
+<tr>
+<td>k = rand();</td>
+<td>7.700</td>
+</tr>
+<tr>
+<td>fk = sqrt(j+fi)</td>
+<td>1.965</td>
+</tr>
+<tr>
+<td>fk = sin(j+fi)</td>
+<td>13.524</td>
+</tr>
+<tr>
+<td>fk = sinh(j+fi)</td>
+<td>5.069</td>
+</tr>
+<tr>
+<td>fk = asin(j+fi)</td>
+<td>2.333</td>
+</tr>
+<tr>
+<td>fk = cos(j+fi)</td>
+<td>13.948</td>
+</tr>
+<tr>
+<td>fk = tan(j+fi)</td>
+<td>18.347</td>
+</tr>
+</tbody>
+</table>
+<p> 数学函数里开平方根还是很快的，而随机数和三角函数都上了一个数量级。</p>
+<p> <strong>集合操作</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作 NSArray Handle (n=1000)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[array addObject:@”a”]</td>
+<td>31.316</td>
+</tr>
+<tr>
+<td>[array objectAtIndex:0]</td>
+<td>4.708</td>
+</tr>
+<tr>
+<td>[array containsObject:@”a”]</td>
+<td>17.681</td>
+</tr>
+<tr>
+<td>[array removeObject:@”a”]</td>
+<td>65.235</td>
+</tr>
+</tbody>
+</table>
+<p>NSArray的操作明显比数组存取要耗时很多，如果是性能关键代码是普通C数组的，但是这样扩展性会比较差，需要自己管理引用计数，也不能享受NSArray排序、搜索等便捷方法，所以一般情况还是建议使用NSArray。</p>
+<table>
+<thead>
+<tr>
+<th>操作  String Handle (n=500)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[string isEqualToString:@”b”]</td>
+<td>114.632</td>
+</tr>
+<tr>
+<td>[string stringByAppendingString:@”b”]</td>
+<td>689.016</td>
+</tr>
+<tr>
+<td>[string substringFromIndex:0]</td>
+<td>165.271</td>
+</tr>
+<tr>
+<td>[string compare:@”b”]</td>
+<td>138.748</td>
+</tr>
+<tr>
+<td>strcmp(str1, str2)      -</td>
+<td>2.029</td>
+</tr>
+<tr>
+<td>strcpy(str1, str2)</td>
+<td>13.995</td>
+</tr>
+<tr>
+<td>strncpy(dest, str2, 1)</td>
+<td>14.412</td>
+</tr>
+</tbody>
+</table>
+<p>NString的的操作耗时比C字符串也要高1两个数量级，但是涉及可读文本是这些开销是值得的，否则你得自己处理Unicode,这本身就很复杂而且也很耗性能。当然如果只是用做功能字符串，完全可以用C字符串替代。</p>
+<table>
+<thead>
+<tr>
+<th>操作  NSDictionary Handle (n=500)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[dic setObject:@”a” forKey:@”b”]</td>
+<td>98.359</td>
+</tr>
+<tr>
+<td>[dic objectForKey:@”a”]</td>
+<td>198.459</td>
+</tr>
+<tr>
+<td>obj.a = @”b”</td>
+<td>12.444</td>
+</tr>
+<tr>
+<td>NSString *b = obj.a</td>
+<td>7.948</td>
+</tr>
+</tbody>
+</table>
+<p>NSDictionary的键值访问比起对象的赋值、取值耗时要高1个数量级，1万次操作就达到1ms，并且如果有数据类型要存储，字典必须用NSNumber,NSNumber的操作本身就性能很差。<br>字典在项目中使用频率是较高的，在不需要动态性的高频场景应该使用对象替代NSDictionary。一般网络请求json格式回来我们都会先通过NSJSONSerialization转成NSDictionary。业务数据量大的时候，成本显然不小。</p>
+<table>
+<thead>
+<tr>
+<th>OC Core Method (n=500) 操作</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[self emptyMethod]</td>
+<td>4.951</td>
+</tr>
+<tr>
+<td>[obj autorelease]</td>
+<td>6.020</td>
+</tr>
+</tbody>
+</table>
+<p> 一个空的OC消息发送是算术运算的3倍，虽然实际项目中消息数量很容易爆炸，但只要不是千万级别以上的数量，也不会有性能的隐患。</p>
+<p> <strong>内存分配和读取</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作 Memory Allocation (n=500)</th>
+<th>平均操作时间（纳秒）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>free(malloc(16));</td>
+<td>57.301</td>
+</tr>
+<tr>
+<td>free(malloc(100));</td>
+<td>60.835</td>
+</tr>
+<tr>
+<td>free(maloc(2000));</td>
+<td>130.475</td>
+</tr>
+<tr>
+<td>[NSObject alloc]</td>
+<td>49.398</td>
+</tr>
+</tbody>
+</table>
+<p>堆内存的分配是消息发送的50倍，比算术运算要高2个数量级以上。一次性多分配更多内存比多次分配小内存要快很多，因为单次操作主存成本很高。（PS：在X86的模拟器里，对象创建成本是键值访问的两倍，但是在iPhone6Plus的表现,键值访问要反而慢两倍。）<br>这是一个重要的优化点，在性能关键代码里，高频对象可以提前做内存预分配和复用，以优化运行的速度。</p>
+<ul>
+<li>A8 (iPhone6)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>数据集大小</th>
+<th>Stride</th>
+<th>平均单次读取耗时 ns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64KB</td>
+<td>1</td>
+<td>0.114195</td>
+</tr>
+<tr>
+<td>64KB</td>
+<td>64</td>
+<td>0.115699</td>
+</tr>
+<tr>
+<td>64KB</td>
+<td>5678</td>
+<td>0.163618</td>
+</tr>
+<tr>
+<td>1MB</td>
+<td>1</td>
+<td>0.116082</td>
+</tr>
+<tr>
+<td>1MB</td>
+<td>64</td>
+<td>0.153635</td>
+</tr>
+<tr>
+<td>1MB</td>
+<td>5678</td>
+<td>0.186276</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>1</td>
+<td>0.114724</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>64</td>
+<td>0.153919</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>5678</td>
+<td>0.324870</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>1</td>
+<td>0.216536</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>64</td>
+<td>2.808878</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>5678</td>
+<td>9.092147</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>A9 (iPhone6S Plus)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>数据集大小</th>
+<th>Stride</th>
+<th>平均单次读取耗时 ns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64KB</td>
+<td>1</td>
+<td>0.030707</td>
+</tr>
+<tr>
+<td>64KB</td>
+<td>64</td>
+<td>0.033846</td>
+</tr>
+<tr>
+<td>64KB</td>
+<td>5678</td>
+<td>0.053130</td>
+</tr>
+<tr>
+<td>3MB</td>
+<td>1</td>
+<td>0.030772</td>
+</tr>
+<tr>
+<td>3MB</td>
+<td>64</td>
+<td>0.035724</td>
+</tr>
+<tr>
+<td>3MB</td>
+<td>5678</td>
+<td>0.062342</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>1</td>
+<td>0.031756</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>64</td>
+<td>0.038277</td>
+</tr>
+<tr>
+<td>4MB</td>
+<td>5678</td>
+<td>0.092065</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>1</td>
+<td>0.034641</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>64</td>
+<td>0.106000</td>
+</tr>
+<tr>
+<td>200MB</td>
+<td>5678</td>
+<td>0.404821</td>
+</tr>
+</tbody>
+</table>
+<p>L1、L2、L3缓存的数据集，顺序读取和跨缓存行读取性能基本相同，随机读取会慢50%～200%。由此看出，数据集比较集中并且在高速缓存大小范围内，访问的模式影响不太大，速度比较稳定。<br>当数据集超过L3时，访问到主存的概率会越来越大，这个时候访问的模式就有较大的差异。顺序访问时大部分的操作还是可以命中缓存行，耗时和前面差不多。步伐大于缓存行后，性能开始明显变差。在A8处理器下，最差到了顺序访问的50倍以上。A9处理器优化很明显，最差也就是顺序访问的10倍.</p>
+<h2 id="复杂度的陷阱"><a href="#复杂度的陷阱" class="headerlink" title="复杂度的陷阱"></a>复杂度的陷阱</h2><h4 id="性能瓶颈离我们并不远"><a href="#性能瓶颈离我们并不远" class="headerlink" title="性能瓶颈离我们并不远"></a>性能瓶颈离我们并不远</h4><p>时间复杂度的几种规模，相信大家都很熟悉了。但我们要明确，什么样的复杂度在OC的世界里是有风险的。</p>
+<p>下面这个表格可以直观看出各种复杂度的差距</p>
+<table>
+<thead>
+<tr>
+<th>运行时间（微秒）</th>
+<th></th>
+<th>n^3</th>
+<th>n^2</th>
+<th>nLog2^n</th>
+<th>n</th>
+<th>Log2^n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>10</td>
+<td>1ms</td>
+<td>100us</td>
+<td>30us</td>
+<td>10us</td>
+<td>3.3us</td>
+</tr>
+<tr>
+<td>当n为右侧规模时所需要的运算时间</td>
+<td>10^2</td>
+<td>1s</td>
+<td>10ms</td>
+<td>660us</td>
+<td>100us</td>
+<td>6.6us</td>
+</tr>
+<tr>
+<td></td>
+<td>10^3</td>
+<td>16分钟</td>
+<td>1s</td>
+<td>10ms</td>
+<td>1ms</td>
+<td>9.9us</td>
+</tr>
+<tr>
+<td></td>
+<td>10^4</td>
+<td>69天</td>
+<td>1分钟 40秒</td>
+<td>132ms</td>
+<td>10ms</td>
+<td>13.2us</td>
+</tr>
+</tbody>
+</table>
+<p>假设我们编写的代码块里有NSDictionary的键值操作或者字符串拼接操作，操作耗时很容易到了微秒级别。</p>
+<p>此时如果你方法的复杂度到了O(n^2)，当n到了10^2时，整个运算就超过10ms,n到了10^3时，运算时间会到1s。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">int n = 1000;</div><div class="line">NSMutableDictionary *dic = [NSMutableDictionary new];</div><div class="line">for (int i = 0; i &lt; n; i ++) &#123;</div><div class="line">    for (int j = 0; j &lt; n; j ++) &#123;</div><div class="line">        [dic setObject:@(j) forKey:@(i)];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>例如上面这个case，只有一行的操作代码，就能达到100ms。而这个规模，在客户端的计算中是很容易出现的。所以我们要对嵌套的线性运算保持敏感，明白它的存在会有多大的风险。</p>
+<h4 id="被遗漏的二阶运算"><a href="#被遗漏的二阶运算" class="headerlink" title="被遗漏的二阶运算"></a>被遗漏的二阶运算</h4><p>即便是有控制复杂度地意识，我们很是会不小心在线性运算中嵌套线性运算，导致accidentally quadratic。要避免这种情况发生，我们需要做到一下两点，</p>
+<p><strong>第一：对常用系统方法的复杂度建立清晰的认知。</strong></p>
+<p>例如下面的Case。将对象添加到数组前使用indexOfObject进行去重判断，而indexOfObject是O(n)的，这直接导致整个操作复杂度升级到O(n^2)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        if (NSNotFound != [array indexOfObject:object]) &#123;</div><div class="line">            [array addObject:object];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>NSArray是有序的，它的查找、删除方法都需要遍历整个集合（containsObject，indexOfObject，removeObject），时间复杂度都是O(n)以上。</p>
+<p>优化的办法是使用set,set使用了哈希值存储对象，containsObject复杂度是O(1),可以将整个操作恢复到线性。我们需要对常用集合每个方法的复杂度有清晰的认识，才能保证不会不小心写出O(n^2)以上的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    NSSet *set = [NSSet setWithArray:array];</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        if ([set containsObject:object]) &#123;</div><div class="line">            [array addObject:object];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>第二：注意方法嵌套代码，这很容易使我们忽略了整体的复杂度</strong></p>
+<p>在工程项目中，你的代码可能是像下面这样编写的，这就很难直观的看出有线性的嵌套。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- (void)addObjects:(NSArray *)objects &#123;</div><div class="line">    for (id object in objects) &#123;</div><div class="line">        [self addAbsentObject:object];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)addAbsentObject:(id)object &#123;</div><div class="line">    if (NSNotFound != [array indexOfObject:object]) &#123;</div><div class="line">        [array addObject:object];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>要避免这种失误，我们得加强代码的敏感度，看到关键方法要有直觉的反应。同时编写底层方法时，对有复杂度风险的方法加上明确的注释，不要让调用方跳入泥坑。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1 记住关键操作的性能公式</p>
+<p>原始操作：消息传递：对象创建 : 键值访问 =  1 : 10 : 100 : 200</p>
+<p>PS：在X86的模拟器里，对象创建成本是键值访问的两倍，但是在iPhone6Plus A9的表现,键值访问要反而慢两倍。</p>
+<p>2 权衡利用C语言的速度和OC的面向对象设计，c语言的集合类型比起OC确实要快上一两个数量级。</p>
+<p>3 尽量用对象替代动态的NSDictionary,用基础数据类型替代需要装箱的NSNumber。</p>
+<p>4 如果有高频次的对象分配，达到了10万甚至100万的数量，可以使用预分配内存加复用的方式来加速。</p>
+<p>5 保持敏感，除非必要不要写出O(n^2)的代码块</p>
+<p>6 遇到必要的复杂计算或IO，合理使用多线程发挥CPU多核的计算能力，减少主线程的卡顿</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ww2.sinaimg.cn/large/006tNbRwgy1feav9se587j30kw0r2adr.jpg" alt="Blacktea wechat" style="width: 200px; max-width: 100%;"/>
+    <div>ex. subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>记录生活于感悟，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="https://ww4.sinaimg.cn/large/006tNbRwgy1feav9e683oj30yi1e6q7b.jpg" alt="Blacktea WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="https://ww3.sinaimg.cn/large/006tNbRwgy1feav9mjqarj30p011iq6c.jpg" alt="Blacktea Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/03/firstNodeServerInAliyun/" rel="next" title="使用node在阿里云上创建一个简单的web服务">
+                <i class="fa fa-chevron-left"></i> 使用node在阿里云上创建一个简单的web服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjY1My85MjE0"></div>
+      
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.JPG"
+               alt="Blacktea" />
+          <p class="site-author-name" itemprop="name">Blacktea</p>
+           
+              <p class="site-description motion-element" itemprop="description">iOS music footbood barcelona 歌手、程序员、爵士乐、巴萨罗那、自由主义者、学生</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/blackteachinese" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/your-user-name" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/your-user-name" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/your-user-name" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#保障良好性能三个层次"><span class="nav-number">1.</span> <span class="nav-text">保障良好性能三个层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础操作解析"><span class="nav-number">2.</span> <span class="nav-text">基础操作解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复杂度的陷阱"><span class="nav-number">3.</span> <span class="nav-text">复杂度的陷阱</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#性能瓶颈离我们并不远"><span class="nav-number">3.0.1.</span> <span class="nav-text">性能瓶颈离我们并不远</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#被遗漏的二阶运算"><span class="nav-number">3.0.2.</span> <span class="nav-text">被遗漏的二阶运算</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Blacktea</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("ehloR74x0tkV3l4dfBh2pmxq-gzGzoHsz", "5ndXwnHAEpdVKM3nUSHsEXJp");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+  
+
+</body>
+</html>
